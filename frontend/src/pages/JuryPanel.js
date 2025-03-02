@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
+import { JuryContext } from '../context/JuryContext';
+import { UserContext } from '../context/UserContext';
+import Loading from '../components/Loading';
 
 // Simulated candidate data
 const mockCandidates = [
@@ -46,13 +49,45 @@ const mockCandidates = [
 ];
 
 const JuryPanel = () => {
-  const [candidates] = useState(mockCandidates); // Mock candidates data
+  //const [candidates] = useState(mockCandidates); // Mock candidates data
+  const [applications, setApplications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const navigate = useNavigate();  // Utilisation de 'useNavigate'
+  const { fetchJuryApplications } = useContext(JuryContext)
+  const {user} = useContext(UserContext)
 
   const handleSelectCandidate = (candidate) => {
     // Utilisation de 'navigate' pour rediriger vers la page de détails
     navigate('/candidate-details', { state: { candidate } });
   };
+
+
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchJuryApplications(user._id); // Appel de la fonction
+        setApplications(data); // Stocker les données dans l'état local
+      } catch (err) {
+        setError(err.message); // Gérer les erreurs
+        alert(err.message)
+      } finally {
+        setIsLoading(false); // Fin du chargement
+      }
+    };
+
+    if (user._id) {
+      fetchApplications(); // Appeler la fonction lorsque le juryId change
+    }
+  }, [user, fetchJuryApplications]);
+
+  if(isLoading)
+  {
+    return <Loading/>
+  }
 
   return (
     <div className="container mt-5">
@@ -72,7 +107,7 @@ const JuryPanel = () => {
           </tr>
         </thead>
         <tbody>
-          {candidates.map((candidate) => (
+          {applications?.map((candidate) => (
             <tr key={candidate.id}>
               <td>{candidate.fullName}</td>
               <td>{candidate.email}</td>

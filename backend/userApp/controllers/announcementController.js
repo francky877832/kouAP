@@ -1,22 +1,50 @@
 const mongoose = require('../../shared/db').mongoose;
 
 
-const Announcement = require("../models/announcementModel");
 const User = require('../models/userModel');
+const Announcement = require("../models/announcementModel");
+const Application = require("../models/applicationModel");
+
 const ObjectId = mongoose.Types.ObjectId;
 
-
+const { Types } = mongoose;
 
 // Créer une nouvelle annonce
-exports.createAnnouncement = async (req, res) => {
-    console.log("Add-Annou")
+exports.createAnnouncement = async (req, res, next) => {
+    //console.log(req.body)
   try {
-    const { title, description, position, faculty, department, deadline } = req.body;
+
+   /* const newApplication = new Application({
+      user: new Types.ObjectId("67c40819dd1edec92edce9f2"), // Convertir en ObjectId
+      categories: {
+        A1: {
+          title: "XXXXX",
+          author: "Francky",
+          cv: "www.google.com"
+        }
+      },
+      submittedOn: new Date(1740862800000), // Convertir le timestamp en date
+      status: "pending",
+      jurys: [
+        new Types.ObjectId("67c40819dd1edec92edce9f2"), // Convertir en ObjectId pour chaque jury
+      ]
+    }).save()*/
+
+    const { title, description, position, faculty, department, deadline, startingDate, postedBy } = req.body;
 
     // Vérifier que tous les champs sont remplis
-    if (!title || !description || !position || !faculty || !department || !deadline) {
+    if (!title || !description || !position || !faculty || !department || !deadline || !startingDate || !postedBy) {
       return res.status(400).json({ message: "All fields are required." });
     }
+
+    /*const newUser = new User({ name: 'John Doe',
+      email: 'johndoe@example.com',
+      password: 'password123',
+      title: 'Professor',
+      role: 'user'});
+
+    // Enregistre l'utilisateur dans la base de données
+    const savedUser = await newUser.save();*/
 
     const newAnnouncement = new Announcement({
       title,
@@ -25,11 +53,14 @@ exports.createAnnouncement = async (req, res) => {
       faculty,
       department,
       deadline,
+      startingDate,
+      postedBy,
     });
 
     await newAnnouncement.save();
     res.status(201).json({ message: "Announcement created successfully!", announcement: newAnnouncement });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Server error.", error: error.message });
   }
 };
@@ -44,18 +75,33 @@ exports.getAllAnnouncements = async (req, res) => {
   }
 };
 
-// Récupérer une annonce par ID
-exports.getAnnouncementById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const announcement = await Announcement.findById(id);
 
-    if (!announcement) {
+
+// Récupérer une annonce par ID
+exports.getAnnouncementsPostedBy = async (req, res) => {
+  //console.log(req.params)
+  try {
+
+   
+
+    const { userId } = req.params;
+
+    // Vérifier si l'ID est valide
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "ID utilisateur invalide" });
+    }
+
+    // Trouver les annonces de cet utilisateur
+    const announcements = await Announcement.find({ postedBy: userId }) //.populate("postedBy").exec();
+    //console.log(announcements)
+    if (!announcements) {
+      console.log("error")
       return res.status(404).json({ message: "Announcement not found." });
     }
 
-    res.status(200).json(announcement);
+    res.status(200).json({message:"success", data:announcements});
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Server error.", error: error.message });
   }
 };

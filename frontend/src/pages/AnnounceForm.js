@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocation } from "react-router-dom";
 import RequiredDocumentsCheckbox from "../components/RequiredDocumentsCheckbox";
+import { UserContext } from "../context/UserContext";
+import { facultyDepartments } from "../datas/schoolDepartments";
+import { positions } from "../datas/schoolDepartments";
+import { server } from "../remote/server";
+import Loading from "../components/Loading";
 
 const AnnouncementForm = () => {
   const location = useLocation();
@@ -13,11 +18,14 @@ const AnnouncementForm = () => {
  
   const [isLoading, setIsLoading] = useState(false)
 
+  const { user } = useContext(UserContext)
+  
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     deadline: "",
-    startingdDate: "",
+    startingDate: "",
     cv : true,
     indexedPublications: false,
     citationsProof: false,
@@ -35,25 +43,12 @@ const AnnouncementForm = () => {
         title: announcement.title || "",
         description: announcement.description || "",
         deadline: announcement.deadline || "",
+        startingDate: announcement.startingDate || "",
       });
     }
   }, [announcement]);
 
-  // Faculties and Departments
-  const facultyDepartments = {
-    "Faculty of Technology": [
-      "Information Systems and Engineering",
-      "Energy Systems",
-      "Automotive Engineering",
-    ],
-    "Faculty of Humanities": ["Philosophy", "History", "Literature"],
-  };
-
-  const positions = [
-    { value: "Assistant Professor", label: "Assistant Professor (Dr. Öğr. Üyesi)" },
-    { value: "Associate Professor", label: "Associate Professor (Doçent)" },
-    { value: "Professor", label: "Professor (Profesör)" },
-  ];
+  
 
   // Update form fields
   const handleChange = (e) => {
@@ -85,12 +80,14 @@ const AnnouncementForm = () => {
       position,
       faculty: faculty,
       department: department,
-      deadline: formData.dateLimite,
-      startingdDate : formData.startingdDate,
+      deadline: formData.deadline,
+      startingDate : formData.startingDate,
+      postedBy : user._id,
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/datas/announcements", {
+      setIsLoading(true)
+      const response = await fetch(`${server}/api/datas/announcements/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,9 +100,13 @@ const AnnouncementForm = () => {
         alert(result.message);
         // Optionnel: réinitialiser le formulaire après la soumission
         setFormData({
-          titre: "",
+          title: "",
           description: "",
-          dateLimite: "",
+         // position: "",
+          //faculty: "",
+          //department: "",
+          deadline: "",
+          startingDate: "",
         });
         setFaculty("");
         setDepartment("");
@@ -118,7 +119,16 @@ const AnnouncementForm = () => {
       console.error("Error:", error);
       alert("Failed to create announcement.");
     }
+    finally
+    {
+      setIsLoading(false)
+    }
   };
+
+  if(isLoading)
+  {
+    return <Loading/>
+  }
 
   return (
     <div className="container mt-5">
@@ -199,7 +209,7 @@ const AnnouncementForm = () => {
 
         {/* required doc */}
 
-          <RequiredDocumentsCheckbox formData={formData} handleChange={handleCheckBoxChange} />
+          {/*<RequiredDocumentsCheckbox formData={formData} handleChange={handleCheckBoxChange} />*/}
 
 
 
@@ -211,8 +221,8 @@ const AnnouncementForm = () => {
               <input
                 type="date"
                 className="form-control"
-                name="startingdDate"
-                value={formData.startingdDate}
+                name="startingDate"
+                value={formData.startingDate}
                 onChange={handleChange}
                 required
               />

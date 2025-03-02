@@ -1,23 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { mockAnnouncements, mockApplications, mockJuries } from '../datas/mockData';
 import { Link } from 'react-router-dom';
 import '../styles/adminPanelStyles.css'
 
 import { mockCandidates } from '../datas/mockData'; 
+import { UserContext } from '../context/UserContext';
+import InlineLoading from '../components/InlineLoading';
+import { AdminContext } from '../context/AdminContext';
 
 const AdminPanel = () => {
-  const [announcements, setAnnouncements] = useState(mockAnnouncements);
+  const [announcements, setAnnouncements] = useState([]);
   const [applications, setApplications] = useState(mockApplications);
   const [jurors, setJurors] = useState(mockJuries);
   const [selectedJuries, setSelectedJuries] = useState({});
   const [viewJuries, setViewJuries] = useState(null);
+  const [isAnnouncementsLoading, setIsAnnouncementsLoading] = useState(true)
+  const [isApplicationsLoading, setIsApplicationsLoading] = useState(true)
+  
+  const {user} = useContext(UserContext)
+  const {fetchAnnouncementsByUser} = useContext(AdminContext)
 
   useEffect(() => {
     // Simule le chargement des données ici
-    setAnnouncements(mockAnnouncements);
+    //setAnnouncements(mockAnnouncements);
     setApplications(mockApplications);
     setJurors(mockJuries);
   }, []);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchAnnouncementsByUser(user._id);
+      console.log(result)
+      setAnnouncements(result);
+      setIsAnnouncementsLoading(false);
+    };
+
+    if(isAnnouncementsLoading)
+    {
+      fetchData();
+    }
+    
+
+  }, [user, isAnnouncementsLoading]);
+
+
+
 
   const handleAssignJuries = (applicationId) => {
     const jurorsAssigned = selectedJuries[applicationId];
@@ -57,15 +86,15 @@ const AdminPanel = () => {
   const now = new Date();
   const ongoingAnnouncements = announcements.filter(
     (announcement) =>
-      new Date(announcement.startDate) <= now && new Date(announcement.endDate) >= now
+      new Date(announcement.startingDate) <= now && new Date(announcement.deadline) >= now
   );
 
   const pastAnnouncements = announcements.filter(
-    (announcement) => new Date(announcement.endDate) < now
+    (announcement) => new Date(announcement.deadline) < now
   );
 
   const upcomingAnnouncements = announcements.filter(
-    (announcement) => new Date(announcement.startDate) > now
+    (announcement) => new Date(announcement.startingDate) > now
   );
 
   /*Jury Selection */
@@ -116,6 +145,9 @@ const AdminPanel = () => {
         </button>
       </div>
 
+    {
+      isAnnouncementsLoading && <InlineLoading/>
+    }
       {/* Liste des annonces (affichage en fonction du bouton actif) */}
       <div className="list-group">
         {activeTab === 'ongoing' &&
@@ -127,7 +159,7 @@ const AdminPanel = () => {
               state={{ announcement }}
             >
               <h5 className="mb-1">{announcement.title}</h5>
-              <p className="mb-1 text-muted">Posted on: {announcement.startDate}</p>
+              <p className="mb-1 text-muted">Posted on: {announcement.startingDate}</p>
             </Link>
           ))}
 
@@ -140,7 +172,7 @@ const AdminPanel = () => {
               state={{ announcement }}
             >
               <h5 className="mb-1">{announcement.title}</h5>
-              <p className="mb-1 text-muted">Expired on: {announcement.endDate}</p>
+              <p className="mb-1 text-muted">Expired on: {announcement.deadline}</p>
             </Link>
           ))}
 
@@ -153,7 +185,7 @@ const AdminPanel = () => {
               state={{ announcement }}
             >
               <h5 className="mb-1">{announcement.title}</h5>
-              <p className="mb-1 text-muted">Starts on: {announcement.startDate}</p>
+              <p className="mb-1 text-muted">Starts on: {announcement.startingDate}</p>
             </Link>
           ))}
       </div>

@@ -3,11 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { UserProvider } from "../src/context/UserContext";
+import { AdminProvider } from './context/AdminContext';
+import { JuryProvider } from './context/JuryContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+
   <React.StrictMode>
-    <App />
+    <UserProvider>
+      <AdminProvider>
+      <JuryProvider>
+          <App />
+        </JuryProvider>
+      </AdminProvider>
+    </UserProvider>
   </React.StrictMode>
 );
 
