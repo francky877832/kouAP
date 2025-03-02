@@ -18,7 +18,8 @@ const applicationSchema = new Schema({
       enum: ['pending', 'approved', 'rejected'], 
       default: 'pending' 
   }, // Statut de l'application
-  jurys: [{ type: Schema.Types.ObjectId, ref: User }] // Liste des jurés associés
+  jurys: [{ type: Schema.Types.ObjectId, ref: User }], // Liste des jurés associés
+  createdAt : {type:Date, defaut:Date.now}
 });
 
 

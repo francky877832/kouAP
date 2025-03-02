@@ -4,8 +4,8 @@ import { JuryContext } from '../context/JuryContext';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
 
-// Simulated candidate data
-const mockCandidates = [
+// Simulated application data
+const mockapplications = [
   {
     id: 1,
     fullName: "John Doe",
@@ -49,7 +49,7 @@ const mockCandidates = [
 ];
 
 const JuryPanel = () => {
-  //const [candidates] = useState(mockCandidates); // Mock candidates data
+  //const [applications] = useState(mockapplications); // Mock applications data
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -58,9 +58,9 @@ const JuryPanel = () => {
   const { fetchJuryApplications } = useContext(JuryContext)
   const {user} = useContext(UserContext)
 
-  const handleSelectCandidate = (candidate) => {
+  const handleSelectapplication = (application) => {
     // Utilisation de 'navigate' pour rediriger vers la page de détails
-    navigate('/candidate-details', { state: { candidate } });
+    navigate('/application-details', { state: { candidate : application } });
   };
 
 
@@ -70,6 +70,7 @@ const JuryPanel = () => {
       try {
         setIsLoading(true);
         const data = await fetchJuryApplications(user._id); // Appel de la fonction
+        console.log(data)
         setApplications(data); // Stocker les données dans l'état local
       } catch (err) {
         setError(err.message); // Gérer les erreurs
@@ -92,32 +93,32 @@ const JuryPanel = () => {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Jury Panel</h2>
-      <h4 className="text-center mb-4">Select a candidate to review:</h4>
+      <h4 className="text-center mb-4">Select a application to review:</h4>
 
-      {/* Display candidates in a table */}
+      {/* Display applications in a table */}
       <table className="table table-bordered table-striped text-center">
         <thead>
           <tr>
             <th>Name</th>
             <th>Email</th>
             <th>Phone Number</th>
-            <th>Degree</th>
-            <th>Experience</th>
+            <th>TC ID</th>
+            <th>Apply On</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {applications?.map((candidate) => (
-            <tr key={candidate.id}>
-              <td>{candidate.fullName}</td>
-              <td>{candidate.email}</td>
-              <td>{candidate.phoneNumber}</td>
-              <td>{candidate.degree}</td>
-              <td>{candidate.experience}</td>
+          {applications?.map((application) => (
+            <tr key={application._id}>
+              <td>{application.user.name}</td>
+              <td>{application.user.email}</td>
+              <td>{application.user.phoneNumber}</td>
+              <td>{application.user.tcId}</td>
+              <td>{application.submittedOn}</td>
               <td>
                 <button
                   className="btn btn-primary"
-                  onClick={() => handleSelectCandidate(candidate)}
+                  onClick={() => handleSelectapplication(application)}
                 >
                   Review
                 </button>

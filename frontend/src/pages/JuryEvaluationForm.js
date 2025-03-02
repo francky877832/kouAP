@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const JuryEvaluationForm = ({ candidate }) => {
+const JuryEvaluationForm = ({ application }) => {
   const [personalReport, setPersonalReport] = useState('');
   const [evaluation, setEvaluation] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -17,7 +17,7 @@ const JuryEvaluationForm = ({ candidate }) => {
     e.preventDefault();
     // Here you would send the data to the backend, but for now, we simulate it
     console.log('Evaluation submitted:', {
-      candidateId: candidate.id,
+      applicationId: application.id,
       personalReport,
       evaluation,
     });
@@ -26,7 +26,7 @@ const JuryEvaluationForm = ({ candidate }) => {
 
   return (
     <div className="jury-evaluation-form">
-      <h3>Evaluation for {candidate.fullName}</h3>
+      <h3>Evaluation for {application.user.name}</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="personalReport">Personal Report</label>

@@ -6,11 +6,11 @@ const User = require('../models/userModel');
 // ✅ 5. Récupérer les applications assignées à un jury
 exports.getJuryApplications = async (req, res, next) => {
 
-  console.log(req.params)
+  //console.log(req.params)
     try {
       const { juryId } = req.params;
   
-      const applications = await Application.find()
+      const applications = await Application.find({jurys : juryId})
         .populate('user')
         .populate('jurys')
         //.maxTimeMS(30000);

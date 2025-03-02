@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../styles/candidateDetailsStyles.css'
+import { JuryContext } from '../context/JuryContext';
+import { UserContext } from '../context/UserContext';
 
 
 
@@ -12,14 +14,19 @@ const CandidateDetails = () => {
   const [comment, setComment] = useState('');
   const [reportFile, setReportFile] = useState(null); // Pour gérer le fichier du rapport
 
-  const handleValidationSubmit = (e) => {
+  const { submitEvaluation } = useContext(JuryContext)
+  const { user } = useContext(UserContext)
+
+
+  const handleValidationSubmit = async (e) => {
     e.preventDefault();
     
-    // Logique pour envoyer les données au backend
-    console.log('Evaluation submitted');
-    console.log('Status:', validationStatus);
-    console.log('Comment:', comment);
-    console.log('Report File:', reportFile);
+    const result = await submitEvaluation(validationStatus, comment, reportFile, candidate, user);
+        
+        if (result) {
+            console.log('Évaluation soumise avec succès:', result);
+            // Traite la réponse du backend ou redirige l'utilisateur
+        }
     
     // Tu peux maintenant envoyer ces données (y compris le fichier) au backend pour traitement
   };
@@ -31,17 +38,18 @@ const CandidateDetails = () => {
     }
   };
 
+
   return (
     <div className="container">
       <h3 className="mb-4 text-center">Review Candidate Information</h3>
 
       <div className="mb-3">
         <h5 className="step-title">Personal Information</h5>
-        <p><strong>Full Name:</strong> {candidate.fullName}</p>
-        <p><strong>Identification Number:</strong> {candidate.idNumber}</p>
-        <p><strong>Email:</strong> {candidate.email}</p>
-        <p><strong>Phone Number:</strong> {candidate.phoneNumber}</p>
-        <p><strong>Postal Address:</strong> {candidate.address}</p>
+        <p><strong>Full Name:</strong> {candidate.user.name}</p>
+        <p><strong>Identification Number:</strong> {candidate.user.tcID}</p>
+        <p><strong>Email:</strong> {candidate.user.email}</p>
+        <p><strong>Phone Number:</strong> {candidate.user.phoneNumber}</p>
+        <p><strong>Postal Address:</strong> {candidate.user.address}</p>
       </div>
 
       <div className="mb-3">

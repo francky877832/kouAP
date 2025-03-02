@@ -27,7 +27,7 @@ const App = () => {
         <Route path="/all-announcements" element={<AllAnnouncements />} />
         <Route path="/apply" element={<MultiStepForm />} />
         <Route path="/jury-panel" element={<JuryPanel />} />
-        <Route path="/candidate-details" element={<CandidateDetails />} />
+        <Route path="/application-details" element={<CandidateDetails />} />
         <Route path="/admin-panel" element={<AdminPanel />} />
         <Route path="/evaluation-details" element={<EvaluationDetails />} />
 
