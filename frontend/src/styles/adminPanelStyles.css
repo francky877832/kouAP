@@ -1,0 +1,103 @@
+/* admin-dashboard */
+.admin-dashboard {
+    font-family: Arial, sans-serif;
+    margin-top: 20px;
+  }
+  
+  .announcements-section,
+  .applications-section {
+    margin-bottom: 30px;
+  }
+  
+  .list-group-item {
+    background-color: #f8f9fa;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  .list-group-item h5 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .list-group-item p {
+    margin: 5px 0;
+    color: #6c757d;
+  }
+  
+  .jurors-selection {
+    margin-top: 20px;
+  }
+  
+  button {
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    opacity: 0.9;
+  }
+  
+  .juror-checkbox input {
+    margin-right: 10px;
+  }
+  
+  .juror-checkbox label {
+    font-size: 16px;
+  }
+  
+  .mt-3 {
+    margin-top: 1rem;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+  }
+
+
+
+
+  .jury-list {
+    border-left: 3px solid #007bff;
+    padding-left: 10px;
+  }
+  
+  .jury-item {
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .jury-accepted {
+    background-color: #d4edda !important; /* Vert clair */
+    border-left: 5px solid #28a745; /* Bordure verte */
+  }
+  
+  .jury-rejected {
+    background-color: #f8d7da !important; /* Rouge clair */
+    border-left: 5px solid #dc3545; /* Bordure rouge */
+  }
+  
+  .btn-success, .btn-danger {
+    width: 120px;
+  }
+  
+  
+  

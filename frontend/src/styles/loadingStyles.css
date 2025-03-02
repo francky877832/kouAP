@@ -1,0 +1,42 @@
+/* loading.css */
+
+/* Conteneur global qui centre le loading dans la page */
+.loading-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond sombre avec transparence pour l'effet modal */
+    z-index: 9999; /* Assure que le loading soit au-dessus du contenu */
+  }
+  
+  /* Conteneur rectangulaire du spinner et texte */
+  .spinner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 40px; /* Plus d'espace pour un effet rectangulaire */
+    background-color: rgba(255, 255, 255, 0.9); /* Fond légèrement transparent */
+    border-radius: 15px;
+    width: 300px; /* Largeur ajustée du conteneur */
+    height: 150px; /* Hauteur ajustée */
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3); /* Ombre pour l'effet de profondeur */
+  }
+  
+  /* Style du texte "Loading..." sous le spinner */
+  .loading-text {
+    margin-top: 15px; /* Espace entre le spinner et le texte */
+    font-size: 20px;
+    font-weight: bold;
+    color: #3498db; /* Couleur bleue du texte */
+    font-family: 'Arial', sans-serif; /* Police de caractère */
+    text-align: center; /* Centrer le texte */
+    text-transform: uppercase; /* Mettre le texte en majuscules */
+    letter-spacing: 1px; /* Espacement des lettres */
+  }
+  

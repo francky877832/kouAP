@@ -1,0 +1,35 @@
+
+  /* loading.css */
+
+/* Container qui aligne le spinner et le texte horizontalement */
+.inline-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espace entre le spinner et le texte */
+    font-size: 16px;
+    font-weight: bold;
+    color: #3498db;
+  }
+  
+  /* Animation du spinner */
+  .inline-spinner {
+    border: 8px solid #f3f3f3; /* Couleur du fond */
+    border-top: 8px solid #3498db; /* Couleur du spinner */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1.5s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Style pour le texte "Loading" */
+  .inline-loading-text {
+    margin: 0; /* Enlever la marge par défaut du texte */
+  }
+  
+  

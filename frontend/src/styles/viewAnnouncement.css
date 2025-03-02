@@ -1,0 +1,9 @@
+.single-announcement-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Assure que l'élément prend toute la hauteur de la fenêtre */
+    text-align: center; /* Optionnel : centre le texte */
+  }
+  

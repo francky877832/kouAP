@@ -1,0 +1,23 @@
+.fade-enter {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+  }
+  .fade-exit {
+    opacity: 1;
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transition: opacity 300ms;
+  }
+
+  .step-title {
+    color: #007bff; /* Change la couleur à bleu, tu peux utiliser n'importe quelle couleur */
+    font-weight: bold;
+  }
+  
+  
