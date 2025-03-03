@@ -76,6 +76,34 @@ exports.getAllAnnouncements = async (req, res) => {
 };
 
 
+exports.getAnnouncementsByPage = async (req, res) => {
+  try {
+    //console.log(req.query)
+      const { page = 1, limit = 10 } = req.query;
+
+      const announcements = await Announcement.find()
+          .populate('postedBy')
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(parseInt(limit));
+          
+          //console.log(announcements)
+
+      const total = await Announcement.countDocuments();
+      //console.log(total)
+      res.status(200).json({
+          total : total,
+          page: parseInt(page),
+          totalPages: Math.ceil(total / limit),
+          data: announcements
+      });
+  } catch (error) {
+    console.log(error)
+      res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 // Récupérer une annonce par ID
 exports.getAnnouncementsPostedBy = async (req, res) => {

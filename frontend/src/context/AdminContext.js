@@ -31,6 +31,31 @@ export const AdminProvider = ({ children }) => {
         return []; // Retourner un tableau vide en cas d'erreur
       }
     }
+
+
+    const fetchAnnouncements = async (page, limit) => {
+      try {
+        console.log("ok")
+        const response = await fetch(`${server}/api/datas/announcements/page?page=${page}&limit=${limit}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
+        }
+    
+        // Récupérer les données au format JSON
+        const data = await response.json();
+        return data; // Retourner les annonces récupérées
+      } catch (error) {
+        console.error("Erreur:", error.message);
+        return []; 
+      }
+      
+  };
     
 
     
@@ -38,7 +63,7 @@ export const AdminProvider = ({ children }) => {
 
     const stateVars = {user}
     const stateFunctions = {}
-    const utilFunctions = {fetchAnnouncementsByUser}
+    const utilFunctions = {fetchAnnouncementsByUser, fetchAnnouncements}
 
 
   return (

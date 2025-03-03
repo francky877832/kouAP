@@ -16,7 +16,7 @@ const announcementSchema = new mongoose.Schema({
   department: { type: String, required: true, },
   deadline: { type: Date, required: true, },
   startingDate: { type: Date, required: true, },
-  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: User, required: true },
   createdAt: { type: Date, default: Date.now,},
 });
 

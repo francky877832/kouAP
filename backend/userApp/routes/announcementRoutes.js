@@ -7,6 +7,8 @@ router.get("/get", announcementController.getAllAnnouncements);
 //router.get("/:id", announcementController.getAnnouncementById);
 router.get("/user/:userId", announcementController.getAnnouncementsPostedBy);
 
+router.get("/page", announcementController.getAnnouncementsByPage);
+
 router.put("/:id", announcementController.updateAnnouncement);
 router.delete("/:id", announcementController.deleteAnnouncement);
 

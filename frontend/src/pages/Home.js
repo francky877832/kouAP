@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles/homeStyles.css'
 import Loading from "../components/Loading";
 import InlineLoading from "../components/InlineLoading";
+import { AdminContext } from "../context/AdminContext";
+import { formatDate } from "../utils/utilsFunctions";
+import AnnouncementItem from "../components/AnnouncementItem";
 
 
 const fetchAnnouncements = async () => {
@@ -19,16 +22,25 @@ const fetchAnnouncements = async () => {
 
 const Home = () => {
     const [announcements, setAnnouncements] = useState([]);
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    const { fetchAnnouncements } = useContext(AdminContext)
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 10
   
 
   useEffect(() => {
     const getAnnouncements = async () => {
-      const data = await fetchAnnouncements();
-      setAnnouncements(data);
+      const data = await fetchAnnouncements(page, limit);
+      setAnnouncements(data.data);
+      setTotalPages(data.totalPages);
+      setIsLoading(false)
     };
     getAnnouncements();
-  }, []);
+  }, [page]);
+
+
+  
 
   return (
     <div className="container mt-5">
@@ -45,21 +57,14 @@ const Home = () => {
       <div className="mt-5">
         <h2 className="text-center mb-4">Latest Announcements</h2>
 
-        { isLoading ? <InlineLoading/> : 
-            <div className="list-group">
+        {isLoading ? <InlineLoading/> : 
+          <div className="list-group">
             {announcements.slice(0, 5).map((announcement) => (
-                <Link
-                key={announcement.id}
-                to={`/view-announcement`} // Utilisation de `Link` au lieu de `a` avec `href`
-                className="list-group-item list-group-item-action"
-                state={{ announcement }} // Passage de l'annonce via `state`
-                >
-                <h5 className="mb-1">{announcement.title}</h5>
-                <p className="mb-1 text-muted">Posted on: {announcement.date}</p>
-                </Link>
+                <AnnouncementItem key={announcement._id} announcement={announcement} formatDate={formatDate} />
             ))}
-            </div>
+          </div>
         }
+
         <div className="text-center mt-4">
           <a href="/all-announcements" className="btn btn-primary btn-lg">
             More Announcements

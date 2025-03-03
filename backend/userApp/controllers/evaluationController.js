@@ -44,8 +44,8 @@ exports.createEvaluation = async (req, res) => {
     }
     else
     {
-        //console.log(newEvaluation)
-        newEvaluation[0].jurys.push({ newJurys });
+        //console.log("newEvaluation")
+        newEvaluation[0].jurys.push(newJurys );
         await newEvaluation[0].save();
         res.status(201).json({ message: "Évaluation soumise avec succès", newEvaluation });
     }

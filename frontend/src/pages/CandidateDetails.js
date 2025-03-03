@@ -104,8 +104,8 @@ const CandidateDetails = () => {
             required
           >
             <option value="">Select Status</option>
-            <option value="Approved">Approve</option>
-            <option value="Rejected">Reject</option>
+            <option value="approved">Approve</option>
+            <option value="rejected">Reject</option>
           </select>
         </div>
 
