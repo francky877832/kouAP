@@ -1,0 +1,82 @@
+
+const Activity = require('../models/activityModel');
+
+const mongoose = require('../../shared/db').mongoose;
+
+const User = require('../models/userModel');
+
+const ObjectId = mongoose.Types.ObjectId;
+const { Types } = mongoose;
+
+const MinActivity = require("../models/minActivityModel");
+
+// 📌 Créer une MinActivity
+exports.createMinActivity = async (req, res, next) => {
+    console.log('okok')
+    try {
+        console.log(req.body)
+        //const activityId = "67c776634035a02db2ee38e0";
+        const { activityId, range, from, to, criteria, positions } = req.body;
+
+        if (!activityId || (range && (!from || !to)) || !(!range && criteria)  || !positions) {
+            return res.status(400).json({ message: "Tous les champs sont requis." });
+        }
+
+        const newActivity = new MinActivity({ activity:activityId, range, from, to, positions:[positions,] });
+        await newActivity.save();
+
+        res.status(201).json({ message: "success", activity: newActivity });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+// 📌 Récupérer toutes les MinActivities
+exports.getAllMinActivities = async (req, res) => {
+    try {
+        const minActivities = await MinActivity.find().populate("activity").populate("positions.faculty");
+        res.status(200).json(minActivities);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 📌 Récupérer une seule MinActivity par ID
+exports.getMinActivityById = async (req, res) => {
+    try {
+        const minActivity = await MinActivity.findById(req.params.id).populate("activity").populate("positions.faculty");
+        if (!minActivity) {
+            return res.status(404).json({ message: "MinActivity non trouvée" });
+        }
+        res.status(200).json(minActivity);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// 📌 Mettre à jour une MinActivity
+exports.updateMinActivity = async (req, res) => {
+    try {
+        const updatedMinActivity = await MinActivity.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedMinActivity) {
+            return res.status(404).json({ message: "MinActivity non trouvée" });
+        }
+        res.status(200).json(updatedMinActivity);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// 📌 Supprimer une MinActivity
+exports.deleteMinActivity = async (req, res) => {
+    try {
+        const deletedMinActivity = await MinActivity.findByIdAndDelete(req.params.id);
+        if (!deletedMinActivity) {
+            return res.status(404).json({ message: "MinActivity non trouvée" });
+        }
+        res.status(200).json({ message: "MinActivity supprimée avec succès" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

@@ -8,12 +8,12 @@ const MinActivityForm = ({
   range, setRange, 
   from, setFrom, to, setTo, 
   criteria, setCriteria, 
-  handleSubmitThirdForm, 
+  handleSubmitSecondForm, 
   facultyDepartments, faculty,
 
 }) => {
   return (
-    <form onSubmit={handleSubmitThirdForm}>
+    <form onSubmit={handleSubmitSecondForm}>
 
 
 <div>
@@ -78,7 +78,7 @@ const MinActivityForm = ({
               required
             >
               {titles.map((title, pos) => (
-                <option key={pos} value={title}>
+                <option key={pos} value={pos}>
                   {title}
                 </option>
               ))}
@@ -100,7 +100,7 @@ const MinActivityForm = ({
          {/* Faculty */}
          <div className="mb-3">
             <label className="form-label">Faculty</label>
-            <select className="form-select" value={positionsCount.faculty} onChange={(e) => handlePositonsCountChange(e)} required>
+            <select className="form-select" name="faculty" value={positionsCount.faculty} onChange={(e) => handlePositonsCountChange(e)} required>
               <option value="">Select a faculty</option>
               {Object.keys(facultyDepartments).map((fac) => (
                 <option key={fac} value={fac}>
@@ -116,7 +116,7 @@ const MinActivityForm = ({
 
       {/* Bouton pour soumettre le formulaire */}
       <div>
-        <button type="submit">Submit Third Form</button>
+        <button type="submit">Submit Second Form</button>
       </div>
     </form>
   );

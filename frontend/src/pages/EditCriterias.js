@@ -9,7 +9,7 @@ import { ManagerContext } from '../context/ManagerContext';
 
 const EditCriterias = () => {
 
-    const { createActivity } = useContext(ManagerContext)
+    const { createActivity, createMinActivity } = useContext(ManagerContext)
 
   const [letter, setLetter] = useState('');
   const [name, setName] = useState('');
@@ -24,11 +24,12 @@ const EditCriterias = () => {
   const [number, setNumber] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
-  const [currentForm, setCurrentForm] = useState(1); // State to track which form is currently active
+  const [currentForm, setCurrentForm] = useState(2); // State to track which form is currently active
 
   // For generic changes to any property in the positionsPoint object
 const handlePositonsCountChange = (event) => {
     const { name, value } = event.target;
+    //console.log(value)
     setPositionsCount(prevState => ({
       ...prevState,
       [name]: value
@@ -53,7 +54,7 @@ const handlePositonsCountChange = (event) => {
   };
 
 
-
+const [activityId, setActivityId] = useState(null)
   const handleSubmitFirstForm = async (event) => {
     event.preventDefault();
 
@@ -66,9 +67,11 @@ const handlePositonsCountChange = (event) => {
         points,
         number,
     }
-    const res = await createActivity(activity)
-    if(res)
+    const data = await createActivity(activity)
+    if(data)
+
     {   
+        setActivityId(data._id)
         setFaculty('')
         setDepartment('')
         setName('')
@@ -85,9 +88,34 @@ const handlePositonsCountChange = (event) => {
 
   };
 
-  const handleSubmitSecondForm = (event) => {
+  const handleSubmitSecondForm = async (event) => {
     event.preventDefault();
-    setCurrentForm(3); // Switch to third form
+    const activity = {
+        activity : activityId,
+        range,
+        from,
+        to,
+        criteria,
+        positions : positionsCount,
+    }
+    const data = await createMinActivity(activity)
+    if(data)
+    {  
+
+        setFaculty('')
+        setDepartment('')
+        setName('')
+        setLetter('')
+        setPoints(null)
+        setNumber('')
+        setCurrentForm(3);
+        return;
+    }
+    else
+    {
+        alert('An error occured, try again later')
+    }
+
   };
 
   const handleSubmitThirdForm = (event) => {
