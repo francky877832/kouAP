@@ -8,3 +8,9 @@ export const formatDate = (dateString) => {
 
     return `${day}/${month}/${year} - ${hours}H${minutes}`;
 };
+
+
+export const capitalize = (text) => {
+    // Met la première lettre en majuscule et le reste en minuscules
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };

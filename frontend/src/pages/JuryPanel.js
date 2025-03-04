@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { JuryContext } from '../context/JuryContext';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
+import { capitalize } from '../utils/utilsFunctions';
 
 // Simulated application data
 const mockapplications = [
@@ -117,10 +118,11 @@ const JuryPanel = () => {
               <td>{application.submittedOn}</td>
               <td>
                 <button
-                  className="btn btn-primary"
+                  className={`btn ${application.status === "pending" ? "btn btn-primary" : (application.status.toLowerCase()==="approved")? "btn-success" : "btn-danger"}`}
                   onClick={() => handleSelectapplication(application)}
+                  
                 >
-                  Review
+                 { application.status=="pending" ? "Review" : capitalize(application.status) }
                 </button>
               </td>
             </tr>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+import { capitalize } from "../utils/utilsFunctions";
 
 const JuryEvaluationDetails = () => {
   const location = useLocation();
@@ -27,7 +28,7 @@ const JuryEvaluationDetails = () => {
                 evaluation.jurys[0].decision.toLowerCase() === "approved" ? "bg-success" : "bg-danger"
               }`}
             >
-              {evaluation.jurys[0].decision}
+              {capitalize(evaluation.jurys[0].decision)}
             </span>
           </p>
 
