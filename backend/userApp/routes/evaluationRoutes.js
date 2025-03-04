@@ -5,6 +5,7 @@ const { evaluationDocsUpload } = require("../middlewares/multer-config");
 const EvaluationController = require("../controllers/evaluationController");
 
 router.post("/add/:applicationId", evaluationDocsUpload.single("reportFile"), EvaluationController.createEvaluation);
+router.get("/get/jury", EvaluationController.getJuryEvaluation);
 
 
 module.exports = router;

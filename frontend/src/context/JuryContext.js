@@ -7,7 +7,6 @@ export const JuryProvider = ({ children }) => {
     //const [user, setUser] = useState({_id:"67c40819dd1edec92edce9f2", username:"Francky", title:"Profesor"});
 
 
-
     const [status, setStatus] = useState('');
     const [comment, setComment] = useState('');
     const [juryReport, setJuryReport] = useState(null);
@@ -66,12 +65,37 @@ export const JuryProvider = ({ children }) => {
             return null;
         }
     }
+
+
+
+
+
+
+    const fetchJuryEvaluation = async (applicationId, juryId) => {
+        try {
+            const response = await fetch(`${server}/api/datas/evaluations/get/jury?applicationId=${applicationId}&juryId=${juryId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            if (!response.ok) throw new Error("Erreur lors de la récupération de l'évaluation");
+    
+            const data = await response.json();
+            return data.data;
+        } catch (err) {
+            return null;
+        }
+    };
+    
+
     
 
 
     const stateVars = {}
     const stateFunctions = {}
-    const utilFunctions = {fetchJuryApplications, submitEvaluation, }
+    const utilFunctions = {fetchJuryApplications, submitEvaluation, fetchJuryEvaluation }
 
   return (
     <JuryContext.Provider value={{ ...stateVars, ...stateFunctions, ...utilFunctions }}>

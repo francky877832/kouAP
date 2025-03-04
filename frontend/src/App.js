@@ -11,7 +11,7 @@ import JuryPanel from "./pages/JuryPanel";
 import CandidateDetails from "./pages/CandidateDetails";
 import AdminPanel from "./pages/AdminPanel";
 import EvaluationDetails from "./pages/EvaluationDetails";
-
+import JuryEvaluationDetails from "./pages/JuryEvaluationDetails";
 
 const App = () => {
   return (
@@ -29,7 +29,7 @@ const App = () => {
         <Route path="/jury-panel" element={<JuryPanel />} />
         <Route path="/application-details" element={<CandidateDetails />} />
         <Route path="/admin-panel" element={<AdminPanel />} />
-        <Route path="/evaluation-details" element={<EvaluationDetails />} />
+        <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
 
         <Route path="/login" element={<Login />} />
 

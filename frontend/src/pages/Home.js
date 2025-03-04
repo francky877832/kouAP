@@ -59,11 +59,22 @@ const Home = () => {
 
         {isLoading ? <InlineLoading/> : 
           <div className="list-group">
-            {announcements.slice(0, 5).map((announcement) => (
+            {announcements?.length>0 ? 
+            announcements?.slice(0, 5).map((announcement) => (
                 <AnnouncementItem key={announcement._id} announcement={announcement} formatDate={formatDate} />
-            ))}
-          </div>
-        }
+            ))
+          
+            :
+            <div className="text-center">
+              <p className="text-muted">
+               No announcements for now.
+              </p>
+            </div>
+          }
+            </div>
+          }
+         
+        
 
         <div className="text-center mt-4">
           <a href="/all-announcements" className="btn btn-primary btn-lg">

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Loading from '../components/Loading';
+import NotFound from '../components/NotFound';
 import { AdminContext } from '../context/AdminContext';
 import InlineLoading from '../components/InlineLoading';
 import { formatDate } from '../utils/utilsFunctions';
 import AnnouncementItem from '../components/AnnouncementItem';
+
 
 
 const AllAnnouncements = () => {
@@ -22,7 +24,7 @@ const AllAnnouncements = () => {
   useEffect(() => {
       const getAnnouncements = async () => {
         const data = await fetchAnnouncements(currentPage, limit);
-        setAnnouncements(data.data);
+        setAnnouncements(data.data || []);
         setTotalPages(data.totalPages);
         setIsLoading(false)
       };
@@ -41,6 +43,15 @@ const AllAnnouncements = () => {
     setCurrentPage(page);
   };
 
+  if(isLoading)
+  {
+    return <Loading/>
+  }
+  if(!isLoading && announcements?.length==0)
+  {
+    return <NotFound/>
+  }
+  
   return (
     
 
@@ -50,7 +61,7 @@ const AllAnnouncements = () => {
 
       {isLoading ? <InlineLoading/> : 
           <div className="list-group">
-            {announcements.slice(0, 5).map((announcement) => (
+            {announcements?.slice(0, 5).map((announcement) => (
                 <AnnouncementItem key={announcement._id} announcement={announcement} formatDate={formatDate} />
             ))}
           </div>

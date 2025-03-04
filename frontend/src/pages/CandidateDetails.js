@@ -1,21 +1,45 @@
-import React, { useContext, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/candidateDetailsStyles.css'
 import { JuryContext } from '../context/JuryContext';
 import { UserContext } from '../context/UserContext';
+import InlineLoading from '../components/InlineLoading';
 
 
 
 const CandidateDetails = () => {
   const { state } = useLocation(); // Récupère les données du candidat passées avec 'navigate'
+  const navigate = useNavigate()
   const candidate = state?.candidate;
-  
+  const [juryEvaluation, setJuryEvaluation] = useState(null);
   const [validationStatus, setValidationStatus] = useState('');
   const [comment, setComment] = useState('');
   const [reportFile, setReportFile] = useState(null); // Pour gérer le fichier du rapport
+  const [isLoading, setIsLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false);
+  const [hasSubmittedReport, setHasSubmittedReport] = useState(false);
 
-  const { submitEvaluation } = useContext(JuryContext)
+  const { submitEvaluation, fetchJuryEvaluation } = useContext(JuryContext)
   const { user } = useContext(UserContext)
+
+  
+  useEffect(() => {
+    const getEvaluation = async () => {
+        //if (!applicationId || !juryId) return; // Vérifie que les IDs sont valides
+        setIsLoading(true);
+        const data = await fetchJuryEvaluation(candidate._id, user._id);
+        if(data.length > 0)
+        {
+          setHasSubmittedReport(true)
+          setJuryEvaluation(data[0]);
+
+        }
+        console.log(data)
+        setIsLoading(false);
+    };
+
+    getEvaluation();
+}, [candidate, user]); 
 
 
   const handleValidationSubmit = async (e) => {
@@ -38,6 +62,20 @@ const CandidateDetails = () => {
     }
   };
 
+
+
+
+  const handleOpenForm = () => {
+        if (!hasSubmittedReport) {
+            setShowForm(prev => !prev);
+        }
+  }
+
+  const handleViewReport = () => {
+    navigate('/jury-evaluation-details', { state: { evaluation : juryEvaluation } });
+  }
+
+ 
 
   return (
     <div className="container">
@@ -93,7 +131,35 @@ const CandidateDetails = () => {
         <p><strong>Proof of Conference Participation:</strong> {candidate.conferencePublicationProof ? 'Uploaded' : 'Not Uploaded'}</p>
       </div>
 
+      
+
+
       {/* Form for validation */}
+  {isLoading ? <InlineLoading/> :
+      <div>
+            {/* Boutons d'action */}
+        <div className="d-flex justify-content-between mb-3">
+          <button className={hasSubmittedReport ? "btn btn-primary" : "btn btn-secondary"} onClick={handleViewReport} disabled={!hasSubmittedReport}>View Report</button>
+          <button className={hasSubmittedReport ? "btn btn-secondary" : "btn btn-primary"} onClick={handleOpenForm} disabled={hasSubmittedReport} >
+              {!showForm ? "Add Report" : "Close Form" }
+          </button>
+        </div>
+
+        {/*<Link
+                      key={jury.id}
+                      to={`/evaluation-details`}
+                      className={`list-group-item list-group-item-action ms-3 jury-item ${
+                        jury.status === "Accepted" ? "jury-accepted" : 
+                        jury.status === "Rejected" ? "jury-rejected" : ""
+                      }`}
+                      state={{ evaluation:jury }}
+                    >
+                      {jury.juryName}
+                    </Link> */}
+
+            {/* Affichage du formulaire si le bouton est cliqué */}
+    
+    {showForm && 
       <form onSubmit={handleValidationSubmit} className="mt-4">
         <div className="form-group">
           <h5>Evaluation Status</h5>
@@ -136,6 +202,9 @@ const CandidateDetails = () => {
           <button type="submit" className="btn btn-primary">Submit Evaluation</button>
         </div>
       </form>
+    }
+         </div>
+  }
     </div>
   );
 };

@@ -56,6 +56,46 @@ exports.createEvaluation = async (req, res) => {
   }
 };
 
+
+
+
+exports.getJuryEvaluation = async (req, res) => {
+  try {
+      const { applicationId, juryId } = req.query;
+
+      // Recherche de l'évaluation contenant cette application et ce jury spécifique
+      const evaluation = await Evaluation.findOne(
+        { 
+          application: applicationId, 
+          "jurys.jury": juryId
+        },
+        //{"jurys.$":1}
+      )
+      .select("status")
+      .select({ "jurys": { $elemMatch: { jury: juryId } } }) // Utilise $elemMatch pour filtrer
+      .populate({ path: "application", model: Application }) // Charge l'application
+      //.populate({ path: "application.user", model: User, select: "name email" }) // Charge l'utilisateur de l'application
+      .populate({ path: "jurys.jury", model: User, select: "" }) // Charge le jury spécifique
+      .populate({ path: "user", model: User, select: "" }) // Charge l'évaluateur principal
+      
+      if (!evaluation) {
+          return res.status(404).json({ message: "Aucune évaluation trouvée pour ce jury et cette application." });
+      }
+
+      //console.log([{...evaluation, jurys:evaluation.jurys[0]} ])
+      //console.log(evaluation[0].jurys.length)
+      // Extraction du seul élément du tableau "jurys"
+      //const juryEvaluation = evaluation[0].jurys[0];
+
+      res.status(200).json({message:"success", data:[evaluation,] });
+  } catch (error) {
+      console.error("Erreur lors de la récupération de l'évaluation du jury :", error);
+      res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+
+
 // Mettre à jour une évaluation et ajouter un rapport à un jury spécifique
 exports.updateEvaluation = async (req, res) => {
   try {

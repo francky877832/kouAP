@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 
-const EvaluationDetails = () => {
+const JuryEvaluationDetails = () => {
   const location = useLocation();
   const { evaluation } = location.state || {};
 
@@ -24,10 +24,10 @@ const EvaluationDetails = () => {
             <strong>Status:</strong>{" "}
             <span
               className={`badge ${
-                evaluation.status === "Accepted" ? "bg-success" : "bg-danger"
+                evaluation.jurys[0].decision.toLowerCase() === "approved" ? "bg-success" : "bg-danger"
               }`}
             >
-              {evaluation.status}
+              {evaluation.jurys[0].decision}
             </span>
           </p>
 
@@ -54,4 +54,4 @@ const EvaluationDetails = () => {
   );
 };
 
-export default EvaluationDetails;
+export default JuryEvaluationDetails;

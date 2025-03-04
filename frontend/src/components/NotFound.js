@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function NotFound() {
+const NotFound = () => {
   return (
     <div 
       className="container text-center" 

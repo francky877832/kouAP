@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { JuryContext } from '../context/JuryContext';
 
 const JuryEvaluationForm = ({ application }) => {
   const [personalReport, setPersonalReport] = useState('');
@@ -23,6 +24,8 @@ const JuryEvaluationForm = ({ application }) => {
     });
     setSubmitted(true);
   };
+
+
 
   return (
     <div className="jury-evaluation-form">
