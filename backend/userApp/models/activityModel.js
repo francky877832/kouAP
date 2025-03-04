@@ -9,7 +9,7 @@ const db = mongoose.connection.useDb("kouap");
 
 const ActivitySchema = new mongoose.Schema({
     letter: { type: String, enum: "A B C D E F G H I J K L".split(" "), required: true },
-    name: { type: String, required: true },
+    label: { type: String, required: true },
     activities: [{
       number: { type: Number, required: true },
       name: { type: String, required: true },
@@ -18,4 +18,4 @@ const ActivitySchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model("Activity", ActivitySchema);
+module.exports = db.model("Activity", ActivitySchema);

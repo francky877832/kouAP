@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ActivityForm from '../components/criteriasForms/ActivityForm';
 import MinActivityForm from '../components/criteriasForms/MinActivityForm';
 import PointActivityForm from '../components/criteriasForms/PointActivityForm';
 
 import { facultyDepartments } from "../datas/schoolDepartments";
 import { positions } from "../datas/schoolDepartments";
+import { ManagerContext } from '../context/ManagerContext';
 
 const EditCriterias = () => {
+
+    const { createActivity } = useContext(ManagerContext)
+
   const [letter, setLetter] = useState('');
   const [name, setName] = useState('');
-  const [positionsCount, setPositionsCount] = useState({ position: '', quantity: '' });
+  const [label, setLabel] = useState('');
+  const [positionsCount, setPositionsCount] = useState({ position: '', quantity: '', faculty : '' });
   const [positionsPoint, setPositionsPoint] = useState({ position: '', minPoint: '', maxPoint: '', faculty: '' },);
   const [faculty, setFaculty] = useState('');
   const [department, setDepartment] = useState('');
   const [range, setRange] = useState(true); // Default is true
   const [from, setFrom] = useState('');
   const [points, setPoints] = useState('');
+  const [number, setNumber] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
   const [currentForm, setCurrentForm] = useState(1); // State to track which form is currently active
@@ -48,9 +54,35 @@ const handlePositonsCountChange = (event) => {
 
 
 
-  const handleSubmitFirstForm = (event) => {
+  const handleSubmitFirstForm = async (event) => {
     event.preventDefault();
-    setCurrentForm(2); // Switch to second form
+
+    const activity = {
+        faculty,
+        label,
+        department,
+        letter,
+        name,
+        points,
+        number,
+    }
+    const res = await createActivity(activity)
+    if(res)
+    {   
+        setFaculty('')
+        setDepartment('')
+        setName('')
+        setLetter('')
+        setPoints(null)
+        setNumber('')
+        setCurrentForm(2);
+        return;
+    }
+    else
+    {
+        alert('An error occured, try again later')
+    }
+
   };
 
   const handleSubmitSecondForm = (event) => {
@@ -76,10 +108,11 @@ const handlePositonsCountChange = (event) => {
           setDepartment={setDepartment}
           letter={letter}
           setLetter={setLetter}
-          name={name}
-          setName={setName}
+          name={name} setName={setName}
+          label={label} setLabel={setLabel}
           handleSubmitFirstForm={handleSubmitFirstForm}
           points={points} setPoints={setPoints}
+          number={number} setNumber={setNumber}
         />
       )}
 

@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { UserProvider } from "../src/context/UserContext";
 import { AdminProvider } from './context/AdminContext';
 import { JuryProvider } from './context/JuryContext';
+import { ManagerProvider } from './context/ManagerContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,7 +15,9 @@ root.render(
     <UserProvider>
       <AdminProvider>
       <JuryProvider>
-          <App />
+        <ManagerProvider>
+            <App />
+        </ManagerProvider>
         </JuryProvider>
       </AdminProvider>
     </UserProvider>

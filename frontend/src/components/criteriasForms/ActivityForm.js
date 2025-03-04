@@ -5,7 +5,7 @@ import React from 'react';
 import { facultyDepartments } from '../../datas/schoolDepartments'; 
 
 const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, setLetter, name, setName, handleSubmitFirstForm,
-  points, setPoints
+  points, setPoints, label, setLabel, number, setNumber,
 
 
  }) => {
@@ -60,6 +60,29 @@ const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, 
       </div>
 
       <div>
+        <label htmlFor="label">Activity Label:</label>
+        <input
+          type="text"
+          id="label"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          required
+        />
+      </div>
+
+       {/* Saisie du Number */}
+       <div>
+          <label>Number</label>
+            <input
+              type="number"
+              name="number"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              required
+            />
+        </div>
+
+      <div>
         <label htmlFor="name">Activity Name:</label>
         <input
           type="text"
@@ -81,7 +104,11 @@ const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, 
               onChange={(e) => setPoints(e.target.value)}
               required
             />
-          </div>
+        </div>
+
+
+       
+
 
       <div>
         <button type="submit">Submit First Form</button>
