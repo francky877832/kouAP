@@ -12,6 +12,7 @@ import CandidateDetails from "./pages/CandidateDetails";
 import AdminPanel from "./pages/AdminPanel";
 import EvaluationDetails from "./pages/EvaluationDetails";
 import JuryEvaluationDetails from "./pages/JuryEvaluationDetails";
+import EditCriterias from "./pages/EditCriterias";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/application-details" element={<CandidateDetails />} />
         <Route path="/admin-panel" element={<AdminPanel />} />
         <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
+        <Route path="/edit-criteria" element={<EditCriterias />} />
 
         <Route path="/login" element={<Login />} />
 
