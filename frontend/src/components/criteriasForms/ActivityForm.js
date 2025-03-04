@@ -4,7 +4,11 @@ import React from 'react';
 
 import { facultyDepartments } from '../../datas/schoolDepartments'; 
 
-const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, setLetter, name, setName, handleSubmitFirstForm }) => {
+const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, setLetter, name, setName, handleSubmitFirstForm,
+  points, setPoints
+
+
+ }) => {
   return (
     <form onSubmit={handleSubmitFirstForm}>
       <div className="mb-3">
@@ -65,6 +69,19 @@ const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, 
           required
         />
       </div>
+
+
+      {/* Saisie du maxPoint */}
+      <div>
+          <label>Points</label>
+            <input
+              type="number"
+              name="points"
+              value={points}
+              onChange={(e) => setPoints(e.target.value)}
+              required
+            />
+          </div>
 
       <div>
         <button type="submit">Submit First Form</button>

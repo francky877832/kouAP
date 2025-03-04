@@ -9,7 +9,7 @@ const MinActivityForm = ({
   from, setFrom, to, setTo, 
   criteria, setCriteria, 
   handleSubmitThirdForm, 
-  facultyDepartments, faculty
+  facultyDepartments, faculty,
 
 }) => {
   return (

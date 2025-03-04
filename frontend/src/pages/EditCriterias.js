@@ -15,6 +15,7 @@ const EditCriterias = () => {
   const [department, setDepartment] = useState('');
   const [range, setRange] = useState(true); // Default is true
   const [from, setFrom] = useState('');
+  const [points, setPoints] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
   const [currentForm, setCurrentForm] = useState(1); // State to track which form is currently active
@@ -78,6 +79,7 @@ const handlePositonsCountChange = (event) => {
           name={name}
           setName={setName}
           handleSubmitFirstForm={handleSubmitFirstForm}
+          points={points} setPoints={setPoints}
         />
       )}
 
