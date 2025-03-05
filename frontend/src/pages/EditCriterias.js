@@ -28,7 +28,7 @@ const EditCriterias = () => {
   const [number, setNumber] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
-  const [currentForm, setCurrentForm] = useState(1); // State to track which form is currently active
+  const [currentForm, setCurrentForm] = useState(2); // State to track which form is currently active
 
   // For generic changes to any property in the positionsPoint object
 const handlePositonsCountChange = (event) => {
@@ -63,9 +63,9 @@ const [activityId, setActivityId] = useState(null)
     event.preventDefault();
 
     const activity = {
-        faculty,
+        faculty : facultyDepartments[faculty]._id,
         label,
-        department,
+        department ,
         letter,
         name,
         points,
@@ -94,13 +94,17 @@ const [activityId, setActivityId] = useState(null)
 
   const handleSubmitSecondForm = async (event) => {
     event.preventDefault();
+    
     const activity = {
-        activity : activityId,
+        activity : "67c7f2ed92f75287d481f2aa", //activityId,
         range,
         from,
         to,
         criteria,
-        positions : positionsCount,
+        position : positionsCount.position ,
+        quantity : positionsCount.quantity,
+        faculty :  facultyDepartments[positionsCount.faculty]._id,
+        //positions : positionsCount,
     }
     const data = await createMinActivity(activity)
     if(data)
@@ -184,7 +188,7 @@ const [activityId, setActivityId] = useState(null)
             setTo={setTo}
             criteria={criteria}
             setCriteria={setCriteria}
-            handleSubmitSecondForm={handleSubmitThirdForm}
+            handleSubmitThirdForm={handleSubmitThirdForm}
             positionsPoint={positionsPoint}
             handlePositonsPointChange={handlePositonsPointChange}
             handleFacultyChange = {handleFacultyChange}

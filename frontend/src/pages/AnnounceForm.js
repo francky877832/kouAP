@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import RequiredDocumentsCheckbox from "../components/RequiredDocumentsCheckbox";
 import { UserContext } from "../context/UserContext";
 import { facultyDepartments } from "../datas/schoolDepartments";
-import { positions } from "../datas/schoolDepartments";
+import { titles } from "../datas/schoolDepartments";
 import { server } from "../remote/server";
 import Loading from "../components/Loading";
 
@@ -153,7 +153,7 @@ const AnnouncementForm = () => {
             <label className="form-label">Open Position</label>
             <select className="form-select" value={position} onChange={(e) => setPosition(e.target.value)} required>
               <option value="">Select a position</option>
-              {positions.map((position) => (
+              {titles.map((position) => (
                 <option key={position.value} value={position.value}>
                   {position.label}
                 </option>

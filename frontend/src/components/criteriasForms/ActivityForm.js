@@ -16,7 +16,7 @@ const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, 
         <select className="form-select" value={faculty} onChange={(e) => setFaculty(e.target.value)} required>
           <option value="">Select a faculty</option>
           {Object.keys(facultyDepartments).map((fac) => (
-            <option key={fac} value={fac}>
+            <option key={facultyDepartments[fac]._id} value={fac}>
               {fac}
             </option>
           ))}
@@ -34,9 +34,9 @@ const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, 
         >
           <option value="">Select a department</option>
           {faculty &&
-            facultyDepartments[faculty].map((dep) => (
-              <option key={dep} value={dep}>
-                {dep}
+            facultyDepartments[faculty].departments.map((dep) => (
+              <option key={dep._id} value={dep._id}>
+                {dep.name}
               </option>
             ))}
         </select>

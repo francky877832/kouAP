@@ -116,10 +116,10 @@ const PointActivityForm = ({
         {/* Faculty */}
           <div className="mb-3">
             <label className="form-label">Faculty</label>
-            <select className="form-select" value={positionsPoint.faculty} onChange={(e) => handlePositonsPointChange(e)} required>
+            <select className="form-select" name="faculty" value={positionsPoint.faculty} onChange={(e) => handlePositonsPointChange(e)} required>
               <option value="">Select a faculty</option>
               {Object.keys(facultyDepartments).map((fac) => (
-                <option key={fac} value={fac}>
+                <option key={facultyDepartments[fac]._id} value={fac}>
                   {fac}
                 </option>
               ))}

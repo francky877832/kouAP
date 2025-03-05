@@ -8,8 +8,8 @@ export const facultyDepartments = {
     "Faculty of Humanities": ["Philosophy", "History", "Literature"],
   };
 
-export const positions = [
-    { value: "Assistant Professor", label: "Assistant Professor" },
-    { value: "Associate Professor", label: "Associate Professor" },
-    { value: "Professor", label: "Professor" },
+export const titles = [
+    { _id : 1, value: "Assistant Professor", label: "Assistant Professor" },
+    { _id : 2, value: "Associate Professor", label: "Associate Professor" },
+    { _id : 3, value: "Professor", label: "Professor" },
   ];

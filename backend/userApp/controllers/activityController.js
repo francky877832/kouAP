@@ -10,7 +10,7 @@ const { Types } = mongoose;
 
 // Créer une nouvelle activité
 exports.createActivity = async (req, res, next) => {
-    //console.log('okok')
+    //console.log(req.body)
     try {
         const { letter, name, number, label, points } = req.body;
 
@@ -19,9 +19,9 @@ exports.createActivity = async (req, res, next) => {
         }
 
         const newActivity = new Activity({ letter, label, activities:[{number, name, points}] });
-        await newActivity.save();
+        const savedActivity = await newActivity.save();
 
-        res.status(201).json({ message: "success", activity: newActivity });
+        res.status(201).json({ message: "success", activity: savedActivity });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Erreur serveur", error: error.message });

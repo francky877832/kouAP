@@ -1,6 +1,7 @@
 import React from 'react';
 
-const titles = ['Assistant Professor', 'Associate Professor', 'Professor'];
+import { titles } from '../../datas/schoolDepartments';
+//const titles = ['Assistant Professor', 'Associate Professor', 'Professor'];
 
 const MinActivityForm = ({
   positionsCount, 
@@ -77,9 +78,10 @@ const MinActivityForm = ({
               onChange={(e) => handlePositonsCountChange(e)}
               required
             >
+              <option value="">Select a position</option>
               {titles.map((title, pos) => (
-                <option key={pos} value={pos}>
-                  {title}
+                <option key={title._id} value={title._id}>
+                  {title.value}
                 </option>
               ))}
             </select>
@@ -103,7 +105,7 @@ const MinActivityForm = ({
             <select className="form-select" name="faculty" value={positionsCount.faculty} onChange={(e) => handlePositonsCountChange(e)} required>
               <option value="">Select a faculty</option>
               {Object.keys(facultyDepartments).map((fac) => (
-                <option key={fac} value={fac}>
+                <option key={facultyDepartments[fac]._id} value={fac}>
                   {fac}
                 </option>
               ))}

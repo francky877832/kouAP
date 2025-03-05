@@ -12,15 +12,16 @@ exports.getFaculties = async (req, res) => {
         const departments = await Department.find().populate('faculty').lean();
 
         const facultyDepartments = {};
-        console.log(departments)
+        //console.log(departments)
 
         departments?.forEach(dept => {
             const facultyName = dept.faculty.name;
             if (!facultyDepartments[facultyName]) {
-                facultyDepartments[facultyName] = [];
+                facultyDepartments[facultyName] = {_id:dept.faculty._id, departments:[]};
             }
-            facultyDepartments[facultyName].push(dept.name);
+            facultyDepartments[facultyName].departments.push({_id:dept._id, name:dept.name});
         });
+        console.log(facultyDepartments)
 
         res.status(200).json({message:"success", data:facultyDepartments});
     } catch (error) {

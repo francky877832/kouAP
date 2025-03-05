@@ -12,25 +12,36 @@ const MinActivity = require("../models/minActivityModel");
 
 // 📌 Créer une MinActivity
 exports.createMinActivity = async (req, res, next) => {
-    console.log('okok')
+    //console.log('okok')
     try {
-        console.log(req.body)
-        //const activityId = "67c776634035a02db2ee38e0";
-        const { activityId, range, from, to, criteria, positions } = req.body;
+        //console.log(req.body)
 
-        if (!activityId || (range && (!from || !to)) || !(!range && criteria)  || !positions) {
+        //const activityId = "67c776634035a02db2ee38e0";
+        const { activity, range, from, to, criteria, position, quantity, faculty } = req.body;
+// 
+        if (!activity || (range && (!from || !to)) || !(!range && criteria)  || !position || !quantity || !faculty) {
             return res.status(400).json({ message: "Tous les champs sont requis." });
         }
+        const positions = {
+            position,
+            quantity,
+            faculty,
+        }
+        //console.log("req.body")
 
-        const newActivity = new MinActivity({ activity:activityId, range, from, to, positions:[positions,] });
-        await newActivity.save();
-
-        res.status(201).json({ message: "success", activity: newActivity });
+        const newActivity = new MinActivity({ activity:activity, range, from, to, criteria, positions:[positions,] });
+        const savedActivity = await newActivity.save();
+        console.log(savedActivity)
+        res.status(201).json({ message: "success", activity: savedActivity });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
+
+
+
 
 // 📌 Récupérer toutes les MinActivities
 exports.getAllMinActivities = async (req, res) => {
