@@ -3,13 +3,17 @@ import ActivityForm from '../components/criteriasForms/ActivityForm';
 import MinActivityForm from '../components/criteriasForms/MinActivityForm';
 import PointActivityForm from '../components/criteriasForms/PointActivityForm';
 
-import { facultyDepartments } from "../datas/schoolDepartments";
+//import { facultyDepartments } from "../datas/schoolDepartments";
 import { positions } from "../datas/schoolDepartments";
 import { ManagerContext } from '../context/ManagerContext';
+import { UserContext } from '../context/UserContext';
+import Loading from '../components/Loading';
 
 const EditCriterias = () => {
 
     const { createActivity, createMinActivity } = useContext(ManagerContext)
+    const {facultyDepartments,  isUserLoading} = useContext(UserContext)
+
 
   const [letter, setLetter] = useState('');
   const [name, setName] = useState('');
@@ -24,7 +28,7 @@ const EditCriterias = () => {
   const [number, setNumber] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
-  const [currentForm, setCurrentForm] = useState(2); // State to track which form is currently active
+  const [currentForm, setCurrentForm] = useState(1); // State to track which form is currently active
 
   // For generic changes to any property in the positionsPoint object
 const handlePositonsCountChange = (event) => {
@@ -123,6 +127,11 @@ const [activityId, setActivityId] = useState(null)
     // Handle third form submission logic here
   };
 
+  if(isUserLoading)
+  {
+    return <Loading/>
+  }
+
   return (
     <div>
       <h1>Activity Form</h1>
@@ -141,6 +150,7 @@ const [activityId, setActivityId] = useState(null)
           handleSubmitFirstForm={handleSubmitFirstForm}
           points={points} setPoints={setPoints}
           number={number} setNumber={setNumber}
+          facultyDepartments={facultyDepartments}
         />
       )}
 

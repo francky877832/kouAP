@@ -2,10 +2,10 @@
 import React from 'react';
 
 
-import { facultyDepartments } from '../../datas/schoolDepartments'; 
+//import { facultyDepartments } from '../../datas/schoolDepartments'; 
 
 const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, setLetter, name, setName, handleSubmitFirstForm,
-  points, setPoints, label, setLabel, number, setNumber,
+  points, setPoints, label, setLabel, number, setNumber, facultyDepartments
 
 
  }) => {
