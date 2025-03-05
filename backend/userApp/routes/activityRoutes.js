@@ -2,11 +2,16 @@ const express = require("express");
 const router = express.Router();
 const activityController = require("../controllers/activityController");
 const minActivityController = require("../controllers/minActivityController");
+const minPointController = require("../controllers/minPointController");
 
-
+//activity
 router.post("/activity/create", activityController.createActivity);
+
 //minActivity
 router.post("/minActivity/create", minActivityController.createMinActivity);
+
+//minPoint
+router.post("/minPoint/create", minPointController.createMinPoint);
 
 
 

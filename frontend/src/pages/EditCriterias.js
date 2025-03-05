@@ -11,7 +11,7 @@ import Loading from '../components/Loading';
 
 const EditCriterias = () => {
 
-    const { createActivity, createMinActivity } = useContext(ManagerContext)
+    const { createActivity, createMinActivity, createMinPoint } = useContext(ManagerContext)
     const {facultyDepartments,  isUserLoading} = useContext(UserContext)
 
 
@@ -28,7 +28,7 @@ const EditCriterias = () => {
   const [number, setNumber] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
-  const [currentForm, setCurrentForm] = useState(2); // State to track which form is currently active
+  const [currentForm, setCurrentForm] = useState(3); // State to track which form is currently active
 
   // For generic changes to any property in the positionsPoint object
 const handlePositonsCountChange = (event) => {
@@ -117,6 +117,7 @@ const [activityId, setActivityId] = useState(null)
         setPoints(null)
         setNumber('')
         setCurrentForm(3);
+        setPositionsPoint({ position: '', quantity: '', faculty : '' })
         return;
     }
     else
@@ -126,11 +127,41 @@ const [activityId, setActivityId] = useState(null)
 
   };
 
-  const handleSubmitThirdForm = (event) => {
+  const handleSubmitThirdForm = async (event) => {
     event.preventDefault();
-    // Handle third form submission logic here
-  };
+    
+    const activity = {
+        activity : "67c7f2ed92f75287d481f2aa", //activityId,
+        range,
+        from,
+        to,
+        criteria,
+        position : positionsPoint.position ,
+        minPoint : positionsPoint.minPoint,
+        maxPoint : positionsPoint.maxPoint,
+        faculty :  facultyDepartments[positionsPoint.faculty]._id,
+        //positions : positionsCount,
+    }
+    const data = await createMinPoint(activity)
+    if(data)
+    {  
 
+        setFaculty('')
+        setDepartment('')
+        setName('')
+        setLetter('')
+        setPoints(null)
+        setNumber('')
+        setPositionsPoint({ position: '', minPoint: '', maxPoint: '', faculty: '' })
+        setCurrentForm(3);
+        return;
+    }
+    else
+    {
+        alert('An error occured, try again later')
+    }
+
+  };
   if(isUserLoading)
   {
     return <Loading/>

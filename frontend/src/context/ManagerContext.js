@@ -90,9 +90,38 @@ export const ManagerProvider = ({ children }) => {
     };
 
 
+    const createMinPoint = async (newActivity) => {
+        console.log(newActivity)
+        try {
+
+           const response = await fetch(`${server}/api/datas/activities/minPoint/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newActivity),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setActivities((prev) => [...prev, data]); // Mise à jour locale
+            } else {
+                throw new Error(data.message || "Erreur lors de la création de l'activité");
+            }
+            console.log(data)
+            return data.data;
+        } catch (err) {
+            console.log('An error occured', err)
+            return false
+        } finally {
+            
+        }
+    };
+
+
     const stateVars = {user}
     const stateFunctions = {}
-    const utilFunctions = {createActivity, createMinActivity}
+    const utilFunctions = {createActivity, createMinActivity, createMinPoint}
 
 
   return (

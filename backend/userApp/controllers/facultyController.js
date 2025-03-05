@@ -21,7 +21,7 @@ exports.getFaculties = async (req, res) => {
             }
             facultyDepartments[facultyName].departments.push({_id:dept._id, name:dept.name});
         });
-        console.log(facultyDepartments)
+        //console.log(facultyDepartments)
 
         res.status(200).json({message:"success", data:facultyDepartments});
     } catch (error) {

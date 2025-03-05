@@ -1,6 +1,7 @@
 import React from 'react';
 
-const titles = ['Assistant Professor', 'Associate Professor', 'Professor'];
+import { titles } from '../../datas/schoolDepartments';
+//const titles = ['Assistant Professor', 'Associate Professor', 'Professor'];
 
 const PointActivityForm = ({
   positionsPoint, 
@@ -70,20 +71,22 @@ const PointActivityForm = ({
         <div>
           {/* Sélection de la position */}
           <div>
-            <label>Position:</label>
-            <select
-              name="position"
-              value={positionsPoint.position}
-              onChange={(e) => handlePositonsPointChange(e)}
-              required
-            >
-              {titles.map((title, pos) => (
-                <option key={pos} value={title}>
-                  {title}
-                </option>
-              ))}
-            </select>
-          </div>
+             <label>Position:</label>
+             <select
+               name="position"
+               value={positionsPoint.position}
+               onChange={(e) => handlePositonsPointChange(e)}
+               required
+             >
+               <option value="">Select a position</option>
+               {titles.map((title, pos) => (
+                 <option key={title._id} value={title._id}>
+                   {title.value}
+                 </option>
+               ))}
+             </select>
+           </div>
+ 
 
           {/* Saisie du minPoint */}
           <div>
