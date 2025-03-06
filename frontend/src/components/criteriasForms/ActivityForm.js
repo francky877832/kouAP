@@ -1,117 +1,70 @@
-// /criteriasForm/ActivityForm.js
 import React from 'react';
 
-
-//import { facultyDepartments } from '../../datas/schoolDepartments'; 
-
-const ActivityForm = ({ faculty, setFaculty, department, setDepartment, letter, setLetter, name, setName, handleSubmitFirstForm,
-  points, setPoints, label, setLabel, number, setNumber, facultyDepartments
-
-
- }) => {
+const ActivityForm = ({ 
+  faculty, setFaculty, 
+  department, setDepartment, 
+  letter, setLetter, 
+  name, setName, 
+  handleSubmitFirstForm,
+  points, setPoints, 
+  label, setLabel, 
+  number, setNumber, 
+  facultyDepartments
+}) => {
   return (
-    <form onSubmit={handleSubmitFirstForm}>
+    <form onSubmit={handleSubmitFirstForm} className="container p-4 border rounded shadow-sm">
       <div className="mb-3">
         <label className="form-label">Faculty</label>
         <select className="form-select" value={faculty} onChange={(e) => setFaculty(e.target.value)} required>
           <option value="">Select a faculty</option>
           {Object.keys(facultyDepartments).map((fac) => (
-            <option key={facultyDepartments[fac]._id} value={fac}>
-              {fac}
-            </option>
+            <option key={facultyDepartments[fac]._id} value={fac}>{fac}</option>
           ))}
         </select>
       </div>
 
       <div className="mb-3">
         <label className="form-label">Department</label>
-        <select
-          className="form-select"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          disabled={!faculty}
-          required
-        >
+        <select className="form-select" value={department} onChange={(e) => setDepartment(e.target.value)} disabled={!faculty} required>
           <option value="">Select a department</option>
-          {faculty &&
-            facultyDepartments[faculty].departments.map((dep) => (
-              <option key={dep._id} value={dep._id}>
-                {dep.name}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="letter">Letter:</label>
-        <select
-          id="letter"
-          value={letter}
-          onChange={(e) => setLetter(e.target.value)}
-          required
-        >
-          <option value="">Select a letter</option>
-          {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].map((letterOption) => (
-            <option key={letterOption} value={letterOption}>
-              {letterOption}
-            </option>
+          {faculty && facultyDepartments[faculty].departments.map((dep) => (
+            <option key={dep._id} value={dep._id}>{dep.name}</option>
           ))}
         </select>
       </div>
 
-      <div>
-        <label htmlFor="label">Activity Label:</label>
-        <input
-          type="text"
-          id="label"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          required
-        />
+      <div className="mb-3">
+        <label className="form-label">Letter</label>
+        <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} required>
+          <option value="">Select a letter</option>
+          {[...'ABCDEFGHIJKL'].map((letterOption) => (
+            <option key={letterOption} value={letterOption}>{letterOption}</option>
+          ))}
+        </select>
       </div>
 
-       {/* Saisie du Number */}
-       <div>
-          <label>Number</label>
-            <input
-              type="number"
-              name="number"
-              value={number}
-              onChange={(e) => setNumber(e.target.value)}
-              required
-            />
-        </div>
-
-      <div>
-        <label htmlFor="name">Activity Name:</label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+      <div className="mb-3">
+        <label className="form-label">Activity Label</label>
+        <input type="text" className="form-control" id="label" value={label} onChange={(e) => setLabel(e.target.value)} required />
       </div>
 
+      <div className="mb-3">
+        <label className="form-label">Number</label>
+        <input type="number" className="form-control" name="number" value={number} onChange={(e) => setNumber(e.target.value)} required />
+      </div>
 
-      {/* Saisie du maxPoint */}
-      <div>
-          <label>Points</label>
-            <input
-              type="number"
-              name="points"
-              value={points}
-              onChange={(e) => setPoints(e.target.value)}
-              required
-            />
-        </div>
+      <div className="mb-3">
+        <label className="form-label">Activity Name</label>
+        <input type="text" className="form-control" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+      </div>
 
+      <div className="mb-3">
+        <label className="form-label">Points</label>
+        <input type="number" className="form-control" name="points" value={points} onChange={(e) => setPoints(e.target.value)} required />
+      </div>
 
-       
-
-
-      <div>
-        <button type="submit">Submit First Form</button>
+      <div className="d-grid">
+        <button type="submit" className="btn btn-primary">Submit First Form</button>
       </div>
     </form>
   );

@@ -73,7 +73,6 @@ const [activityId, setActivityId] = useState(null)
     }
     const data = await createActivity(activity)
     if(data)
-
     {   
         setActivityId(data._id)
         setFaculty('')
@@ -96,12 +95,13 @@ const [activityId, setActivityId] = useState(null)
     event.preventDefault();
     
     const activity = {
-        activity : "67c7f2ed92f75287d481f2aa", //activityId,
+        //activity : activityId, //"67c7f2ed92f75287d481f2aa",
+        letter,
         range,
         from,
         to,
         criteria,
-        position : positionsCount.position ,
+        position : positionsCount.position,
         quantity : positionsCount.quantity,
         faculty :  facultyDepartments[positionsCount.faculty]._id,
         //positions : positionsCount,
@@ -109,7 +109,8 @@ const [activityId, setActivityId] = useState(null)
     const data = await createMinActivity(activity)
     if(data)
     {  
-
+      
+        setActivityId(data._id)
         setFaculty('')
         setDepartment('')
         setName('')
@@ -131,7 +132,8 @@ const [activityId, setActivityId] = useState(null)
     event.preventDefault();
     
     const activity = {
-        activity : "67c7f2ed92f75287d481f2aa", //activityId,
+        //activity : activityId, //"67c7f2ed92f75287d481f2aa",
+        letter,
         range,
         from,
         to,
@@ -192,6 +194,8 @@ const [activityId, setActivityId] = useState(null)
       {/* Second Form */}
       {currentForm === 2 && (
         <MinActivityForm
+            letter={letter}
+            setLetter={setLetter}
             range={range}
             setRange={setRange}
             from={from}
@@ -211,6 +215,8 @@ const [activityId, setActivityId] = useState(null)
       {/* Third Form */}
       {currentForm === 3 && (
         <PointActivityForm
+            letter={letter}
+            setLetter={setLetter}
             range={range}
             setRange={setRange}
             from={from}

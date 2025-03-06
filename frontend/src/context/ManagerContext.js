@@ -1,39 +1,25 @@
-import { createContext, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { server } from "../remote/server";
+import { UserContext } from "./UserContext";
 
 export const ManagerContext = createContext();
 
 export const ManagerProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-
+    //const [user, setUser] = useState(null);
+    
+    const { user, isActivitiesLoading, setIsActivitiesLoading } = useContext(UserContext)
 
 
 
     const [activities, setActivities] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isAcLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fonction pour récupérer les activités
-    const fetchActivities = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch("http://localhost:5000/api/activities");
-            const data = await response.json();
-            if (response.ok) {
-                setActivities(data);
-            } else {
-                throw new Error(data.message || "Erreur lors du chargement des activités");
-            }
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    
 
     // Fonction pour créer une nouvelle activité
     const createActivity = async (newActivity) => {
-        console.log(newActivity)
+        //console.log(newActivity)
         try {
 
            const response = await fetch(`${server}/api/datas/activities/activity/create`, {
@@ -119,9 +105,76 @@ export const ManagerProvider = ({ children }) => {
     };
 
 
-    const stateVars = {user}
+      
+      const updateActivity = async (updatedActivity) => {
+        try {
+
+          const response = await fetch(`${server}/api/datas/activities/activity/update/${updatedActivity._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedActivity),
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to update activity');
+          }
+      
+          const data = await response.json();
+          
+          /*
+          // Mettre à jour l'activité localement si l'API réussit
+          setActivities((prevActivities) =>
+            prevActivities.map((activity) =>
+              activity._id === updatedActivity._id ? updatedActivity : activity
+            )
+          );*/
+          setIsActivitiesLoading(true)
+        } catch (error) {
+          console.error('Error updating activity:', error);
+        }
+      };
+      
+
+
+      const deleteActivity = async (activityId) => {
+        try {
+          const response = await fetch(`${server}/api/datas/activities/activity/delete/${activityId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to delete activity');
+          }
+      
+          const data = await response.json();
+          console.log('Activity deleted successfully:', data);
+      
+          /*
+            // Mettre à jour localement la liste des activités après la suppression
+            setActivities((prevActivities) =>
+                prevActivities.filter((activity) => activity._id !== activityId)
+            );
+          */
+          
+          setIsActivitiesLoading(true); // Si vous avez un état de chargement des activités
+        } catch (error) {
+          console.error('Error deleting activity:', error);
+        }
+      };
+      
+
+
+    
+
+
+    const stateVars = {user, activities}
     const stateFunctions = {}
-    const utilFunctions = {createActivity, createMinActivity, createMinPoint}
+    const utilFunctions = {createActivity, createMinActivity, createMinPoint, deleteActivity, updateActivity}
 
 
   return (

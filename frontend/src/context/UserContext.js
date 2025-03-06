@@ -8,6 +8,9 @@ export const UserProvider = ({ children }) => {
     
      const [facultyDepartments, setFacultyDepartments] = useState({});
      const [isUserLoading, setIsUserLoading] = useState(true)
+
+     const [activities, setActivities] = useState(true)
+     const [isActivitiesLoading, setIsActivitiesLoading] = useState(true)
     
     
         const fetchFaculties = async (userId) => {
@@ -25,13 +28,41 @@ export const UserProvider = ({ children }) => {
         
             // Récupérer les données au format JSON
             const data = await response.json();
-            console.log(data)
+            //console.log(data)
             return data.data; // Retourner les annonces récupérées
           } catch (error) {
             console.error("Erreur:", error.message);
             return []; // Retourner un tableau vide en cas d'erreur
           }
         }
+
+
+        // Fonction pour récupérer les activités
+    const fetchActivities = async () => {
+     // console.log("okk")
+      try {
+          //setIsLoading(true)
+          const response = await fetch(`${server}/api/datas/activities/activities/all`, {  
+              method: "GET",
+              headers: {
+                  "Content-Type": "application/json",
+          },})
+
+          const data = await response.json();
+          if (!response.ok)  {
+              throw new Error(data?.message || "Erreur lors du chargement des activités");
+          }
+
+        console.log(data.data)
+        return data?.data
+      } catch (err) {
+          console.log(err);
+      } finally {
+          //setIsLoading(false)
+      }
+  };
+
+
 
      useEffect(() => {
             const fetchFacultiesEffect = async () => {
@@ -50,9 +81,26 @@ export const UserProvider = ({ children }) => {
 
 
 
-        const stateVars = {user, isUserLoading, facultyDepartments}
-        const stateFunctions = {setIsUserLoading, setFacultyDepartments}
-        const utilFunctions = {fetchFaculties}
+        useEffect(() => {
+          const fetchActivitiesEffect = async () => {
+              setIsActivitiesLoading(true)
+              const act = await fetchActivities()
+              setActivities(act)
+              setIsActivitiesLoading(false)
+          };
+
+          if(isActivitiesLoading)
+          {
+            fetchActivitiesEffect();
+          }
+         
+      }, [isActivitiesLoading]);
+
+
+
+        const stateVars = {user, isUserLoading, facultyDepartments, isActivitiesLoading, activities}
+        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading}
+        const utilFunctions = {fetchFaculties, fetchActivities}
 
   return (
     <UserContext.Provider value={{ ...stateVars, ...stateFunctions, ...utilFunctions }}>

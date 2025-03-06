@@ -17,9 +17,10 @@ exports.createMinPoint = async (req, res, next) => {
         console.log(req.body)
 
         //const activityId = "67c776634035a02db2ee38e0";
-        const { activity, range, from, to, criteria, position, minPoint, maxPoint, faculty } = req.body;
+        const { letter, range, from, to, criteria, position, minPoint, maxPoint, faculty } = req.body;
 // 
-        if (!activity || (range && (!from || !to)) || !(!range && criteria)  || !position || !minPoint || !maxPoint || !faculty) {
+        if ((range && (!from || !to || !letter)) || (!range && !criteria)  || !position || !minPoint || !maxPoint || !faculty) {
+            console.log("Tous les champs sont requis.")
             return res.status(400).json({ message: "Tous les champs sont requis." });
         }
         const positions = {
@@ -30,7 +31,7 @@ exports.createMinPoint = async (req, res, next) => {
         }
         //console.log("req.body")
 
-        const newActivity = new MinPoint({ activity:activity, range, from, to, criteria, positions:[positions,] });
+        const newActivity = new MinPoint({ letter, range, from, to, criteria, positions:[positions,] });
         const savedActivity = await newActivity.save();
         console.log(savedActivity)
         res.status(201).json({ message: "success", activity: savedActivity });

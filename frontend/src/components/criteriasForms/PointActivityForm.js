@@ -1,7 +1,6 @@
 import React from 'react';
-
 import { titles } from '../../datas/schoolDepartments';
-//const titles = ['Assistant Professor', 'Associate Professor', 'Professor'];
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PointActivityForm = ({
   positionsPoint, 
@@ -11,54 +10,66 @@ const PointActivityForm = ({
   criteria, setCriteria, 
   handleSubmitThirdForm, 
   handleFacultyChange,
-  facultyDepartments, faculty
+  facultyDepartments, faculty,
+  letter, setLetter,
 }) => {
   return (
-    <form onSubmit={handleSubmitThirdForm}>
-
-
-<div>
-        <label htmlFor="range">Range:</label>
+    <form onSubmit={handleSubmitThirdForm} className="container p-4 border rounded bg-light">
+      <div className="mb-3 form-check">
         <input
           type="checkbox"
           id="range"
+          className="form-check-input"
           checked={range}
           onChange={(e) => setRange(e.target.checked)}
         />
+        <label htmlFor="range" className="form-check-label">Range</label>
       </div>
 
-      {range && (
+      {range ? (
         <>
-          <div>
-            <label htmlFor="from">From:</label>
+
+        <div className="mb-3">
+          <label className="form-label">Letter</label>
+          <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} required>
+            <option value="">Select a letter</option>
+            {[...'ABCDEFGHIJKL'].map((letterOption) => (
+              <option key={letterOption} value={letterOption}>{letterOption}</option>
+            ))}
+          </select>
+        </div>
+
+
+          <div className="mb-3">
+            <label htmlFor="from" className="form-label">From:</label>
             <input
               type="number"
               id="from"
+              className="form-control"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               required
             />
           </div>
-
-          <div>
-            <label htmlFor="to">To:</label>
+          <div className="mb-3">
+            <label htmlFor="to" className="form-label">To:</label>
             <input
               type="number"
               id="to"
+              className="form-control"
               value={to}
               onChange={(e) => setTo(e.target.value)}
               required
             />
           </div>
         </>
-      )}
-
-      {!range && (
-        <div>
-          <label htmlFor="criteria">Criteria:</label>
+      ) : (
+        <div className="mb-3">
+          <label htmlFor="criteria" className="form-label">Criteria:</label>
           <input
             type="text"
             id="criteria"
+            className="form-control"
             value={criteria}
             onChange={(e) => setCriteria(e.target.value)}
             required
@@ -66,74 +77,64 @@ const PointActivityForm = ({
         </div>
       )}
 
+      <div className="mb-3">
+        <label className="form-label">Position:</label>
+        <select
+          name="position"
+          className="form-select"
+          value={positionsPoint.position}
+          onChange={handlePositonsPointChange}
+          required
+        >
+          <option value="">Select a position</option>
+          {titles.map((title) => (
+            <option key={title._id} value={title._id}>{title.value}</option>
+          ))}
+        </select>
+      </div>
 
-    
-        <div>
-          {/* Sélection de la position */}
-          <div>
-             <label>Position:</label>
-             <select
-               name="position"
-               value={positionsPoint.position}
-               onChange={(e) => handlePositonsPointChange(e)}
-               required
-             >
-               <option value="">Select a position</option>
-               {titles.map((title, pos) => (
-                 <option key={title._id} value={title._id}>
-                   {title.value}
-                 </option>
-               ))}
-             </select>
-           </div>
- 
+      <div className="mb-3">
+        <label className="form-label">Min Points:</label>
+        <input
+          type="number"
+          name="minPoint"
+          className="form-control"
+          value={positionsPoint.minPoint}
+          onChange={handlePositonsPointChange}
+          required
+        />
+      </div>
 
-          {/* Saisie du minPoint */}
-          <div>
-            <label>Min Points:</label>
-            <input
-              type="number"
-              name="minPoint"
-              value={positionsPoint.minPoint}
-              onChange={(e) => handlePositonsPointChange(e)}
-              required
-            />
-          </div>
+      <div className="mb-3">
+        <label className="form-label">Max Points:</label>
+        <input
+          type="number"
+          name="maxPoint"
+          className="form-control"
+          value={positionsPoint.maxPoint}
+          onChange={handlePositonsPointChange}
+          required
+        />
+      </div>
 
-          {/* Saisie du maxPoint */}
-          <div>
-            <label>Max Points:</label>
-            <input
-              type="number"
-              name="maxPoint"
-              value={positionsPoint.maxPoint}
-              onChange={(e) => handlePositonsPointChange(e)}
-              required
-            />
-          </div>
+      <div className="mb-3">
+        <label className="form-label">Faculty</label>
+        <select
+          className="form-select"
+          name="faculty"
+          value={positionsPoint.faculty}
+          onChange={handlePositonsPointChange}
+          required
+        >
+          <option value="">Select a faculty</option>
+          {Object.keys(facultyDepartments).map((fac) => (
+            <option key={facultyDepartments[fac]._id} value={fac}>{fac}</option>
+          ))}
+        </select>
+      </div>
 
-        
-
-
-
-        {/* Faculty */}
-          <div className="mb-3">
-            <label className="form-label">Faculty</label>
-            <select className="form-select" name="faculty" value={positionsPoint.faculty} onChange={(e) => handlePositonsPointChange(e)} required>
-              <option value="">Select a faculty</option>
-              {Object.keys(facultyDepartments).map((fac) => (
-                <option key={facultyDepartments[fac]._id} value={fac}>
-                  {fac}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-    
-
-      {/* Bouton pour soumettre le formulaire */}
-      <div>
-        <button type="submit">Submit Third Form</button>
+      <div className="text-center">
+        <button type="submit" className="btn btn-primary">Submit Third Form</button>
       </div>
     </form>
   );
