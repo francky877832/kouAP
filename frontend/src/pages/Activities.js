@@ -82,15 +82,15 @@ const Activities = () => {
   }
 
   return (
-    <div className="container mt-4">
+    <div className="container-lg mt-4">
       <h2 className="text-center mb-4">Liste des Activités</h2>
       <Table striped bordered hover responsive>
         <thead>
           <tr className="table-primary text-center">
-            <th>Number</th>
-            <th>Activity</th>
-            <th>Points</th>
-            <th style={{ width: '100px' }}>Actions</th> {/* Petite largeur pour la colonne d'actions */}
+            <th style={{ width: '10%' }}>Number</th>
+            <th style={{ width: '70%' }}>Activity</th>
+            <th style={{ width: '10%' }}>Points</th>
+            <th style={{ width: '10%' }}>Actions</th> {/* Petite largeur pour la colonne d'actions */}
           </tr>
         </thead>
         <tbody>
