@@ -13,84 +13,99 @@ const MinActivities = () => {
   const [isAllDataEditable, setIsAllDataEditable] = useState(false);
   const [updatedFacultyData, setUpdatedFacultyData] = useState(null); // For form data
   const [selectedCardIndex, setSelectedCardIndex] = useState(null); // Track selected card index for add faculty form visibility
+  const [selectedPositionIndex, setSelectedPositionIndex] = useState(null); 
 
-  const handleFacultyChange = (facultyName, position) => {
+  const handleFacultyChange = (e, position, activityIndex, positionIndex) => {
+    const facultyName = e.target.value
+    setSelectedCardIndex(activityIndex)
+    setSelectedPositionIndex(positionIndex)
+
     setSelectedFacultyName(facultyName);
-    const faculty = minActivities
-      .flatMap((activity) => activity.positions)
-      .flatMap((pos) => pos.faculty)
-      .find((f) => f.name === facultyName);
-
+    const faculty = minActivities[activityIndex].positions[positionIndex].faculty.filter(f => f.name==facultyName)
+    const positions = minActivities[activityIndex].positions[positionIndex]
+   
+   // console.log(minActivities[activityIndex].positions[positionIndex])
+    console.log(faculty)
     if (faculty) {
-      const activity = minActivities.find(
+        const activity = minActivities[activityIndex]
+      /*  const activity = minActivities.find(
         (activity) =>
           activity.positions.some((pos) =>
             pos.faculty.some((f) => f.name === facultyName)
           )
-      );
-      console.log(activity)
+      );*/
+      //console.log(faculty.name)
       setSelectedFaculty({
         letter: activity.letter,
-        position : position,
+        position : position, //position name
         range : activity.range,
         criteria: activity.range ? null : activity.criteria,
         from: activity.range ? activity.from : null,
         to: activity.range ? activity.to : null,
-        quantity: faculty.quantity,
-        faculty: faculty.name,
-        activityIndex: minActivities.indexOf(activity),
-        positionIndex: activity.positions.findIndex((pos) =>
-          pos.faculty.some((f) => f.name === facultyName)
-        ),
+        quantity: positions.quantity,
+        facultyName: facultyName,
+        faculty : faculty,
+        activityIndex: activityIndex, //minActivities.indexOf(activity),
+        positionIndex : positionIndex,
       });
     }
+   setSelectedFacultyName("")
+
   };
 
-  const handleDeleteFaculty = () => {
-    if (selectedFaculty && selectedFaculty.faculty) {
-      const updatedActivities = [...minActivities];
-      const activity = updatedActivities[selectedFaculty.activityIndex];
-      const position = activity.positions[selectedFaculty.positionIndex];
+  const handleDeleteFaculty = async (activityIndex) => {
+    //console.log(activityIndex)
+   // console.log(minActivities)
+   //Icı je vais verifier que la faculte nest pas la seule presente pour la position(prof...)
+   //if(minActivities[activityIndex].positions)
+    const deleteId = selectedFaculty.faculty._id
+    //console.log(deleteId)
 
-      if (position.faculty.length > 1) {
-        position.faculty = position.faculty.filter(
-          (f) => f.name !== selectedFaculty.faculty
-        );
-        setSelectedFaculty(null);
-      } else {
-        alert("Cannot delete the only faculty in this position.");
-      }
-    }
+    
+
   };
 
-  const handleModifyFaculty = () => {
+  const handleModifyFaculty = (activityIndex) => {
+    handleSelectCard(activityIndex)
     setIsFacultyEditable(true);
   };
 
-  const handleAddFaculty = () => {
-    if (newFaculty && facultyDepartments.includes(newFaculty)) {
-      const updatedActivities = [...minActivities];
+  const handleAddFaculty = async (activityIndex, positionIndex) => {
+    if (newFaculty && Object.keys(facultyDepartments).includes(newFaculty)) {
+      /*
+        const updatedActivities = [...minActivities];
       const activity = updatedActivities[selectedFaculty.activityIndex];
       const position = activity.positions[selectedFaculty.positionIndex];
+    */
+        //newFaculty
+        console.log(minActivities)
+        const newMinActivity ={
+            ...minActivities[activityIndex],
+            //...minActivities[activityIndex].positions,
+        }
+        console.log(newMinActivity)
+      //position.faculty.push({ name: newFaculty, quantity: 1 });
 
-      position.faculty.push({ name: newFaculty, quantity: 1 });
-      setSelectedFaculty(null);
-      setIsFacultyEditable(false);
-      setSelectedCardIndex(null); // Reset selected card index
+
+      //setSelectedFaculty(null);
+      //setIsFacultyEditable(false);
+      //setSelectedCardIndex(null); // Reset selected card index
     } else {
       alert("Invalid faculty selected.");
     }
   };
 
-  const handleModifyAllData = () => {
+  const handleModifyAllData = (activityIndex) => {
     setIsAllDataEditable(true);
     setUpdatedFacultyData({ ...selectedFaculty }); // Populate form with current data
   };
 
-  const handleSaveAllData = () => {
+  const handleSaveAllData = (activityIndex) => {
+    console.log(minActivities)
     // Save updated data logic
-    const updatedActivities = [...minActivities];
-    const activity = updatedActivities[selectedFaculty.activityIndex];
+    const activity = minActivities[selectedCardIndex];
+   
+    /*const activity = updatedActivities[selectedFaculty.activityIndex];
     const position = activity.positions[selectedFaculty.positionIndex];
     const updatedFacultyIndex = position.faculty.findIndex(
       (faculty) => faculty.name === selectedFaculty.faculty
@@ -102,10 +117,43 @@ const MinActivities = () => {
       criteria: updatedFacultyData.criteria,
       from: updatedFacultyData.from,
       to: updatedFacultyData.to,
-    };
+      //range : ,
+    };*/
+    //console.log(activity)
+    const position = activity.positions[selectedPositionIndex]
+    
+    const modifiedPositions = {
+        ...position,
+        position : updatedFacultyData.position,
+        quantity : updatedFacultyData.quantity,
+        faculty : position.faculty
+    }
+    const updatedActivity = {
+        //...activity,
+        range : activity.range,
+        letter : updatedFacultyData.letter,
+        from: updatedFacultyData.from,
+        to: updatedFacultyData.to,
+        criteria: updatedFacultyData.criteria,
+        positions : modifiedPositions,
+        //faculty,
+    }
 
-    setSelectedFaculty(null);
-    setIsAllDataEditable(false); // Close edit mode
+    console.log(updatedActivity)
+
+    /*
+    letter,
+        range,
+        from,
+        to,
+        criteria,
+        position : positionsCount.position,
+        quantity : positionsCount.quantity,
+        faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
+    */
+
+    //setSelectedFaculty(null);
+    //setIsAllDataEditable(false); // Close edit mode
   };
 
   const handleSelectCard = (index) => {
@@ -128,7 +176,7 @@ const MinActivities = () => {
       <Row>
         <Col md={8}>
           {minActivities.map((activity, activityIndex) => (
-            <Card key={activityIndex} className="mb-3" onClick={() => handleSelectCard(activityIndex)}>
+            <Card key={activityIndex} className="mb-3">
               <Card.Body>
               <Card.Title>
                 Activity : {activity.range ? activity.letter+activity.from + " - " + activity.letter+activity.to : activity.criteria}
@@ -147,10 +195,12 @@ const MinActivities = () => {
                     <Col key={positionIndex} md={4} className="mb-2">
                       <h5>{titles[parseInt(pos.position)].value}</h5>
                       <p>Quantity: {pos.quantity}</p>
+                      
+                      
                       <Form.Control
                         as="select"
                         value={selectedFacultyName}
-                        onChange={(e) => handleFacultyChange(e.target.value, titles[parseInt(pos.position)].value)}
+                        onChange={(e) => handleFacultyChange(e, titles[parseInt(pos.position)].value, activityIndex, positionIndex)}
                         className="mb-2"
                       >
                         <option value="">Choose a faculty</option>
@@ -162,7 +212,7 @@ const MinActivities = () => {
                       </Form.Control>
 
                       <div>
-                        <Button variant="primary" className="mr-2" onClick={handleModifyFaculty}>
+                        <Button variant="primary" className="mr-2" onClick={() => {handleModifyFaculty(activityIndex, positionIndex)}}>
                           Modify Faculty
                         </Button>
                       </div>
@@ -175,16 +225,16 @@ const MinActivities = () => {
                             onChange={(e) => setNewFaculty(e.target.value)}
                           >
                             <option value="">Select a Faculty</option>
-                            {Object.keys(facultyDepartments).map((dept, idx) => (
-                              <option key={idx} value={dept}>
-                                {dept}
+                            {Object.keys(facultyDepartments).map((fac, idx) => (
+                              <option key={idx} value={fac}>
+                                {fac}
                               </option>
                             ))}
                           </Form.Control>
                           <Button
                             variant="success"
                             className="mt-2"
-                            onClick={handleAddFaculty}
+                            onClick={() => {handleAddFaculty(activityIndex, positionIndex)}}
                           >
                             Add Faculty
                           </Button>
@@ -210,7 +260,7 @@ const MinActivities = () => {
                   <div>
                     <Form>
                       <Form.Group>
-                        <Form.Label>Letter</Form.Label>
+                        <Form.Label>Label </Form.Label>
                         <Form.Control
                           type="text"
                           value={updatedFacultyData.letter}
@@ -263,7 +313,7 @@ const MinActivities = () => {
                         />
                       </Form.Group>
 
-                     {!selectedFaculty.range &&
+                     {!minActivities[selectedCardIndex].range &&
                       <Form.Group>
                         <Form.Label>Criteria</Form.Label>
                         <Form.Control
@@ -278,7 +328,7 @@ const MinActivities = () => {
                         />
                       </Form.Group>}
                 
-                {selectedFaculty.range &&
+                {minActivities[selectedCardIndex].range &&
                       <Form.Group>
                         <Form.Label>Range</Form.Label>
                         <div className="d-flex">
@@ -318,24 +368,26 @@ const MinActivities = () => {
                   </div>
                 ) : (
                   <>
-                    <p>Letter: {selectedFaculty.letter}</p>
-                    <p>Position: {selectedFaculty.position}</p>
-                    <p>Quantity: {selectedFaculty.quantity}</p>
-                    {selectedFaculty.criteria ? (
+                     {selectedFaculty.criteria ? (
                       <p>Criteria: {selectedFaculty.criteria}</p>
                     ) : (
-                      <p>
-                        Range: {selectedFaculty.from} - {selectedFaculty.to}
-                      </p>
+                        <p>
+                            Label: {minActivities[selectedCardIndex].range ? minActivities[selectedCardIndex].letter+minActivities[selectedCardIndex].from 
+                            + " - " + minActivities[selectedCardIndex].letter+minActivities[selectedCardIndex].to : minActivities[selectedCardIndex].criteria}
+                        </p>
                     )}
-                    <p>Selected Faculty: {selectedFaculty.faculty}</p>
+                   
+                    <p>Position: {selectedFaculty.position}</p>
+                    <p>Quantity: {selectedFaculty.quantity}</p>
+                 
+                    <p>Selected Faculty: {selectedFaculty.facultyName}</p>
 
                     {/* Buttons for modifying or deleting faculty */}
                     <div className="d-flex flex-column mt-3">
                         <Button
                             variant="danger"
                             className="mb-2 w-100"
-                            onClick={handleDeleteFaculty}
+                            onClick={() => { handleDeleteFaculty(selectedCardIndex) }}
                         >
                             Delete Faculty
                         </Button>
@@ -343,7 +395,7 @@ const MinActivities = () => {
                         <Button
                             variant="warning"
                             className="mt-2 w-100"
-                            onClick={handleModifyAllData}
+                            onClick={() => {handleModifyAllData(selectedCardIndex)}}
                         >
                             Modify All Data
                         </Button>
