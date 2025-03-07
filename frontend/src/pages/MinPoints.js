@@ -3,8 +3,8 @@ import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
 import { UserContext } from "../context/UserContext";
 import { titles } from "../datas/schoolDepartments";
 
-const MinActivities = () => {
-  const { minActivities } = useContext(UserContext);
+const MinPoints = () => {
+  const { minPoints } = useContext(UserContext);
   const { facultyDepartments } = useContext(UserContext);
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [selectedFacultyName, setSelectedFacultyName] = useState("");
@@ -21,14 +21,14 @@ const MinActivities = () => {
     setSelectedPositionIndex(positionIndex)
 
     setSelectedFacultyName(facultyName);
-    const faculty = minActivities[activityIndex].positions[positionIndex].faculty.filter(f => f.name==facultyName)
-    const positions = minActivities[activityIndex].positions[positionIndex]
+    const faculty = minPoints[activityIndex].positions[positionIndex].faculty.filter(f => f.name==facultyName)
+    const positions = minPoints[activityIndex].positions[positionIndex]
    
-   // console.log(minActivities[activityIndex].positions[positionIndex])
-    console.log(faculty)
+   // console.log(minPoints[activityIndex].positions[positionIndex])
+    console.log(positions)
     if (faculty) {
-        const activity = minActivities[activityIndex]
-      /*  const activity = minActivities.find(
+        const activity = minPoints[activityIndex]
+      /*  const activity = minPoints.find(
         (activity) =>
           activity.positions.some((pos) =>
             pos.faculty.some((f) => f.name === facultyName)
@@ -42,10 +42,11 @@ const MinActivities = () => {
         criteria: activity.range ? null : activity.criteria,
         from: activity.range ? activity.from : null,
         to: activity.range ? activity.to : null,
-        quantity: positions.quantity,
+        minPoint: positions.minPoint,
+        maxPoint: positions.maxPoint,
         facultyName: facultyName,
         facultyId : facultyDepartments[facultyName]._id,
-        activityIndex: activityIndex, //minActivities.indexOf(activity),
+        activityIndex: activityIndex, //minPoints.indexOf(activity),
         positionIndex : positionIndex,
       });
     }
@@ -69,7 +70,7 @@ const MinActivities = () => {
     if (newFaculty && Object.keys(facultyDepartments).includes(newFaculty)) {
 
         //newFaculty
-        const activity = minActivities[activityIndex]
+        const activity = minPoints[activityIndex]
         
         const position = activity.positions[positionIndex]
         position.faculty.push({_id : facultyDepartments[newFaculty]._id, name:newFaculty })
@@ -94,9 +95,9 @@ const MinActivities = () => {
   };
 
   const handleSaveAllData = (activityIndex) => {
-    console.log(minActivities)
+    console.log(minPoints)
     // Save updated data logic
-    const activity = minActivities[selectedCardIndex];
+    const activity = minPoints[selectedCardIndex];
    
     //console.log(activity)
     const position = activity.positions[selectedPositionIndex]
@@ -104,7 +105,8 @@ const MinActivities = () => {
     const modifiedPositions = {
         ...position,
         position : updatedFacultyData.position,
-        quantity : updatedFacultyData.quantity,
+        minPoint : updatedFacultyData.minPoint,
+        maxPoint : updatedFacultyData.maxPoint,
         faculty : position.faculty
     }
     const updatedActivity = {
@@ -143,9 +145,9 @@ const MinActivities = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this activity?");
     if (confirmDelete) {
       // Logic to delete the activity at activityIndex
-      const updatedActivities = [...minActivities];
+      const updatedActivities = [...minPoints];
       updatedActivities.splice(activityIndex, 1); // Remove activity at given index
-      //setMinActivities(updatedActivities); // Update the state with the new list
+      //setminPoints(updatedActivities); // Update the state with the new list
     }
   };
   
@@ -154,7 +156,7 @@ const MinActivities = () => {
     <Container fluid>
       <Row>
         <Col md={8}>
-          {minActivities.map((activity, activityIndex) => (
+          {minPoints.map((activity, activityIndex) => (
             <Card key={activityIndex} className="mb-3">
               <Card.Body>
               <Card.Title>
@@ -173,7 +175,8 @@ const MinActivities = () => {
                   {activity.positions.map((pos, positionIndex) => (
                     <Col key={positionIndex} md={4} className="mb-2">
                       <h5>{titles[parseInt(pos.position)].value}</h5>
-                      <p>Quantity: {pos.quantity}</p>
+                      <p>Min. Points: {pos.minPoint}</p>
+                      <p>Max. Points: {pos.maxPoint}</p>
                       
                       
                       <Form.Control
@@ -279,20 +282,32 @@ const MinActivities = () => {
 
 
                       <Form.Group>
-                        <Form.Label>Quantity</Form.Label>
+                        <Form.Label>Min. Points</Form.Label>
                         <Form.Control
                           type="number"
-                          value={updatedFacultyData.quantity}
+                          value={updatedFacultyData.minPoint}
                           onChange={(e) =>
                             setUpdatedFacultyData({
                               ...updatedFacultyData,
-                              quantity: e.target.value,
+                              minPoint: e.target.value,
+                            })
+                          }
+                        />
+
+                        <Form.Label>Max. Points</Form.Label>
+                        <Form.Control
+                          type="number"
+                          value={updatedFacultyData.maxPoint}
+                          onChange={(e) =>
+                            setUpdatedFacultyData({
+                              ...updatedFacultyData,
+                              maxPoint: e.target.value,
                             })
                           }
                         />
                       </Form.Group>
 
-                     {!minActivities[selectedCardIndex].range &&
+                     {!minPoints[selectedCardIndex].range &&
                       <Form.Group>
                         <Form.Label>Criteria</Form.Label>
                         <Form.Control
@@ -307,7 +322,7 @@ const MinActivities = () => {
                         />
                       </Form.Group>}
                 
-                {minActivities[selectedCardIndex].range &&
+                {minPoints[selectedCardIndex].range &&
                       <Form.Group>
                         <Form.Label>Range</Form.Label>
                         <div className="d-flex">
@@ -351,13 +366,14 @@ const MinActivities = () => {
                       <p>Criteria: {selectedFaculty.criteria}</p>
                     ) : (
                         <p>
-                            Label: {minActivities[selectedCardIndex].range ? minActivities[selectedCardIndex].letter+minActivities[selectedCardIndex].from 
-                            + " - " + minActivities[selectedCardIndex].letter+minActivities[selectedCardIndex].to : minActivities[selectedCardIndex].criteria}
+                            Label: {minPoints[selectedCardIndex].range ? minPoints[selectedCardIndex].letter+minPoints[selectedCardIndex].from 
+                            + " - " + minPoints[selectedCardIndex].letter+minPoints[selectedCardIndex].to : minPoints[selectedCardIndex].criteria}
                         </p>
                     )}
                    
                     <p>Position: {titles[selectedFaculty.position].value}</p>
-                    <p>Quantity: {selectedFaculty.quantity}</p>
+                    <p>Min. Points: {selectedFaculty.minPoint}</p>
+                    <p>Max. Points: {selectedFaculty.maxPoint}</p>
                  
                     <p>Selected Faculty: {selectedFaculty.facultyName}</p>
 
@@ -390,4 +406,4 @@ const MinActivities = () => {
   );
 };
 
-export default MinActivities;
+export default MinPoints;

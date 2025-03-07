@@ -13,8 +13,12 @@ export const UserProvider = ({ children }) => {
      const [activities, setActivities] = useState([])
      const [minActivities, setMinActivities] = useState([])
 
+     const [minPoints, setMinPoints] = useState([])
+
+
      const [isActivitiesLoading, setIsActivitiesLoading] = useState(true)
      const [isMinActivitiesLoading, setIsMinActivitiesLoading] = useState(true)
+     const [isMinPointsLoading, setIsMinPointsLoading] = useState(true)
     
     
         const fetchFaculties = async (userId) => {
@@ -93,6 +97,32 @@ export const UserProvider = ({ children }) => {
  };
 
 
+ const fetchMinPoints= async () => {
+  // console.log("okk")
+   try {
+       //setIsLoading(true)
+       const response = await fetch(`${server}/api/datas/activities/minPoints/all`, {  
+           method: "GET",
+           headers: {
+               "Content-Type": "application/json",
+       },})
+
+       const data = await response.json();
+       if (!response.ok)  {
+           throw new Error(data?.message || "Erreur lors du chargement des activités");
+       }
+
+     console.log(data.data)
+     return data?.data
+   } catch (err) {
+       console.log(err);
+   } finally {
+       //setIsLoading(false)
+   }
+};
+
+
+
      useEffect(() => {
             const fetchFacultiesEffect = async () => {
                 setIsUserLoading(true)
@@ -143,11 +173,28 @@ export const UserProvider = ({ children }) => {
        
     }, [isMinActivitiesLoading]);
 
+    useEffect(() => {
+      const fetchMinPointsEffect = async () => {
+          setIsMinPointsLoading(true)
+          const act = await fetchMinPoints()
+          //console.log(act)
+          setMinPoints(act)
+          setIsMinPointsLoading(false)
+      };
+
+      if(isMinPointsLoading)
+      {
+        fetchMinPointsEffect();
+      }
+     
+  }, [isMinPointsLoading]);
 
 
-        const stateVars = {user, isUserLoading, faculties, facultyDepartments, isActivitiesLoading, activities, isMinActivitiesLoading, minActivities}
+
+
+        const stateVars = {user, isUserLoading, faculties, facultyDepartments, isActivitiesLoading, activities, isMinActivitiesLoading, minActivities, isMinPointsLoading, minPoints}
         const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading}
-        const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities}
+        const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints}
 
   return (
     <UserContext.Provider value={{ ...stateVars, ...stateFunctions, ...utilFunctions }}>
