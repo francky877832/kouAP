@@ -37,14 +37,14 @@ const MinActivities = () => {
       //console.log(faculty.name)
       setSelectedFaculty({
         letter: activity.letter,
-        position : position, //position name
+        position : positions.position, //position name
         range : activity.range,
         criteria: activity.range ? null : activity.criteria,
         from: activity.range ? activity.from : null,
         to: activity.range ? activity.to : null,
         quantity: positions.quantity,
         facultyName: facultyName,
-        faculty : faculty,
+        facultyId : facultyDepartments[facultyName]._id,
         activityIndex: activityIndex, //minActivities.indexOf(activity),
         positionIndex : positionIndex,
       });
@@ -54,14 +54,9 @@ const MinActivities = () => {
   };
 
   const handleDeleteFaculty = async (activityIndex) => {
-    //console.log(activityIndex)
-   // console.log(minActivities)
-   //Icı je vais verifier que la faculte nest pas la seule presente pour la position(prof...)
-   //if(minActivities[activityIndex].positions)
-    const deleteId = selectedFaculty.faculty._id
+    const deleteId = selectedFaculty.facultyId
     //console.log(deleteId)
 
-    
 
   };
 
@@ -72,19 +67,17 @@ const MinActivities = () => {
 
   const handleAddFaculty = async (activityIndex, positionIndex) => {
     if (newFaculty && Object.keys(facultyDepartments).includes(newFaculty)) {
-      /*
-        const updatedActivities = [...minActivities];
-      const activity = updatedActivities[selectedFaculty.activityIndex];
-      const position = activity.positions[selectedFaculty.positionIndex];
-    */
+
         //newFaculty
-        console.log(minActivities)
-        const newMinActivity ={
-            ...minActivities[activityIndex],
-            //...minActivities[activityIndex].positions,
+        const activity = minActivities[activityIndex]
+        
+        const position = activity.positions[positionIndex]
+        position.faculty.push({_id : facultyDepartments[newFaculty]._id, name:newFaculty })
+    
+        const updatedActivity = {
+            ...activity,
         }
-        console.log(newMinActivity)
-      //position.faculty.push({ name: newFaculty, quantity: 1 });
+        console.log(updatedActivity)
 
 
       //setSelectedFaculty(null);
@@ -105,20 +98,6 @@ const MinActivities = () => {
     // Save updated data logic
     const activity = minActivities[selectedCardIndex];
    
-    /*const activity = updatedActivities[selectedFaculty.activityIndex];
-    const position = activity.positions[selectedFaculty.positionIndex];
-    const updatedFacultyIndex = position.faculty.findIndex(
-      (faculty) => faculty.name === selectedFaculty.faculty
-    );
-
-    position.faculty[updatedFacultyIndex] = {
-      ...position.faculty[updatedFacultyIndex],
-      quantity: updatedFacultyData.quantity,
-      criteria: updatedFacultyData.criteria,
-      from: updatedFacultyData.from,
-      to: updatedFacultyData.to,
-      //range : ,
-    };*/
     //console.log(activity)
     const position = activity.positions[selectedPositionIndex]
     
