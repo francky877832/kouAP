@@ -15,6 +15,8 @@ const PointActivityForm = ({
   handleAddFaculty, handleDeleteFaculty,
   selectedFaculty, setSelectedFaculty,
   selectedFaculties, setSelectedFaculties,
+  handleAddPosition, handlePositionChange,
+  positionData, positions,
 }) => {
   return (
     <form onSubmit={handleSubmitThirdForm} className="container p-4 border rounded bg-light">
@@ -34,7 +36,7 @@ const PointActivityForm = ({
 
         <div className="mb-3">
           <label className="form-label">Letter</label>
-          <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} required>
+          <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} >
             <option value="">Select a letter</option>
             {[...'ABCDEFGHIJKL'].map((letterOption) => (
               <option key={letterOption} value={letterOption}>{letterOption}</option>
@@ -85,13 +87,13 @@ const PointActivityForm = ({
         <select
           name="position"
           className="form-select"
-          value={positionsPoint.position}
-          onChange={handlePositonsPointChange}
-          required
+          value={positionData.position}
+          onChange={handlePositionChange}
+          
         >
           <option value="">Select a position</option>
           {titles.map((title) => (
-            <option key={title._id} value={title._id}>{title.value}</option>
+            <option key={title._id} value={title.value}>{title.value}</option>
           ))}
         </select>
       </div>
@@ -102,9 +104,9 @@ const PointActivityForm = ({
           type="number"
           name="minPoint"
           className="form-control"
-          value={positionsPoint.minPoint}
-          onChange={handlePositonsPointChange}
-          required
+          value={positionData.minPoint}
+          onChange={handlePositionChange}
+          
         />
       </div>
 
@@ -114,9 +116,9 @@ const PointActivityForm = ({
           type="number"
           name="maxPoint"
           className="form-control"
-          value={positionsPoint.maxPoint}
-          onChange={handlePositonsPointChange}
-          required
+          value={positionData.maxPoint}
+          onChange={handlePositionChange}
+          
         />
       </div>
 
@@ -160,6 +162,25 @@ const PointActivityForm = ({
               >
                 Delete
               </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+
+      {/* Bouton pour ajouter la position complète */}
+      <div className="text-center mb-3">
+        <button type="button" className="btn btn-primary" onClick={handleAddPosition}>
+          Add Position
+        </button>
+      </div>
+      {/* Liste des positions ajoutées */}
+      <div className="mb-3">
+        <h5>Added Positions:</h5>
+        <ul className="list-group">
+          {positions.map((pos, index) => (
+            <li key={index} className="list-group-item">
+              <strong>Position:</strong> {pos.position}, <strong>Quantity:</strong> {pos.quantity}, <strong>Faculties:</strong> {pos.faculties.join(', ')}
             </li>
           ))}
         </ul>

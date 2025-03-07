@@ -4,7 +4,7 @@ import MinActivityForm from '../components/criteriasForms/MinActivityForm';
 import PointActivityForm from '../components/criteriasForms/PointActivityForm';
 
 //import { facultyDepartments } from "../datas/schoolDepartments";
-import { positions } from "../datas/schoolDepartments";
+import { positions, titles } from "../datas/schoolDepartments";
 import { ManagerContext } from '../context/ManagerContext';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
@@ -16,6 +16,28 @@ const EditCriterias = () => {
 
   const [selectedFaculties, setSelectedFaculties] = useState([]); // État pour la faculté sélectionnée
     const [selectedFaculty, setSelectedFaculty] = useState(''); // État pour la faculté sélectionnée
+
+    const [positions, setPositions] = useState([]); 
+    const [positionData, setPositionData] = useState({
+        position: '',
+        quantity: '',
+        faculties: [],
+        minPoint : '',
+        maxPoint:'',
+    });
+    const handlePositionChange = (e) => {
+      setPositionData({ ...positionData, [e.target.name]: e.target.value });
+    };
+    const handleAddPosition = () => {
+      if (positionData.position && (positionData.quantity || (positionData.minPoint && positionData.maxPoint)) && selectedFaculties.length > 0) {
+        setPositions([...positions, { ...positionData, faculties: selectedFaculties}]);
+        setPositionData({ position: '', quantity: '', faculties: [], minPoint:'', maxPoint:''});
+        setSelectedFaculties([]);
+      }else{
+        alert('All the fileds are required before adding a position.')
+      }
+    };
+    
   
     const handleAddFaculty = () => {
       if (selectedFaculty) {
@@ -40,6 +62,7 @@ const EditCriterias = () => {
   const [name, setName] = useState('');
   const [label, setLabel] = useState('');
   const [positionsCount, setPositionsCount] = useState({ position: '', quantity: '', faculty : '' });
+  //const [positionsCount, setPositionsCount] = useState([{ position: '', quantity: '', faculty : '' }]);
   const [positionsPoint, setPositionsPoint] = useState({ position: '', minPoint: '', maxPoint: '', faculty: '' },);
   const [faculty, setFaculty] = useState('');
   const [department, setDepartment] = useState('');
@@ -118,13 +141,14 @@ const [activityId, setActivityId] = useState(null)
 
   const handleSubmitSecondForm = async (event) => {
     event.preventDefault();
-    if(selectedFaculties.length === 0)
+    if(positions.length === 0 )
     {
       alert("Veiller choisir au moins une faculté.")
       return;
     }
     //console.log(selectedFaculties)
     //console.log(facultyDepartments)
+    console.log(positions)
     const activity = {
         //activity : activityId, //"67c7f2ed92f75287d481f2aa",
         letter,
@@ -135,6 +159,7 @@ const [activityId, setActivityId] = useState(null)
         position : positionsCount.position,
         quantity : positionsCount.quantity,
         faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
+        positions : positions.map(pos => { return {...pos, position: (titles.find(title => title.value==pos.position))._id, faculty : pos.faculties.map(fac => facultyDepartments[fac]._id) }}),
         //faculty :  facultyDepartments[positionsCount.faculty]._id,
         //positions : positionsCount,
     }
@@ -151,6 +176,13 @@ const [activityId, setActivityId] = useState(null)
         setNumber('')
         setCurrentForm(3);
         setPositionsPoint({ position: '', quantity: '', faculty : '' })
+        setPositionData({
+          position: '',
+          quantity: '',
+          faculties: [],
+          minPoint : '',
+          maxPoint:'',
+      })
         return;
     }
     else
@@ -163,14 +195,14 @@ const [activityId, setActivityId] = useState(null)
   const handleSubmitThirdForm = async (event) => {
     event.preventDefault();
     
-    if(selectedFaculties.length === 0)
+    if(positions.length === 0)
     {
       alert("Veiller choisir au moins une faculté.")
       return;
     }
 
     //console.log(selectedFaculties)
-    //console.log(facultyDepartments)
+    //console.log(positions)
     const activity = {
         //activity : activityId, //"67c7f2ed92f75287d481f2aa",
         letter,
@@ -182,6 +214,9 @@ const [activityId, setActivityId] = useState(null)
         minPoint : positionsPoint.minPoint,
         maxPoint : positionsPoint.maxPoint,
         faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
+        //positions : positions,
+        positions : positions.map(pos => { return {...pos, position: (titles.find(title => title.value==pos.position))._id, faculty : pos.faculties.map(fac => facultyDepartments[fac]._id) }}),
+
         //facultyDepartments[positionsPoint.faculty]._id,
         //positions : positionsCount,
     }
@@ -197,6 +232,13 @@ const [activityId, setActivityId] = useState(null)
         setNumber('')
         setPositionsPoint({ position: '', minPoint: '', maxPoint: '', faculty: '' })
         setCurrentForm(3);
+        setPositionData({
+          position: '',
+          quantity: '',
+          faculties: [],
+          minPoint : '',
+          maxPoint:'',
+      })
         return;
     }
     else
@@ -256,6 +298,10 @@ const [activityId, setActivityId] = useState(null)
             handleAddFaculty={handleAddFaculty}
             handleDeleteFaculty={handleDeleteFaculty}
             selectedFaculty={selectedFaculty} setSelectedFaculty={setSelectedFaculty}
+            handlePositionChange={handlePositionChange}
+            handleAddPosition={handleAddPosition}
+            positionData={positionData}
+            positions={positions}
         />
       )}
 
@@ -283,6 +329,10 @@ const [activityId, setActivityId] = useState(null)
             handleAddFaculty={handleAddFaculty}
             handleDeleteFaculty={handleDeleteFaculty}
             selectedFaculty={selectedFaculty} setSelectedFaculty={setSelectedFaculty}
+            handlePositionChange={handlePositionChange}
+            handleAddPosition={handleAddPosition}
+            positionData={positionData}
+            positions={positions}
         />
       )}
     </div>

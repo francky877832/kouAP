@@ -14,23 +14,24 @@ const MinActivity = require("../models/minActivityModel");
 exports.createMinActivity = async (req, res, next) => {
     //console.log('okok')
     try {
-       // console.log(req.body)
+       console.log(req.body)
+       console.log(req.body.positions[0])
 
         //const activityId = "67c776634035a02db2ee38e0";
-        const { /*activity*/ letter, range, from, to, criteria, position, quantity, faculty } = req.body;
+        const { /*activity*/ letter, range, from, to, criteria, position, quantity, faculty, positions} = req.body;
 // 
-        if ((range && (!from || !to || !letter)) || (!range && !criteria)  || !position || !quantity || !faculty) {
+        if ((range && (!from || !to || !letter)) || (!range && !criteria) || !faculty || !positions) {
             console.log("Tous les champs sont requis.")
             return res.status(400).json({ message: "Tous les champs sont requis." });
         }
-        const positions = {
+        /*const positions = {
             position,
             quantity,
             faculty,
-        }
+        }*/
         console.log("req.body")
 
-        const newActivity = new MinActivity({ letter, range, from, to, criteria, positions:[positions,] });
+        const newActivity = new MinActivity({ letter, range, from, to, criteria, positions:positions });
         const savedActivity = await newActivity.save();
         console.log(savedActivity)
         res.status(201).json({ message: "success", activity: savedActivity });

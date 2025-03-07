@@ -14,31 +14,31 @@ const MinActivityForm = ({
   handleAddFaculty, handleDeleteFaculty,
   selectedFaculty, setSelectedFaculty,
   selectedFaculties, setSelectedFaculties,
+  handleAddPosition, handlePositionChange,
+  positionData, positions,
 }) => {
-  
+
+
+
 
   return (
-      <form onSubmit={handleSubmitSecondForm} className="container p-4 border rounded bg-light">
-        <div className="mb-3 form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="range"
-            checked={range}
-            onChange={(e) => setRange(e.target.checked)}
-          />
-          <label className="form-check-label" htmlFor="range">Range</label>
-        </div>
-  
-  
-  
-        {range ? (
-          <div className="row">
-  
-            
+    <form onSubmit={handleSubmitSecondForm} className="container p-4 border rounded bg-light">
+      <div className="mb-3 form-check">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="range"
+          checked={range}
+          onChange={(e) => setRange(e.target.checked)}
+        />
+        <label className="form-check-label" htmlFor="range">Range</label>
+      </div>
+
+      {range ? (
+        <div className="row">
           <div className="mb-3">
             <label className="form-label">Letter</label>
-            <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} required>
+            <select className="form-select" value={letter} onChange={(e) => setLetter(e.target.value)} required>
               <option value="">Select a letter</option>
               {[...'ABCDEFGHIJKL'].map((letterOption) => (
                 <option key={letterOption} value={letterOption}>{letterOption}</option>
@@ -46,83 +46,80 @@ const MinActivityForm = ({
             </select>
           </div>
           
-            <div className="col-md-6 mb-3">
-              <label htmlFor="from" className="form-label">From:</label>
-              <input
-                type="number"
-                className="form-control"
-                id="from"
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                required
-              />
-            </div>
-  
-            <div className="col-md-6 mb-3">
-              <label htmlFor="to" className="form-label">To:</label>
-              <input
-                type="number"
-                className="form-control"
-                id="to"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="mb-3">
-            <label htmlFor="criteria" className="form-label">Criteria:</label>
+          <div className="col-md-6 mb-3">
+            <label htmlFor="from" className="form-label">From:</label>
             <input
-              type="text"
+              type="number"
               className="form-control"
-              id="criteria"
-              value={criteria}
-              onChange={(e) => setCriteria(e.target.value)}
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
               required
             />
           </div>
-        )}
-  
-        <div className="mb-3">
-          <label className="form-label">Position:</label>
-          <select
-            className="form-select"
-            name="position"
-            value={positionsCount.position}
-            onChange={handlePositonsCountChange}
-            required
-          >
-            <option value="">Select a position</option>
-            {titles.map((title) => (
-              <option key={title._id} value={title._id}>
-                {title.value}
-              </option>
-            ))}
-          </select>
+
+          <div className="col-md-6 mb-3">
+            <label htmlFor="to" className="form-label">To:</label>
+            <input
+              type="number"
+              className="form-control"
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              required
+            />
+          </div>
         </div>
-  
+      ) : (
         <div className="mb-3">
-          <label className="form-label">Quantity:</label>
+          <label className="form-label">Criteria:</label>
           <input
             type="text"
             className="form-control"
-            name="quantity"
-            value={positionsCount.quantity}
-            onChange={handlePositonsCountChange}
+            value={criteria}
+            onChange={(e) => setCriteria(e.target.value)}
             required
           />
         </div>
+      )}
 
-      {/* Afficher et gérer le select de la faculté */}
+      {/* Sélection de la position */}
+      <div className="mb-3">
+        <label className="form-label">Position:</label>
+        <select
+          className="form-select"
+          name="position"
+          value={positionData.position}
+          onChange={handlePositionChange}
+          
+        >
+          <option value="">Select a position</option>
+          {titles.map((title) => (
+            <option key={title._id} value={title.value}>
+              {title.value}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Quantité */}
+      <div className="mb-3">
+        <label className="form-label">Quantity:</label>
+        <input
+          type="text"
+          className="form-control"
+          name="quantity"
+          value={positionData.quantity}
+          onChange={handlePositionChange}
+          
+        />
+      </div>
+
+      {/* Sélection de la faculté */}
       <div className="mb-3">
         <label className="form-label">Faculty</label>
         <select
           className="form-select"
-          name="faculty"
           value={selectedFaculty}
           onChange={(e) => setSelectedFaculty(e.target.value)}
-          
         >
           <option value="">Select a faculty</option>
           {Object.keys(facultyDepartments).map((fac) => (
@@ -140,7 +137,7 @@ const MinActivityForm = ({
         </button>
       </div>
 
-      {/* Afficher la liste des facultés ajoutées */}
+      {/* Liste des facultés ajoutées */}
       <div className="mb-3">
         <h5>Added Faculties:</h5>
         <ul className="list-group">
@@ -159,6 +156,26 @@ const MinActivityForm = ({
         </ul>
       </div>
 
+      {/* Bouton pour ajouter la position complète */}
+      <div className="text-center mb-3">
+        <button type="button" className="btn btn-primary" onClick={handleAddPosition}>
+          Add Position
+        </button>
+      </div>
+
+      {/* Liste des positions ajoutées */}
+      <div className="mb-3">
+        <h5>Added Positions:</h5>
+        <ul className="list-group">
+          {positions.map((pos, index) => (
+            <li key={index} className="list-group-item">
+              <strong>Position:</strong> {pos.position}, <strong>Quantity:</strong> {pos.quantity}, <strong>Faculties:</strong> {pos.faculties.join(', ')}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Soumission du formulaire */}
       <div className="text-center">
         <button type="submit" className="btn btn-primary">Submit Second Form</button>
       </div>
