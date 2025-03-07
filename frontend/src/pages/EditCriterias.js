@@ -14,7 +14,28 @@ const EditCriterias = () => {
     const { createActivity, createMinActivity, createMinPoint } = useContext(ManagerContext)
     const {facultyDepartments,  isUserLoading} = useContext(UserContext)
 
-
+  const [selectedFaculties, setSelectedFaculties] = useState([]); // État pour la faculté sélectionnée
+    const [selectedFaculty, setSelectedFaculty] = useState(''); // État pour la faculté sélectionnée
+  
+    const handleAddFaculty = () => {
+      if (selectedFaculty) {
+        // Ajouter la faculté sélectionnée dans le tableau
+        setSelectedFaculties([
+          ...selectedFaculties,
+          selectedFaculty
+        ]);
+        setSelectedFaculty(''); // Réinitialiser le champ select après ajout
+      }
+    };
+  
+    const handleDeleteFaculty = (index) => {
+      const confirmDelete = window.confirm("Are you sure you want to delete this faculty?");
+      if (confirmDelete) {
+        const updatedFaculties = selectedFaculties.filter((_, i) => i !== index); // Supprimer la faculté par index
+        setSelectedFaculties(updatedFaculties); // Met à jour l'état avec la nouvelle liste
+      }
+    };
+  
   const [letter, setLetter] = useState('');
   const [name, setName] = useState('');
   const [label, setLabel] = useState('');
@@ -28,7 +49,11 @@ const EditCriterias = () => {
   const [number, setNumber] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
-  const [currentForm, setCurrentForm] = useState(3); // State to track which form is currently active
+  const [currentForm, setCurrentForm] = useState(3)
+  // State to track which form is currently active
+
+
+
 
   // For generic changes to any property in the positionsPoint object
 const handlePositonsCountChange = (event) => {
@@ -93,7 +118,13 @@ const [activityId, setActivityId] = useState(null)
 
   const handleSubmitSecondForm = async (event) => {
     event.preventDefault();
-    
+    if(selectedFaculties.length === 0)
+    {
+      alert("Veiller choisir au moins une faculté.")
+      return;
+    }
+    //console.log(selectedFaculties)
+    //console.log(facultyDepartments)
     const activity = {
         //activity : activityId, //"67c7f2ed92f75287d481f2aa",
         letter,
@@ -103,7 +134,8 @@ const [activityId, setActivityId] = useState(null)
         criteria,
         position : positionsCount.position,
         quantity : positionsCount.quantity,
-        faculty :  facultyDepartments[positionsCount.faculty]._id,
+        faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
+        //faculty :  facultyDepartments[positionsCount.faculty]._id,
         //positions : positionsCount,
     }
     const data = await createMinActivity(activity)
@@ -131,6 +163,14 @@ const [activityId, setActivityId] = useState(null)
   const handleSubmitThirdForm = async (event) => {
     event.preventDefault();
     
+    if(selectedFaculties.length === 0)
+    {
+      alert("Veiller choisir au moins une faculté.")
+      return;
+    }
+
+    //console.log(selectedFaculties)
+    //console.log(facultyDepartments)
     const activity = {
         //activity : activityId, //"67c7f2ed92f75287d481f2aa",
         letter,
@@ -141,7 +181,8 @@ const [activityId, setActivityId] = useState(null)
         position : positionsPoint.position ,
         minPoint : positionsPoint.minPoint,
         maxPoint : positionsPoint.maxPoint,
-        faculty :  facultyDepartments[positionsPoint.faculty]._id,
+        faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
+        //facultyDepartments[positionsPoint.faculty]._id,
         //positions : positionsCount,
     }
     const data = await createMinPoint(activity)
@@ -188,6 +229,7 @@ const [activityId, setActivityId] = useState(null)
           points={points} setPoints={setPoints}
           number={number} setNumber={setNumber}
           facultyDepartments={facultyDepartments}
+         
         />
       )}
 
@@ -209,6 +251,11 @@ const [activityId, setActivityId] = useState(null)
             handleSubmitSecondForm={handleSubmitSecondForm}
             positionsCount={positionsCount}
             handlePositonsCountChange={handlePositonsCountChange}
+            selectedFaculties={selectedFaculties}
+            setSelectedFaculties={setSelectedFaculties}
+            handleAddFaculty={handleAddFaculty}
+            handleDeleteFaculty={handleDeleteFaculty}
+            selectedFaculty={selectedFaculty} setSelectedFaculty={setSelectedFaculty}
         />
       )}
 
@@ -231,6 +278,11 @@ const [activityId, setActivityId] = useState(null)
             handleFacultyChange = {handleFacultyChange}
             facultyDepartments={facultyDepartments}
             faculty={faculty}
+            selectedFaculties={selectedFaculties}
+            setSelectedFaculties={setSelectedFaculties}
+            handleAddFaculty={handleAddFaculty}
+            handleDeleteFaculty={handleDeleteFaculty}
+            selectedFaculty={selectedFaculty} setSelectedFaculty={setSelectedFaculty}
         />
       )}
     </div>

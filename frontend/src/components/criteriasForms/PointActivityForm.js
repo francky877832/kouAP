@@ -12,6 +12,9 @@ const PointActivityForm = ({
   handleFacultyChange,
   facultyDepartments, faculty,
   letter, setLetter,
+  handleAddFaculty, handleDeleteFaculty,
+  selectedFaculty, setSelectedFaculty,
+  selectedFaculties, setSelectedFaculties,
 }) => {
   return (
     <form onSubmit={handleSubmitThirdForm} className="container p-4 border rounded bg-light">
@@ -117,20 +120,49 @@ const PointActivityForm = ({
         />
       </div>
 
-      <div className="mb-3">
+       {/* Afficher et gérer le select de la faculté */}
+       <div className="mb-3">
         <label className="form-label">Faculty</label>
         <select
           className="form-select"
           name="faculty"
-          value={positionsPoint.faculty}
-          onChange={handlePositonsPointChange}
-          required
+          value={selectedFaculty}
+          onChange={(e) => setSelectedFaculty(e.target.value)}
+          
         >
           <option value="">Select a faculty</option>
           {Object.keys(facultyDepartments).map((fac) => (
-            <option key={facultyDepartments[fac]._id} value={fac}>{fac}</option>
+            <option key={facultyDepartments[fac]._id} value={fac}>
+              {fac}
+            </option>
           ))}
         </select>
+      </div>
+
+      {/* Bouton pour ajouter une faculté */}
+      <div className="text-center mb-3">
+        <button type="button" className="btn btn-success" onClick={handleAddFaculty}>
+          Add Faculty
+        </button>
+      </div>
+
+      {/* Afficher la liste des facultés ajoutées */}
+      <div className="mb-3">
+        <h5>Added Faculties:</h5>
+        <ul className="list-group">
+          {selectedFaculties.map((faculty, index) => (
+            <li key={index} className="list-group-item d-flex justify-content-between">
+              {faculty}
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => handleDeleteFaculty(index)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="text-center">

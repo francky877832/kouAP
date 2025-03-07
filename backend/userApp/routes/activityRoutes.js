@@ -8,10 +8,11 @@ const minPointController = require("../controllers/minPointController");
 router.post("/activity/create", activityController.createActivity);
 router.put('/activity/update/:activityId', activityController.updateActivity);
 router.delete('/activity/delete/:activityId', activityController.deleteActivity);
-
+router.get('/activities/all', activityController.getAllActivities);
 
 //minActivity
 router.post("/minActivity/create", minActivityController.createMinActivity);
+router.get('/minActivities/all', minActivityController.getAllMinActivities);
 
 //minPoint
 router.post("/minPoint/create", minPointController.createMinPoint);
@@ -21,7 +22,7 @@ router.post("/minPoint/create", minPointController.createMinPoint);
 
 
 
-router.get('/activities/all', activityController.getAllActivities);
+
 router.get('/activities/:id', activityController.getActivityById);
 router.put('/activities/:id', activityController.updateActivity);
 

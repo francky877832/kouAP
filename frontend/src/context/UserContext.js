@@ -7,10 +7,14 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState({_id:"67c4712f12d662f6eeb9d7fd", username:"Francky", title:"Profesor"});
     
      const [facultyDepartments, setFacultyDepartments] = useState({});
+     const [faculties, setFaculties] = useState({});
      const [isUserLoading, setIsUserLoading] = useState(true)
 
-     const [activities, setActivities] = useState(true)
+     const [activities, setActivities] = useState([])
+     const [minActivities, setMinActivities] = useState([])
+
      const [isActivitiesLoading, setIsActivitiesLoading] = useState(true)
+     const [isMinActivitiesLoading, setIsMinActivitiesLoading] = useState(true)
     
     
         const fetchFaculties = async (userId) => {
@@ -64,11 +68,37 @@ export const UserProvider = ({ children }) => {
 
 
 
+  const fetchMinActivities = async () => {
+    // console.log("okk")
+     try {
+         //setIsLoading(true)
+         const response = await fetch(`${server}/api/datas/activities/minActivities/all`, {  
+             method: "GET",
+             headers: {
+                 "Content-Type": "application/json",
+         },})
+
+         const data = await response.json();
+         if (!response.ok)  {
+             throw new Error(data?.message || "Erreur lors du chargement des activités");
+         }
+
+       console.log(data.data)
+       return data?.data
+     } catch (err) {
+         console.log(err);
+     } finally {
+         //setIsLoading(false)
+     }
+ };
+
+
      useEffect(() => {
             const fetchFacultiesEffect = async () => {
                 setIsUserLoading(true)
                 const fac = await fetchFaculties()
                 setFacultyDepartments(fac)
+                setFaculties(fac)
                 setIsUserLoading(false)
             };
 
@@ -97,10 +127,27 @@ export const UserProvider = ({ children }) => {
       }, [isActivitiesLoading]);
 
 
+      
+      useEffect(() => {
+        const fetchMinActivitiesEffect = async () => {
+            setIsMinActivitiesLoading(true)
+            const act = await fetchMinActivities()
+            setMinActivities(act)
+            setIsMinActivitiesLoading(false)
+        };
 
-        const stateVars = {user, isUserLoading, facultyDepartments, isActivitiesLoading, activities}
+        if(isMinActivitiesLoading)
+        {
+          fetchMinActivitiesEffect();
+        }
+       
+    }, [isMinActivitiesLoading]);
+
+
+
+        const stateVars = {user, isUserLoading, faculties, facultyDepartments, isActivitiesLoading, activities, isMinActivitiesLoading, minActivities}
         const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading}
-        const utilFunctions = {fetchFaculties, fetchActivities}
+        const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities}
 
   return (
     <UserContext.Provider value={{ ...stateVars, ...stateFunctions, ...utilFunctions }}>

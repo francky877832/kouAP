@@ -48,8 +48,10 @@ exports.createMinActivity = async (req, res, next) => {
 exports.getAllMinActivities = async (req, res) => {
     try {
         const minActivities = await MinActivity.find().populate("activity").populate("positions.faculty");
-        res.status(200).json(minActivities);
+        //console.log(minActivities)
+        res.status(200).json({message:"success", data:minActivities});
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: error.message });
     }
 };

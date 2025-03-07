@@ -14,6 +14,8 @@ import EvaluationDetails from "./pages/EvaluationDetails";
 import JuryEvaluationDetails from "./pages/JuryEvaluationDetails";
 import EditCriterias from "./pages/EditCriterias";
 import Activities from "./pages/Activities";
+import MinActivities from "./pages/MinActivities";
+
 
 const App = () => {
   return (
@@ -35,6 +37,7 @@ const App = () => {
         <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
         <Route path="/manager/edit-criteria" element={<EditCriterias />} />
         <Route path="/activities/view" element={<Activities />} />
+        <Route path="/min-activities/view" element={<MinActivities />} />
 
         <Route path="/login" element={<Login />} />
 

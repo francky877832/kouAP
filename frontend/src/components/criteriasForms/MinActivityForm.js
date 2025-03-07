@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { titles } from '../../datas/schoolDepartments';
 
 const MinActivityForm = ({
@@ -10,112 +10,119 @@ const MinActivityForm = ({
   handleSubmitSecondForm, 
   facultyDepartments,
   letter, setLetter,
+  faculties, setFaculties,
+  handleAddFaculty, handleDeleteFaculty,
+  selectedFaculty, setSelectedFaculty,
+  selectedFaculties, setSelectedFaculties,
 }) => {
+  
+
   return (
-    <form onSubmit={handleSubmitSecondForm} className="container p-4 border rounded bg-light">
-      <div className="mb-3 form-check">
-        <input
-          type="checkbox"
-          className="form-check-input"
-          id="range"
-          checked={range}
-          onChange={(e) => setRange(e.target.checked)}
-        />
-        <label className="form-check-label" htmlFor="range">Range</label>
-      </div>
-
-
-
-      {range ? (
-        <div className="row">
-
+      <form onSubmit={handleSubmitSecondForm} className="container p-4 border rounded bg-light">
+        <div className="mb-3 form-check">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id="range"
+            checked={range}
+            onChange={(e) => setRange(e.target.checked)}
+          />
+          <label className="form-check-label" htmlFor="range">Range</label>
+        </div>
+  
+  
+  
+        {range ? (
+          <div className="row">
+  
+            
+          <div className="mb-3">
+            <label className="form-label">Letter</label>
+            <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} required>
+              <option value="">Select a letter</option>
+              {[...'ABCDEFGHIJKL'].map((letterOption) => (
+                <option key={letterOption} value={letterOption}>{letterOption}</option>
+              ))}
+            </select>
+          </div>
           
+            <div className="col-md-6 mb-3">
+              <label htmlFor="from" className="form-label">From:</label>
+              <input
+                type="number"
+                className="form-control"
+                id="from"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                required
+              />
+            </div>
+  
+            <div className="col-md-6 mb-3">
+              <label htmlFor="to" className="form-label">To:</label>
+              <input
+                type="number"
+                className="form-control"
+                id="to"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="mb-3">
+            <label htmlFor="criteria" className="form-label">Criteria:</label>
+            <input
+              type="text"
+              className="form-control"
+              id="criteria"
+              value={criteria}
+              onChange={(e) => setCriteria(e.target.value)}
+              required
+            />
+          </div>
+        )}
+  
         <div className="mb-3">
-          <label className="form-label">Letter</label>
-          <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} required>
-            <option value="">Select a letter</option>
-            {[...'ABCDEFGHIJKL'].map((letterOption) => (
-              <option key={letterOption} value={letterOption}>{letterOption}</option>
+          <label className="form-label">Position:</label>
+          <select
+            className="form-select"
+            name="position"
+            value={positionsCount.position}
+            onChange={handlePositonsCountChange}
+            required
+          >
+            <option value="">Select a position</option>
+            {titles.map((title) => (
+              <option key={title._id} value={title._id}>
+                {title.value}
+              </option>
             ))}
           </select>
         </div>
-        
-          <div className="col-md-6 mb-3">
-            <label htmlFor="from" className="form-label">From:</label>
-            <input
-              type="number"
-              className="form-control"
-              id="from"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="col-md-6 mb-3">
-            <label htmlFor="to" className="form-label">To:</label>
-            <input
-              type="number"
-              className="form-control"
-              id="to"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-      ) : (
+  
         <div className="mb-3">
-          <label htmlFor="criteria" className="form-label">Criteria:</label>
+          <label className="form-label">Quantity:</label>
           <input
             type="text"
             className="form-control"
-            id="criteria"
-            value={criteria}
-            onChange={(e) => setCriteria(e.target.value)}
+            name="quantity"
+            value={positionsCount.quantity}
+            onChange={handlePositonsCountChange}
             required
           />
         </div>
-      )}
 
-      <div className="mb-3">
-        <label className="form-label">Position:</label>
-        <select
-          className="form-select"
-          name="position"
-          value={positionsCount.position}
-          onChange={handlePositonsCountChange}
-          required
-        >
-          <option value="">Select a position</option>
-          {titles.map((title) => (
-            <option key={title._id} value={title._id}>
-              {title.value}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Quantity:</label>
-        <input
-          type="text"
-          className="form-control"
-          name="quantity"
-          value={positionsCount.quantity}
-          onChange={handlePositonsCountChange}
-          required
-        />
-      </div>
-
+      {/* Afficher et gérer le select de la faculté */}
       <div className="mb-3">
         <label className="form-label">Faculty</label>
         <select
           className="form-select"
           name="faculty"
-          value={positionsCount.faculty}
-          onChange={handlePositonsCountChange}
-          required
+          value={selectedFaculty}
+          onChange={(e) => setSelectedFaculty(e.target.value)}
+          
         >
           <option value="">Select a faculty</option>
           {Object.keys(facultyDepartments).map((fac) => (
@@ -124,6 +131,32 @@ const MinActivityForm = ({
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Bouton pour ajouter une faculté */}
+      <div className="text-center mb-3">
+        <button type="button" className="btn btn-success" onClick={handleAddFaculty}>
+          Add Faculty
+        </button>
+      </div>
+
+      {/* Afficher la liste des facultés ajoutées */}
+      <div className="mb-3">
+        <h5>Added Faculties:</h5>
+        <ul className="list-group">
+          {selectedFaculties.map((faculty, index) => (
+            <li key={index} className="list-group-item d-flex justify-content-between">
+              {faculty}
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => handleDeleteFaculty(index)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="text-center">

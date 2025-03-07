@@ -1,2 +1,0 @@
-la fonction handle submit doit d'Abord verifier les donnes:
-si le nom ou la lettre est ab

@@ -1,0 +1,41 @@
+import React from 'react';
+import { titles } from '../../datas/schoolDepartments';
+
+const MinActivityForm = ({
+  positionsCount, 
+  handlePositonsCountChange,
+  range, setRange, 
+  from, setFrom, to, setTo, 
+  criteria, setCriteria, 
+  handleSubmitSecondForm, 
+  facultyDepartments,
+  letter, setLetter,
+}) => {
+  
+
+      <div className="mb-3">
+        <label className="form-label">Faculty</label>
+        <select
+          className="form-select"
+          name="faculty"
+          value={positionsCount.faculty}
+          onChange={handlePositonsCountChange}
+          required
+        >
+          <option value="">Select a faculty</option>
+          {Object.keys(facultyDepartments).map((fac) => (
+            <option key={facultyDepartments[fac]._id} value={fac}>
+              {fac}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="text-center">
+        <button type="submit" className="btn btn-primary">Submit Second Form</button>
+      </div>
+    </form>
+  );
+};
+
+export default MinActivityForm;
