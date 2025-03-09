@@ -19,6 +19,7 @@ router.post("/minPoint/create", minPointController.createMinPoint);
 router.get('/minPoints/all', minPointController.getAllMinPoints);
 
 
+
 //update activity
 
 

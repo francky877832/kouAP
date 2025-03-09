@@ -57,7 +57,8 @@ export const step2Data = {
         { name: 'journalName', label: 'Dergi adı' },
         { name: 'volume', label: 'Cilt No.' },
         { name: 'pages', label: 'Sayfa' },
-        { name: 'year', label: 'Yıl' }
+        { name: 'proof', label: 'Proof' },
+        { name: 'author', label: 'Main Author' },
       ]
     
     },
@@ -132,4 +133,26 @@ export const step3Data = {
     }
   };
   
+
+
+  const userForms = { 
+    //activity,
+    letter : 'A',
+    fileds : [
+      { name: 'authorName', label: 'Yazar/Yazarlar', type:'textarea' },
+      { name: 'articleTitle', label: 'Makale adı', type:'text' },
+      { name: 'journalName', label: 'Dergi adı', type:'text' },
+      { name: 'volume', label: 'Cilt No', type:'text' },
+      { name: 'pages', label: 'Sayfa', type:'number' },
+      { name: 'year', label: 'Yıl', type:'year' },
+       
+
+      { name: 'authorsPosition', label: 'Authors Posititon', type:'checkbox', options:['AD','LO','ED','KYD', 'BY', 'IY', 'SY', 'EY'] },
+      { name: 'candidatePosition', label: 'Candidate Posititon', type:'radio', options:['AD','LO','ED','KYD', 'BY', 'IY', 'SY', 'EY'] },
+
+
+      { name: 'proof', label: 'Proof', type:'file', },
+  ]
+}
+
   

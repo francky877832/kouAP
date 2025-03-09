@@ -267,12 +267,12 @@ const AdminPanel = () => {
                   {candidate.juries.map((jury) => (
                     <Link
                       key={jury.id}
-                      to={`/evaluation-details`}
+                      to={`/jury-evaluation-details`}
                       className={`list-group-item list-group-item-action ms-3 jury-item ${
                         jury.status === "Accepted" ? "jury-accepted" : 
                         jury.status === "Rejected" ? "jury-rejected" : ""
                       }`}
-                      state={{ evaluation:jury }}
+                      state={{ evaluation:jury }} //state={{ evaluation:jury }}
                     >
                       {jury.juryName}
                     </Link>

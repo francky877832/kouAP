@@ -8,6 +8,7 @@ const applicationRoutes = require('./applicationRoutes');
 const evaluationRoutes = require('./evaluationRoutes');
 const activityRoutes = require('./activityRoutes');
 const facultyRoutes = require('./facultyRoutes');
+const formRoutes = require('./formRoutes');
 //const cashierRoutes = require('./cashierRoutes');
 
 //router.use('/products', auth,  productRoutes);
@@ -16,6 +17,8 @@ router.use('/applications', applicationRoutes);
 router.use('/evaluations', evaluationRoutes);
 router.use('/activities', activityRoutes);
 router.use('/faculties', facultyRoutes);
+router.use('/forms', formRoutes);
+
 
 
 
