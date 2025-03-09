@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Step2 = ({ formData, userForms, handleChange, handleData, data }) => {
+const A = ({ formData, userForms, handleChange, handleData, data }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   const handleCategoryChange = (event) => {
@@ -131,4 +131,4 @@ const Step2 = ({ formData, userForms, handleChange, handleData, data }) => {
   );
 };
 
-export default Step2;
+export default A;

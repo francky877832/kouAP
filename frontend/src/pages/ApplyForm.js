@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import Step1 from '../components/applyForm/Step1';
-import Step2 from '../components/applyForm/Step2';
+import A from '../components/applyForm/A';
 import Step3 from '../components/applyForm/Step3';
 import Step4 from '../components/applyForm/Step4';
 import Step5 from '../components/applyForm/Step5';
@@ -42,7 +42,7 @@ const ApplyForm = () => {
       phoneNumber: '',
       address: '',
     },
-    step2 : 
+    A : 
     {
       author: '',
       articleTitle: '',
@@ -121,7 +121,7 @@ const ApplyForm = () => {
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
-        {step === 2 && <Step2 userForms={userForms[0]} formData={formData.step2} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={submittedArticles} />}
+        {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={submittedArticles} />}
         {step === 3 && <Step3 formData={formData.step3} handleChange={handleChange} handleData={addActivity} data={submittedActivities}  />}
 
         {step === 4 && <Step4 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
