@@ -138,6 +138,7 @@ export const step3Data = {
   const userForms = { 
     //activity,
     letter : 'A',
+    durum : null,
     fileds : [
       { name: 'authorName', label: 'Yazar/Yazarlar', type:'textarea' },
       { name: 'articleTitle', label: 'Makale adı', type:'text' },

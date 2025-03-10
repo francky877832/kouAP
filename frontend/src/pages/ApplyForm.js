@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Step1 from '../components/applyForm/Step1';
 import A from '../components/applyForm/A';
 import Step3 from '../components/applyForm/Step3';
@@ -8,6 +8,7 @@ import ReviewForm from '../components/applyForm/ReviewForm';
 import  Loading  from '../components/Loading'
 
 import { UserContext } from '../context/UserContext';
+import { ManagerContext } from '../context/ManagerContext';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(2);
@@ -20,7 +21,49 @@ const ApplyForm = () => {
   const [submittedActivities, setSubmittedActivites] = useState([]);
 
 
+   const { fetchCases, addCase, fetchCoefs, addCoef, updateCoef, updateCase, deleteCase, deleteCoef,  } = useContext(ManagerContext)
+  
+//CASE AND COEF
+      const [isCasesLoading, setIsCasesLoading] = useState(true)
+      const [isCoefsLoading, setIsCoefsLoading] = useState(true)
+  
+    const [coefs, setCoefs] = useState([]);
+  
+    const [cases, setCases] = useState([]);
 
+     useEffect(() => {
+          const fetchCasesEffect = async () => {
+            setIsCasesLoading(true)
+              const act = await fetchCases()
+              //console.log(act)
+              setCases(act)
+              setIsCasesLoading(false)
+          };
+      
+          if(isCasesLoading)
+          {
+            fetchCasesEffect();
+          }
+         
+      }, [isCasesLoading]);
+    
+      useEffect(() => {
+        const fetchCoefsEffect = async () => {
+          setIsCoefsLoading(true)
+            const act = await fetchCoefs()
+            //console.log(act)
+            setCoefs(act)
+            setIsCoefsLoading(false)
+        };
+    
+        if(isCoefsLoading)
+        {
+          fetchCoefsEffect();
+        }
+       
+    }, [isCoefsLoading]);
+
+//CASE AND COEF END
 
 
   const addArticle = (newArticle) => {

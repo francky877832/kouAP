@@ -13,9 +13,190 @@ export const ManagerProvider = ({ children }) => {
 
     const [activities, setActivities] = useState([]);
     const [isAcLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+
+
+    const [cases, setCases] = useState([])
+
+
+
+
+    const deleteCase = async (caseId) => {
+      try {
+        const response = await fetch(`${server}/api/datas/cases/case/delete/${caseId}`, {
+              method: "DELETE",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+          });
+
+          if (!response.ok) {
+              throw new Error("Erreur lors de l'ajout du case");
+          }
+
+          const data = await response.json();
+      } catch (error) {
+          console.error("Erreur:", error.message);
+      }
+   };
+   const deleteCoef = async (coefId) => {
+    try {
+      const response = await fetch(`${server}/api/datas/cases/coef/delete/${coefId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de l'ajout du case");
+        }
+
+        const data = await response.json();
+    } catch (error) {
+        console.error("Erreur:", error.message);
+    }
+};
+
+
 
     
+
+    const addCase = async (newCase) => {
+      try {
+        console.log(newCase)
+        const response = await fetch(`${server}/api/datas/cases/case/create`, {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newCase),
+          });
+
+          if (!response.ok) {
+              throw new Error("Erreur lors de l'ajout du case");
+          }
+
+          const data = await response.json();
+      } catch (error) {
+          console.error("Erreur:", error.message);
+      }
+  };
+
+  
+  const updateCase = async (newCase) => {
+    try {
+      console.log(newCase)
+      const response = await fetch(`${server}/api/datas/cases/case/update/${newCase._id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newCase),
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de l'ajout du case");
+        }
+
+        const data = await response.json();
+    } catch (error) {
+        console.error("Erreur:", error.message);
+    }
+  };
+  const updateCoef = async (newCoef) => {
+    try {
+      console.log(newCoef)
+      const response = await fetch(`${server}/api/datas/cases/coef/update/${newCoef._id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newCoef),
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de l'ajout du case");
+        }
+
+        const data = await response.json();
+    } catch (error) {
+        console.error("Erreur:", error.message);
+    }
+};
+
+
+  const fetchCases = async () => {
+    try {
+      const response = await fetch(`${server}/api/datas/cases/case/all`, {
+        method: "GET", // Méthode GET pour récupérer les annonces
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
+      }
+  
+      // Récupérer les données au format JSON
+      const data = await response.json();
+      //console.log(data)
+      return data.data; // Retourner les annonces récupérées
+    } catch (error) {
+      console.error("Erreur:", error.message);
+      return []; // Retourner un tableau vide en cas d'erreur
+    }
+  }
+
+
+
+
+  const addCoef = async (newCoef) => {
+    try {
+      console.log(newCoef)
+      const response = await fetch(`${server}/api/datas/cases/coef/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newCoef),
+        });
+
+        if (!response.ok) {
+            throw new Error("Erreur lors de l'ajout du case");
+        }
+
+        const data = await response.json();
+    } catch (error) {
+        console.error("Erreur:", error.message);
+    }
+};
+
+const fetchCoefs = async () => {
+  try {
+    const response = await fetch(`${server}/api/datas/cases/coef/all`, {
+      method: "GET", // Méthode GET pour récupérer les annonces
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
+    }
+
+    // Récupérer les données au format JSON
+    const data = await response.json();
+    //console.log(data)
+    return data.data; // Retourner les annonces récupérées
+  } catch (error) {
+    console.error("Erreur:", error.message);
+    return []; // Retourner un tableau vide en cas d'erreur
+  }
+}
+
+  
+
 
     // Fonction pour créer une nouvelle activité
     const createActivity = async (newActivity) => {
@@ -172,9 +353,11 @@ export const ManagerProvider = ({ children }) => {
     
 
 
-    const stateVars = {user, activities}
+    const stateVars = {user, activities,  cases,}
     const stateFunctions = {}
-    const utilFunctions = {createActivity, createMinActivity, createMinPoint, deleteActivity, updateActivity}
+    const utilFunctions = {createActivity, createMinActivity, createMinPoint, deleteActivity, updateActivity, 
+      fetchCases, addCase, fetchCoefs, addCoef, updateCoef, updateCase, deleteCase, deleteCoef,
+    }
 
 
   return (

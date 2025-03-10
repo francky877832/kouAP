@@ -8,7 +8,6 @@ export const UserProvider = ({ children }) => {
     
      const [facultyDepartments, setFacultyDepartments] = useState({});
      const [faculties, setFaculties] = useState({});
-     const [isUserLoading, setIsUserLoading] = useState(true)
 
      const [activities, setActivities] = useState([])
      const [minActivities, setMinActivities] = useState([])
@@ -16,13 +15,18 @@ export const UserProvider = ({ children }) => {
      const [userForms, setUserForms] = useState([])
 
 
-
+     const [isUserLoading, setIsUserLoading] = useState(true)
      const [isActivitiesLoading, setIsActivitiesLoading] = useState(true)
      const [isMinActivitiesLoading, setIsMinActivitiesLoading] = useState(true)
      const [isMinPointsLoading, setIsMinPointsLoading] = useState(true)
      const [isUserFormsLoading, setIsUserFormsLoading] = useState(true)
+
+
+
     
-    
+
+
+     
         const fetchFaculties = async (userId) => {
           try {
             const response = await fetch(`${server}/api/datas/faculties/get`, {
@@ -239,10 +243,13 @@ const fetchUserForms= async () => {
 
 
         const stateVars = {user, isUserLoading, faculties, facultyDepartments, isActivitiesLoading, activities, isMinActivitiesLoading,
-           minActivities, isMinPointsLoading, minPoints, userForms, isUserFormsLoading
+           minActivities, isMinPointsLoading, minPoints, userForms, isUserFormsLoading,
+          
           }
-        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading}
-        const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms}
+        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, }
+        const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
+          
+        }
 
   return (
     <UserContext.Provider value={{ ...stateVars, ...stateFunctions, ...utilFunctions }}>

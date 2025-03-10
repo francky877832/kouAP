@@ -16,6 +16,7 @@ import EditCriterias from "./pages/EditCriterias";
 import Activities from "./pages/Activities";
 import MinActivities from "./pages/MinActivities";
 import MinPoints from "./pages/MinPoints";
+import CaseCoef from "./pages/CaseCoef";
 
 
 const App = () => {
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/activities/view" element={<Activities />} />
         <Route path="/min-activities/view" element={<MinActivities />} />
         <Route path="/min-points/view" element={<MinPoints />} />
+        <Route path="/case-coef/view" element={<CaseCoef />} />
 
         <Route path="/login" element={<Login />} />
 
