@@ -45,6 +45,18 @@ const ApplyForm = () => {
   
 
   const [formData, setFormData] = useState({
+      step1 : {
+      fullName: '',
+      idNumber: '',
+      email: '',
+      phoneNumber: '',
+      address: '',
+    }
+  });
+
+  /* 
+    (el => [el.letter, el.fields.map(el2 => el2.name )])
+  )
     step1 : {
       fullName: '',
       idNumber: '',
@@ -73,12 +85,36 @@ const ApplyForm = () => {
       location : '',
       numberPage : '',
       date : '',
+      cases : {},
+      participants  : {},
     },
 
+*/
 
-    
-  });
 
+
+useEffect(() => {
+  
+  setFormData( userForms.reduce((acc, item) => {
+    acc[item.letter] = Object.fromEntries(item.fields.map(({ name }) => [name, ""]));
+    //console.log(item)
+    return acc
+  }, formData))
+
+  setFormData(prev => {
+    const updatedFormData = { ...prev };
+    for (let letter in updatedFormData) {
+      if (updatedFormData[letter]) {
+        updatedFormData[letter]["cases"] = "";
+        updatedFormData[letter]["coefs"] = "";
+        updatedFormData[letter]["participants"] = {};
+      }
+    }
+    return updatedFormData;
+  })
+
+  console.log(userForms)
+}, [isUserFormsLoading])
   const nextStep = () => setStep((prevStep) => prevStep + 1);
   const prevStep = () => setStep((prevStep) => prevStep - 1);
   
@@ -145,6 +181,7 @@ const ApplyForm = () => {
   {
     return <Loading/>
   }
+  //console.log(userForms)
 
   return (
     <div className="container mt-5">
@@ -157,7 +194,7 @@ const ApplyForm = () => {
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
         {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={{submittedArticles, cases, coefs}} />}
-        {step === 3 && <B formData={formData.B} handleChange={handleChange} handleData={addActivity} data={submittedActivities}  />}
+        {step === 3 && <B userForms={userForms[1]} formData={formData.B} setFormData={setFormData} handleChange={handleChange} handleData={addActivity} data={{submittedArticles, cases, coefs}}  />}
 
         {step === 4 && <Step4 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
         {step === 5 && <Step5 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}

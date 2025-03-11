@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 
 const FormManager = () => {
     const { deleteForm, updateForm, createForm } = useContext(ManagerContext)
-    const { userForms, isUserFormsLoading, setIsUserFormsLoading} = useContext(UserContext)
+    const { userForms, isUserFormsLoading, setIsUserFormsLoading, activities} = useContext(UserContext)
     const [isLoading, setIsLaoding] = useState(false)
     //console.log(userForms)
   const [forms, setForms] = useState([])
@@ -79,7 +79,7 @@ const FormManager = () => {
     setIsLaoding(false)
   };
 
-  /*
+  
   // Ajouter un champ au formulaire
   const addField = () => {
     const updatedForm = { ...currentForm };
@@ -88,15 +88,15 @@ const FormManager = () => {
     setCurrentForm(updatedForm);
     setNewField({ name: '', label: '', type: 'text', options: '' });
   };
-*/
-  /*
+
+  
   // Supprimer un champ du formulaire
   const deleteField = (fieldName) => {
     const updatedForm = { ...currentForm };
     updatedForm.fields = updatedForm.fields.filter((field) => field.name !== fieldName);
     setCurrentForm(updatedForm);
   };
-*/
+
   // Gérer les changements dans les champs du formulaire
   const handleFieldChange = (e, fieldName, isField=true) => {
     const { name, value } = e.target;
@@ -186,6 +186,8 @@ const FormManager = () => {
                 />
               </Form.Group>
 
+              
+
               {/* Liste des champs existants */}
               <h5>Champs existants</h5>
               {currentForm.fields.map((field, index) => (
@@ -232,7 +234,7 @@ const FormManager = () => {
                   </Form.Group>
 
                   {/* Bouton pour supprimer le champ */}
-                  <Button variant="danger" size="sm" onClick={() => {/*deleteField(field.name)*/}}>
+                  <Button variant="danger" size="sm" onClick={() => {deleteField(field.name)}}>
                     Supprimer le champ
                   </Button>
                 </div>
@@ -292,7 +294,7 @@ const FormManager = () => {
               )}
 
               {/* Bouton pour ajouter un champ */}
-              <Button variant="secondary" onClick={{/*addField*/}}>
+              <Button variant="secondary" onClick={(e) => {addField()}}>
                 Ajouter un Champ
               </Button>
             </Form>

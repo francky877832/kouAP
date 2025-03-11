@@ -111,7 +111,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
         <>
           <div>
             <h4>Détails de la Catégorie</h4>
-            {renderDetailsFields(userForms.fileds)}
+            {renderDetailsFields(userForms.fields)}
           </div>
 
 

@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { step3Data } from '../../datas/adayFormData';
 
-const B = ({ formData, handleChange, handleData, data}) => {
+const B = ({ formData, userForms, handleChange, handleData, data}) => {
+  const {submittedArticles, cases, coefs} = data
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [submittedArticles, setSubmittedArticles] = useState([]);
-  
-  // Fonction pour gérer la sélection de catégorie
+  //console.log(formData)
+  const formCases = formData
+  const formCoefs = formData
+
+  const [selectedMessage, setSelectedMessage] = useState(null);
+
+
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
   };
@@ -16,46 +20,74 @@ const B = ({ formData, handleChange, handleData, data}) => {
       return;
     }
 
-
-    const activityData = {
+    const articleData = {
       category: selectedCategory,
-      author: formData['author'],
-      title: formData['title'],
-      conferanceName: formData['conferanceName'],
-      location: formData['location'],
-      numberPage: formData['numberPage'],
-      date: formData['date'],
+      author: formData['author'] || '',
+      articleTitle: formData['articleTitle'] || '',
+      journalName: formData['journalName'] || '',
+      volume: formData['volume'] || '',
+      pages: formData['pages'] || '',
+      year: formData['year'] || '',
     };
 
-    // Ajoute l'article aux données soumises
-    handleData(activityData)
-
-    // Réinitialiser les champs du formulaire
+    handleData(articleData);
     setSelectedCategory('');
     handleChange({ target: { name: 'author', value: '' } }, 'B', true);
   };
 
+  // Fonction pour rendre dynamiquement les champs en fonction du type
+  const printFields = (field) => {
+    if (['checkbox', 'radio'].includes(field.type) && field.options) {
+      return field.options.map((option, index) => (
+        <div key={index}>
+          <label>
+            <input
+              type={field.type}
+              name={field.name}
+              value={option}
+              checked={formData[field.name]?.includes(option) || false}
+              onChange={(e) => handleChange(e, 'B')}
+            />
+            {option}
+          </label>
+        </div>
+      ));
+    } else if (field.type === 'textarea') {
+      return (
+        <textarea
+          className="form-control"
+          id={field.name}
+          name={field.name}
+          value={formData[field.name] || ''}
+          onChange={(e) => handleChange(e, 'B')}
+        />
+      );
+    } else {
+      return (
+        <input
+          type={field.type}
+          className="form-control"
+          id={field.name}
+          name={field.name}
+          value={formData[field.name] || ''}
+          onChange={(e) => handleChange(e, 'B')}
+        />
+      );
+    } 
+  };
 
   // Fonction pour rendre dynamiquement les champs de détails
   const renderDetailsFields = (details) => {
     return details.map((field) => (
       <div className="form-group" key={field.name}>
-        <label htmlFor={field.name}>{field.label}</label>
-        <input
-          type={field.type||'text'}
-          className="form-control"
-          id={field.name}
-          name={field.name}
-          value={formData[field.name] || ''}
-          onChange={(e) => { handleChange(e, "B"); }}
-        />
+        <label htmlFor={field.name}><strong>{field.label}</strong></label>
+        {printFields(field)}
       </div>
     ));
   };
 
   return (
     <div>
-      {/* Sélectionner la catégorie */}
       <div className="form-group">
         <label htmlFor="category">Catégorie</label>
         <select
@@ -65,49 +97,97 @@ const B = ({ formData, handleChange, handleData, data}) => {
           onChange={handleCategoryChange}
         >
           <option value="">Sélectionner une catégorie</option>
-          {step3Data.categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.label}
+          {userForms.activity.activities.map((category) => (
+            <option key={category._id} value={category._id}>
+              {category.name}
             </option>
           ))}
         </select>
       </div>
 
-      {/* Afficher les champs supplémentaires si une catégorie est sélectionnée */}
+
+
       {selectedCategory && (
         <>
           <div>
             <h4>Détails de la Catégorie</h4>
-            {step3Data.categories
-              .filter((category) => category.id === selectedCategory)
-              .map((category) => renderDetailsFields(step3Data.details.fields))}
+            {renderDetailsFields(userForms.fields)}
           </div>
 
-          <div className="mt-3">
-          <button
-            type="button"
-            className="btn btn-success"
-            onClick={handleAddButtonClick}
-          >
-            Add Article
-          </button>
-        </div>
-      </>
 
+
+
+        <br/>
+    
+      
+          <>
+              <h4>Choose a situation</h4>
+              {cases.map((item, index) => (
+                <div key={index} className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="messages"
+                    value={item._id}
+                    checked={formCases.cases[item._id]}
+                    onChange={(e) => {setSelectedMessage(item._id);handleChange(e, 'B', false, 'cases')}}
+                  />
+                  <label className="form-check-label">
+                    {item.message}
+                  </label>
+                </div>
+              ))}
+
+              {/* Affichage des participants uniquement si un message est sélectionné */}
+              {selectedMessage && (
+                <div className="mt-3">
+                  <h5>Participants :</h5>
+                  {cases
+                    .find((item) => item._id === selectedMessage)
+                    ?.participants.map((p, i) => (
+                      <div key={i} className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="participants"
+                          value={p.title}
+                          checked={formCases.participants[p.title]}
+                          onChange={(e) => handleChange(e, 'B', false, 'participants')}
+                        />
+                        <label className="form-check-label">{p.title}</label>
+                      </div>
+                    ))}
+                </div>
+              )}
+          </>
+        
+
+          <div className="mt-3 d-flex justify-content-center ">
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={handleAddButtonClick}
+            >
+              Ajouter Article
+            </button>
+          </div>
+        </>
       )}
 
 
+
+
+
       <div className="mt-4">
-        <h5>Articles Added:</h5>
+        <h5>Articles Ajoutés:</h5>
         <ul>
-          {data.map((article, index) => (
+          {submittedArticles.map((article, index) => (
             <li key={index}>
-              <strong>{article.category}:</strong> {article.title} by {article.author}
+              <strong>{article.category}:</strong> {article.articleTitle} by {article.author}
             </li>
           ))}
         </ul>
       </div>
-
     </div>
   );
 };
