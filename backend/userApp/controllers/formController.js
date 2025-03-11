@@ -3,11 +3,13 @@ const mongoose = require('mongoose');
 
 // Créer un nouveau formulaire
 exports.createForm = async (req, res) => {
+    //console.log("ok")
     try {
         const form = new Form(req.body);
         await form.save();
-        res.status(201).json(form);
+        res.status(201).json({message:"success", data:form});
     } catch (error) {
+        console.log(error)
         res.status(400).json({ error: error.message });
     }
 };
@@ -39,13 +41,15 @@ exports.getFormById = async (req, res) => {
 
 // Mettre à jour un formulaire
 exports.updateForm = async (req, res) => {
+    //console.log("ok")
     try {
         const form = await Form.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         if (!form) {
             return res.status(404).json({ message: 'Formulaire non trouvé' });
         }
-        res.status(200).json(form);
+        res.status(200).json({message:"success", data:form});
     } catch (error) {
+        console.log(error)
         res.status(400).json({ error: error.message });
     }
 };
@@ -59,6 +63,7 @@ exports.deleteForm = async (req, res) => {
         }
         res.status(200).json({ message: 'Formulaire supprimé avec succès' });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: error.message });
     }
 };

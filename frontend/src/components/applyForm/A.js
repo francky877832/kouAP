@@ -117,7 +117,8 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
 
 
 
-
+        <br/>
+    
       
           <>
               <h4>Choose a situation</h4>
@@ -161,7 +162,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
           </>
         
 
-          <div className="mt-3">
+          <div className="mt-3 d-flex justify-content-center ">
             <button
               type="button"
               className="btn btn-success"

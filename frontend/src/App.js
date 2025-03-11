@@ -17,6 +17,7 @@ import Activities from "./pages/Activities";
 import MinActivities from "./pages/MinActivities";
 import MinPoints from "./pages/MinPoints";
 import CaseCoef from "./pages/CaseCoef";
+import FormManager from "./pages/FormManager";
 
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
         <Route path="/min-activities/view" element={<MinActivities />} />
         <Route path="/min-points/view" element={<MinPoints />} />
         <Route path="/case-coef/view" element={<CaseCoef />} />
+        <Route path="/manager-form/edit-form" element={<FormManager />} />
 
         <Route path="/login" element={<Login />} />
 

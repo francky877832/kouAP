@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import Step1 from '../components/applyForm/Step1';
 import A from '../components/applyForm/A';
-import Step3 from '../components/applyForm/Step3';
+import B from '../components/applyForm/B';
 import Step4 from '../components/applyForm/Step4';
 import Step5 from '../components/applyForm/Step5';
 import ReviewForm from '../components/applyForm/ReviewForm';
@@ -11,7 +11,7 @@ import { UserContext } from '../context/UserContext';
 import { ManagerContext } from '../context/ManagerContext';
 
 const ApplyForm = () => {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(3);
   const steps = 20
 
   const { userForms, isUserFormsLoading } = useContext(UserContext)
@@ -66,7 +66,7 @@ const ApplyForm = () => {
       participants  : {},
   
     },
-    step3 : {
+    B : {
       author : '',
       title : '',
       conferenceName : '',
@@ -157,7 +157,7 @@ const ApplyForm = () => {
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
         {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={{submittedArticles, cases, coefs}} />}
-        {step === 3 && <Step3 formData={formData.step3} handleChange={handleChange} handleData={addActivity} data={submittedActivities}  />}
+        {step === 3 && <B formData={formData.B} handleChange={handleChange} handleData={addActivity} data={submittedActivities}  />}
 
         {step === 4 && <Step4 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
         {step === 5 && <Step5 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}

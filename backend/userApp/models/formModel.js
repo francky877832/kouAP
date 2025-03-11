@@ -22,14 +22,7 @@ const FormSchema = new mongoose.Schema({
             name: { type: String, required: true },
             label: { type: String, required: true },
             type: { type: String, required: true },
-            options: { type: [String], default: undefined,
-                validate: {
-                    validator: function (value) {
-                      return this.type !== 'checkbox' && this.type !== 'radio' ? true : Array.isArray(value) && value.length > 0;
-                    },
-                    message: "L'option est requise pour les champs de type 'checkbox' ou 'radio'.",
-                  },
-            },
+            options: { type: [String], required: false },
         }
     ],
 });

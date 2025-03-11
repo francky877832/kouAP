@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { step3Data } from '../../datas/adayFormData';
 
-const Step3 = ({ formData, handleChange, handleData, data}) => {
+const B = ({ formData, handleChange, handleData, data}) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [submittedArticles, setSubmittedArticles] = useState([]);
   
@@ -32,7 +32,7 @@ const Step3 = ({ formData, handleChange, handleData, data}) => {
 
     // Réinitialiser les champs du formulaire
     setSelectedCategory('');
-    handleChange({ target: { name: 'author', value: '' } }, 'step3', true);
+    handleChange({ target: { name: 'author', value: '' } }, 'B', true);
   };
 
 
@@ -47,7 +47,7 @@ const Step3 = ({ formData, handleChange, handleData, data}) => {
           id={field.name}
           name={field.name}
           value={formData[field.name] || ''}
-          onChange={(e) => { handleChange(e, "step3"); }}
+          onChange={(e) => { handleChange(e, "B"); }}
         />
       </div>
     ));
@@ -112,4 +112,4 @@ const Step3 = ({ formData, handleChange, handleData, data}) => {
   );
 };
 
-export default Step3;
+export default B;

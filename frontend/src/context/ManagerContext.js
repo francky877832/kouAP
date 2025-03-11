@@ -305,12 +305,106 @@ export const ManagerProvider = ({ children }) => {
 
 
     
+      // Fonction pour créer une nouvelle activité
+    const createForm = async (newForm) => {
+      //console.log(newActivity)
+      try {
+
+         const response = await fetch(`${server}/api/datas/forms/create`, {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newForm),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+              //setActivities((prev) => [...prev, data]); // Mise à jour locale
+          } else {
+              throw new Error(data.message || "Erreur lors de la création du form");
+          }
+          console.log(data)
+          return data.data;
+      } catch (err) {
+          console.log('An error occured', err)
+          return false
+      } finally {
+          
+      }
+   };
+
+   const updateForm = async (updatedForm) => {
+    try {
+
+      const response = await fetch(`${server}/api/datas/forms/update/${updatedForm._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedForm),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update activity');
+      }
+  
+      const data = await response.json();
+      
+      /*
+      // Mettre à jour l'activité localement si l'API réussit
+      setActivities((prevActivities) =>
+        prevActivities.map((activity) =>
+          activity._id === updatedActivity._id ? updatedActivity : activity
+        )
+      );*/
+      //setIsActivitiesLoading(true)
+    } catch (error) {
+      console.error('Error updating activity:', error);
+    }
+  };
+  
+
+
+  const deleteForm = async (formId) => {
+    try {
+      const response = await fetch(`${server}/api/datas/forms/delete/${formId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete activity');
+      }
+  
+      const data = await response.json();
+      console.log('Activity deleted successfully:', data);
+  
+      /*
+        // Mettre à jour localement la liste des activités après la suppression
+        setActivities((prevActivities) =>
+            prevActivities.filter((activity) => activity._id !== activityId)
+        );
+      */
+      
+      //setIsActivitiesLoading(true); // Si vous avez un état de chargement des activités
+    } catch (error) {
+      console.error('Error deleting activity:', error);
+    }
+  };
+  
+
+
+
 
 
     const stateVars = {user, activities,  cases,}
     const stateFunctions = {}
     const utilFunctions = {createActivity, createMinActivity, createMinPoint, deleteActivity, updateActivity, 
        addCase, addCoef, updateCoef, updateCase, deleteCase, deleteCoef,
+       deleteForm, updateForm, createForm
     }
 
 
