@@ -21,47 +21,12 @@ const ApplyForm = () => {
   const [submittedActivities, setSubmittedActivites] = useState([]);
 
 
-   const { fetchCases, addCase, fetchCoefs, addCoef, updateCoef, updateCase, deleteCase, deleteCoef,  } = useContext(ManagerContext)
+   const {addCase, fetchCoefs, updateCoef, updateCase, deleteCase, deleteCoef,  } = useContext(ManagerContext)
+    const {cases, coefs, isCoefsLoading, isCasesLoading, setIsCasesLoading, setIsCoefsLoading} = useContext(UserContext)
   
 //CASE AND COEF
-      const [isCasesLoading, setIsCasesLoading] = useState(true)
-      const [isCoefsLoading, setIsCoefsLoading] = useState(true)
-  
-    const [coefs, setCoefs] = useState([]);
-  
-    const [cases, setCases] = useState([]);
 
-     useEffect(() => {
-          const fetchCasesEffect = async () => {
-            setIsCasesLoading(true)
-              const act = await fetchCases()
-              //console.log(act)
-              setCases(act)
-              setIsCasesLoading(false)
-          };
-      
-          if(isCasesLoading)
-          {
-            fetchCasesEffect();
-          }
-         
-      }, [isCasesLoading]);
-    
-      useEffect(() => {
-        const fetchCoefsEffect = async () => {
-          setIsCoefsLoading(true)
-            const act = await fetchCoefs()
-            //console.log(act)
-            setCoefs(act)
-            setIsCoefsLoading(false)
-        };
-    
-        if(isCoefsLoading)
-        {
-          fetchCoefsEffect();
-        }
-       
-    }, [isCoefsLoading]);
+
 
 //CASE AND COEF END
 
@@ -74,6 +39,8 @@ const ApplyForm = () => {
     //console.log(submittedArticles)
     setSubmittedActivites((prevActivity) => [...prevActivity, newActivity]);
   };
+
+
 
   
 
@@ -94,6 +61,10 @@ const ApplyForm = () => {
       pages: '',
       year: '',
       authorName:'',
+
+      cases : {},
+      participants  : {},
+  
     },
     step3 : {
       author : '',
@@ -111,7 +82,9 @@ const ApplyForm = () => {
   const nextStep = () => setStep((prevStep) => prevStep + 1);
   const prevStep = () => setStep((prevStep) => prevStep - 1);
   
-  const handleChange = (e, stepName, reset=false) => {
+  const handleChange = (e, stepName, reset=false, choice=null) => {
+
+    const { name, value } = e.target;
 
     const resetObjectFields = (obj) => {
       return Object.fromEntries(
@@ -126,7 +99,26 @@ const ApplyForm = () => {
       }));
       return;
     }
-    const { name, value } = e.target;
+
+    if(choice)
+    {
+      setFormData({
+        ...formData,
+        [stepName]: {
+          ...formData[stepName],
+          [choice] : {
+            //...formData[stepName][choice], //name==particiapants, ou cases
+            [value]: !formData[stepName].cases[choice],
+          }
+        },
+      });
+      console.log(formData[stepName])
+        return;
+    }
+
+
+
+
     setFormData({
       ...formData,
       [stepName]: {
@@ -149,7 +141,7 @@ const ApplyForm = () => {
     console.log('Form Submitted:', formData);
   };
 
-  if(isUserFormsLoading)
+  if(isUserFormsLoading || isCasesLoading || isCoefsLoading)
   {
     return <Loading/>
   }
@@ -164,7 +156,7 @@ const ApplyForm = () => {
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
-        {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={submittedArticles} />}
+        {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={{submittedArticles, cases, coefs}} />}
         {step === 3 && <Step3 formData={formData.step3} handleChange={handleChange} handleData={addActivity} data={submittedActivities}  />}
 
         {step === 4 && <Step4 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}

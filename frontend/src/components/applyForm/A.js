@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 
-const A = ({ formData, userForms, handleChange, handleData, data }) => {
+const A = ({ formData, userForms, handleChange, handleData, data}) => {
+  const {submittedArticles, cases, coefs} = data
   const [selectedCategory, setSelectedCategory] = useState('');
+  console.log(formData)
+  const formCases = formData
+  const formCoefs = formData
+
+  const [selectedMessage, setSelectedMessage] = useState(null);
+
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
@@ -25,7 +32,7 @@ const A = ({ formData, userForms, handleChange, handleData, data }) => {
 
     handleData(articleData);
     setSelectedCategory('');
-    handleChange({ target: { name: 'author', value: '' } }, 'step2', true);
+    handleChange({ target: { name: 'author', value: '' } }, 'A', true);
   };
 
   // Fonction pour rendre dynamiquement les champs en fonction du type
@@ -39,7 +46,7 @@ const A = ({ formData, userForms, handleChange, handleData, data }) => {
               name={field.name}
               value={option}
               checked={formData[field.name]?.includes(option) || false}
-              onChange={(e) => handleChange(e, 'step2')}
+              onChange={(e) => handleChange(e, 'A')}
             />
             {option}
           </label>
@@ -52,7 +59,7 @@ const A = ({ formData, userForms, handleChange, handleData, data }) => {
           id={field.name}
           name={field.name}
           value={formData[field.name] || ''}
-          onChange={(e) => handleChange(e, 'step2')}
+          onChange={(e) => handleChange(e, 'A')}
         />
       );
     } else {
@@ -63,7 +70,7 @@ const A = ({ formData, userForms, handleChange, handleData, data }) => {
           id={field.name}
           name={field.name}
           value={formData[field.name] || ''}
-          onChange={(e) => handleChange(e, 'step2')}
+          onChange={(e) => handleChange(e, 'A')}
         />
       );
     } 
@@ -98,12 +105,61 @@ const A = ({ formData, userForms, handleChange, handleData, data }) => {
         </select>
       </div>
 
+
+
       {selectedCategory && (
         <>
           <div>
             <h4>Détails de la Catégorie</h4>
             {renderDetailsFields(userForms.fileds)}
           </div>
+
+
+
+
+
+      
+          <>
+              <h4>Choose a situation</h4>
+              {cases.map((item, index) => (
+                <div key={index} className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="messages"
+                    value={item._id}
+                    checked={formCases.cases[item._id]}
+                    onChange={(e) => {setSelectedMessage(item._id);handleChange(e, 'A', false, 'cases')}}
+                  />
+                  <label className="form-check-label">
+                    {item.message}
+                  </label>
+                </div>
+              ))}
+
+              {/* Affichage des participants uniquement si un message est sélectionné */}
+              {selectedMessage && (
+                <div className="mt-3">
+                  <h5>Participants :</h5>
+                  {cases
+                    .find((item) => item._id === selectedMessage)
+                    ?.participants.map((p, i) => (
+                      <div key={i} className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="participants"
+                          value={p.title}
+                          checked={formCases.participants[p.title]}
+                          onChange={(e) => handleChange(e, 'A', false, 'participants')}
+                        />
+                        <label className="form-check-label">{p.title}</label>
+                      </div>
+                    ))}
+                </div>
+              )}
+          </>
+        
 
           <div className="mt-3">
             <button
@@ -117,10 +173,14 @@ const A = ({ formData, userForms, handleChange, handleData, data }) => {
         </>
       )}
 
+
+
+
+
       <div className="mt-4">
         <h5>Articles Ajoutés:</h5>
         <ul>
-          {data.map((article, index) => (
+          {submittedArticles.map((article, index) => (
             <li key={index}>
               <strong>{article.category}:</strong> {article.articleTitle} by {article.author}
             </li>

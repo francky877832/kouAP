@@ -125,30 +125,6 @@ export const ManagerProvider = ({ children }) => {
 };
 
 
-  const fetchCases = async () => {
-    try {
-      const response = await fetch(`${server}/api/datas/cases/case/all`, {
-        method: "GET", // Méthode GET pour récupérer les annonces
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
-      }
-  
-      // Récupérer les données au format JSON
-      const data = await response.json();
-      //console.log(data)
-      return data.data; // Retourner les annonces récupérées
-    } catch (error) {
-      console.error("Erreur:", error.message);
-      return []; // Retourner un tableau vide en cas d'erreur
-    }
-  }
-
-
 
 
   const addCoef = async (newCoef) => {
@@ -172,28 +148,6 @@ export const ManagerProvider = ({ children }) => {
     }
 };
 
-const fetchCoefs = async () => {
-  try {
-    const response = await fetch(`${server}/api/datas/cases/coef/all`, {
-      method: "GET", // Méthode GET pour récupérer les annonces
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
-    }
-
-    // Récupérer les données au format JSON
-    const data = await response.json();
-    //console.log(data)
-    return data.data; // Retourner les annonces récupérées
-  } catch (error) {
-    console.error("Erreur:", error.message);
-    return []; // Retourner un tableau vide en cas d'erreur
-  }
-}
 
   
 
@@ -356,7 +310,7 @@ const fetchCoefs = async () => {
     const stateVars = {user, activities,  cases,}
     const stateFunctions = {}
     const utilFunctions = {createActivity, createMinActivity, createMinPoint, deleteActivity, updateActivity, 
-      fetchCases, addCase, fetchCoefs, addCoef, updateCoef, updateCase, deleteCase, deleteCoef,
+       addCase, addCoef, updateCoef, updateCase, deleteCase, deleteCoef,
     }
 
 

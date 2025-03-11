@@ -11,46 +11,9 @@ const CaseCoef = () => {
     } = useContext(ManagerContext)
 
     
-    const [isCasesLoading, setIsCasesLoading] = useState(true)
-    const [isCoefsLoading, setIsCoefsLoading] = useState(true)
-
-  const [coefs, setCoefs] = useState([]);
-
-  const [cases, setCases] = useState([]);
-
-
-
-    useEffect(() => {
-      const fetchCasesEffect = async () => {
-        setIsCasesLoading(true)
-          const act = await fetchCases()
-          //console.log(act)
-          setCases(act)
-          setIsCasesLoading(false)
-      };
+  const {cases, coefs, isCoefsLoading, isCasesLoading, setIsCasesLoading, setIsCoefsLoading} = useContext(UserContext)
   
-      if(isCasesLoading)
-      {
-        fetchCasesEffect();
-      }
-     
-  }, [isCasesLoading]);
-
-  useEffect(() => {
-    const fetchCoefsEffect = async () => {
-      setIsCoefsLoading(true)
-        const act = await fetchCoefs()
-        //console.log(act)
-        setCoefs(act)
-        setIsCoefsLoading(false)
-    };
-
-    if(isCoefsLoading)
-    {
-      fetchCoefsEffect();
-    }
    
-}, [isCoefsLoading]);
 
   const participantTitles = ["AD", "LO1", "LO2", "ED", "KYD", "BY", "IY", "SY", "EY", "FIVE_PLUS", "NONE_OF_THEM"];
 

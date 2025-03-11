@@ -13,6 +13,8 @@ export const UserProvider = ({ children }) => {
      const [minActivities, setMinActivities] = useState([])
      const [minPoints, setMinPoints] = useState([])
      const [userForms, setUserForms] = useState([])
+    const [coefs, setCoefs] = useState([]); 
+    const [cases, setCases] = useState([]);
 
 
      const [isUserLoading, setIsUserLoading] = useState(true)
@@ -20,9 +22,58 @@ export const UserProvider = ({ children }) => {
      const [isMinActivitiesLoading, setIsMinActivitiesLoading] = useState(true)
      const [isMinPointsLoading, setIsMinPointsLoading] = useState(true)
      const [isUserFormsLoading, setIsUserFormsLoading] = useState(true)
+     const [isCasesLoading, setIsCasesLoading] = useState(true)
+     const [isCoefsLoading, setIsCoefsLoading] = useState(true)
 
 
 
+     const fetchCases = async () => {
+      try {
+        const response = await fetch(`${server}/api/datas/cases/case/all`, {
+          method: "GET", // Méthode GET pour récupérer les annonces
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
+        }
+    
+        // Récupérer les données au format JSON
+        const data = await response.json();
+        //console.log(data)
+        return data.data; // Retourner les annonces récupérées
+      } catch (error) {
+        console.error("Erreur:", error.message);
+        return []; // Retourner un tableau vide en cas d'erreur
+      }
+    }
+
+
+    
+const fetchCoefs = async () => {
+  try {
+    const response = await fetch(`${server}/api/datas/cases/coef/all`, {
+      method: "GET", // Méthode GET pour récupérer les annonces
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
+    }
+
+    // Récupérer les données au format JSON
+    const data = await response.json();
+    //console.log(data)
+    return data.data; // Retourner les annonces récupérées
+  } catch (error) {
+    console.error("Erreur:", error.message);
+    return []; // Retourner un tableau vide en cas d'erreur
+  }
+}
     
 
 
@@ -240,15 +291,49 @@ const fetchUserForms= async () => {
 }, [isUserFormsLoading]);
 
 
+ useEffect(() => {
+      const fetchCasesEffect = async () => {
+        setIsCasesLoading(true)
+          const act = await fetchCases()
+          //console.log(act)
+          setCases(act)
+          setIsCasesLoading(false)
+      };
+  
+      if(isCasesLoading)
+      {
+        fetchCasesEffect();
+      }
+     
+  }, [isCasesLoading]);
+
+  useEffect(() => {
+    const fetchCoefsEffect = async () => {
+      setIsCoefsLoading(true)
+        const act = await fetchCoefs()
+        //console.log(act)
+        setCoefs(act)
+        setIsCoefsLoading(false)
+    };
+
+    if(isCoefsLoading)
+    {
+      fetchCoefsEffect();
+    }
+   
+}, [isCoefsLoading]);
+
+
 
 
         const stateVars = {user, isUserLoading, faculties, facultyDepartments, isActivitiesLoading, activities, isMinActivitiesLoading,
            minActivities, isMinPointsLoading, minPoints, userForms, isUserFormsLoading,
+           cases, coefs, isCasesLoading, isCoefsLoading
           
           }
-        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, }
+        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading}
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
-          
+          fetchCases, fetchCoefs
         }
 
   return (
