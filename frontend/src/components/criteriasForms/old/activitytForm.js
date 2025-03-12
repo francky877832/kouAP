@@ -12,30 +12,11 @@ const ActivityForm = ({
   facultyDepartments,
   selectedActivities, setSelectedActivities
 }) => {
-
-  // Ajouter une activité
-  const handleAddActivity = () => {
-    if (number && name && points) {
-      setSelectedActivities([...selectedActivities, { number, name, points }]);
-      setNumber(""); 
-      setName("");
-      setPoints("");
-    } else {
-      alert("Veuillez remplir tous les champs avant d'ajouter !");
-    }
-  };
-
-  // Supprimer une activité
-  const handleRemoveActivity = (index) => {
-    setSelectedActivities(selectedActivities.filter((_, i) => i !== index));
-  };
-
   return (
     <form onSubmit={handleSubmitFirstForm} className="container p-4 border rounded shadow-sm">
-  {/* 
       <div className="mb-3">
         <label className="form-label">Faculty</label>
-        <select className="form-select" value={faculty} onChange={(e) => setFaculty(e.target.value)} >
+        <select className="form-select" value={faculty} onChange={(e) => setFaculty(e.target.value)} required>
           <option value="">Select a faculty</option>
           {Object.keys(facultyDepartments).map((fac) => (
             <option key={facultyDepartments[fac]._id} value={fac}>{fac}</option>
@@ -45,14 +26,14 @@ const ActivityForm = ({
 
       <div className="mb-3">
         <label className="form-label">Department</label>
-        <select className="form-select" value={department} onChange={(e) => setDepartment(e.target.value)} disabled={!faculty} >
+        <select className="form-select" value={department} onChange={(e) => setDepartment(e.target.value)} disabled={!faculty} required>
           <option value="">Select a department</option>
           {faculty && facultyDepartments[faculty].departments.map((dep) => (
             <option key={dep._id} value={dep._id}>{dep.name}</option>
           ))}
         </select>
       </div>
-  */}
+
       <div className="mb-3">
         <label className="form-label">Letter</label>
         <select className="form-select" id="letter" value={letter} onChange={(e) => setLetter(e.target.value)} required>
@@ -70,35 +51,20 @@ const ActivityForm = ({
 
       <div className="mb-3">
         <label className="form-label">Number</label>
-        <input type="number" className="form-control" name="number" value={number} onChange={(e) => setNumber(e.target.value)}  />
+        <input type="number" className="form-control" name="number" value={number} onChange={(e) => setNumber(e.target.value)} required />
       </div>
 
       <div className="mb-3">
         <label className="form-label">Activity Name</label>
-        <input type="text" className="form-control" id="name" value={name} onChange={(e) => setName(e.target.value)}  />
+        <input type="text" className="form-control" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
       </div>
 
       <div className="mb-3">
         <label className="form-label">Points</label>
-        <input type="number" className="form-control" name="points" value={points} onChange={(e) => setPoints(e.target.value)}  />
+        <input type="number" className="form-control" name="points" value={points} onChange={(e) => setPoints(e.target.value)} required />
       </div>
 
-      {/* Bouton pour ajouter une activité */}
-      <div className="d-grid mb-3">
-        <button type="button" className="btn btn-success" onClick={handleAddActivity}>
-          Add Activity
-        </button>
-      </div>
-
-      {/* Affichage des activités ajoutées */}
-      <ul className="list-group mb-3">
-        {selectedActivities.map((activity, index) => (
-          <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-            {activity.number} - {activity.name} ({activity.points} points)
-            <button type="button" className="btn btn-danger btn-sm" onClick={() => handleRemoveActivity(index)}>❌</button>
-          </li>
-        ))}
-      </ul>
+      
 
       <div className="d-grid">
         <button type="submit" className="btn btn-primary">Submit First Form</button>

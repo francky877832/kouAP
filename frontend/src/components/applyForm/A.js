@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const A = ({ formData, userForms, handleChange, handleData, data}) => {
   const {submittedArticles, cases, coefs} = data
   const [selectedCategory, setSelectedCategory] = useState('');
+  console.log("formData")
   console.log(formData)
   const formCases = formData
   const formCoefs = formData
@@ -97,7 +98,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
           onChange={handleCategoryChange}
         >
           <option value="">Sélectionner une catégorie</option>
-          {userForms.activity.activities.map((category) => (
+          {userForms?.activity?.activities.map((category) => (
             <option key={category._id} value={category._id}>
               {category.name}
             </option>

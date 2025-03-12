@@ -72,7 +72,8 @@ const EditCriterias = () => {
   const [number, setNumber] = useState('');
   const [to, setTo] = useState('');
   const [criteria, setCriteria] = useState('');
-  const [currentForm, setCurrentForm] = useState(3)
+  const [currentForm, setCurrentForm] = useState(1)
+  const [selectedActivities, setSelectedActivities] = useState([])
   // State to track which form is currently active
 
 
@@ -111,13 +112,14 @@ const [activityId, setActivityId] = useState(null)
     event.preventDefault();
 
     const activity = {
-        faculty : facultyDepartments[faculty]._id,
+        //faculty : facultyDepartments[faculty]._id,
         label,
         department ,
         letter,
         name,
         points,
         number,
+        activities:selectedActivities
     }
     const data = await createActivity(activity)
     if(data)
@@ -129,7 +131,7 @@ const [activityId, setActivityId] = useState(null)
         setLetter('')
         setPoints(null)
         setNumber('')
-        setCurrentForm(2);
+        //setCurrentForm(2);
         return;
     }
     else
@@ -174,7 +176,7 @@ const [activityId, setActivityId] = useState(null)
         setLetter('')
         setPoints(null)
         setNumber('')
-        setCurrentForm(3);
+        //setCurrentForm(3);
         setPositionsPoint({ position: '', quantity: '', faculty : '' })
         setPositionData({
           position: '',
@@ -255,6 +257,29 @@ const [activityId, setActivityId] = useState(null)
   return (
     <div>
       <h1>Activity Form</h1>
+      
+
+      <div className="d-flex gap-2">
+        <button
+          className={`btn ${currentForm === 1 ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setCurrentForm(1)}
+        >
+         New Activity
+        </button>
+        <button
+          className={`btn ${currentForm === 2 ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setCurrentForm(2)}
+        >
+          Min. Points
+        </button>
+        <button
+          className={`btn ${currentForm === 3 ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setCurrentForm(3)}
+        >
+          Max. Points
+        </button>
+      </div>
+  
 
       {/* First Form */}
       {currentForm === 1 && (
@@ -271,6 +296,8 @@ const [activityId, setActivityId] = useState(null)
           points={points} setPoints={setPoints}
           number={number} setNumber={setNumber}
           facultyDepartments={facultyDepartments}
+          selectedActivities={selectedActivities} 
+          setSelectedActivities={setSelectedActivities}
          
         />
       )}

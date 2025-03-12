@@ -331,7 +331,7 @@ const fetchUserForms= async () => {
            cases, coefs, isCasesLoading, isCoefsLoading
           
           }
-        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading}
+        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading, setActivities}
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
           fetchCases, fetchCoefs
         }

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 const auth = require('../middlewares/auth');
 
 const announcementRoutes = require('./announcementRoutes');
@@ -19,7 +20,7 @@ router.use('/evaluations', evaluationRoutes);
 router.use('/activities', activityRoutes);
 router.use('/faculties', facultyRoutes);
 router.use('/forms', formRoutes);
-router.use('/cases', caseRoutes);
+router.use('/cases-+', caseRoutes);
 
 
 

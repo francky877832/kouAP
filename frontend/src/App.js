@@ -38,10 +38,14 @@ const App = () => {
         <Route path="/admin-panel" element={<AdminPanel />} />
         <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
         <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
+
+{/* tablo 1 */}
         <Route path="/manager/edit-criteria" element={<EditCriterias />} />
+{/* tablo 3 */}
         <Route path="/activities/view" element={<Activities />} />
         <Route path="/min-activities/view" element={<MinActivities />} />
         <Route path="/min-points/view" element={<MinPoints />} />
+
         <Route path="/case-coef/view" element={<CaseCoef />} />
         <Route path="/manager-form/edit-form" element={<FormManager />} />
 

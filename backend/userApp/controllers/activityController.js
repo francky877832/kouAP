@@ -11,12 +11,22 @@ const { Types } = mongoose;
 // Créer une nouvelle activité
 exports.createActivity = async (req, res) => {
     try {
-        const { letter, name, number, label, points } = req.body;
+        const { letter, name, number, points, label, activities } = req.body;
 
-        if (!letter || !name || !number || !label || !points) {
-            return res.status(400).json({ message: "Tous les champs sont requis." });
+        
+        if(activities)
+        {
+            const newActivity = new Activity({ letter, label, activities });
+            const savedActivity = await newActivity.save();
+
+            return res.status(201).json({ message: "Nouvelle activité créée.", data: savedActivity });
         }
-
+        else
+        {
+            if (!letter || !name || !number || !label || !points) {
+                return res.status(400).json({ message: "Tous les champs sont requis." });
+            }
+        }
         let existingActivity = await Activity.findOne({ letter });
 
         if (existingActivity) {
