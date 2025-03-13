@@ -14,37 +14,40 @@ exports.createActivity = async (req, res) => {
         const { letter, name, number, points, label, activities } = req.body;
 
         
-        if(activities)
+       /* if(activities)
         {
             const newActivity = new Activity({ letter, label, activities });
             const savedActivity = await newActivity.save();
 
             return res.status(201).json({ message: "Nouvelle activité créée.", data: savedActivity });
         }
-        else
-        {
-            if (!letter || !name || !number || !label || !points) {
-                return res.status(400).json({ message: "Tous les champs sont requis." });
-            }
+        else*/
+      
+        if (!letter || !label || !activities) {
+            return res.status(400).json({ error: "Tous les champs sont requis." });
         }
+        
         let existingActivity = await Activity.findOne({ letter });
 
         if (existingActivity) {
             // Vérifie si l'activité existe déjà dans le tableau
-            const isDuplicate = existingActivity.activities.some(act => act.name === name);
-
-            if (isDuplicate) {
-                return res.status(400).json({ message: "Cette activité existe déjà." });
-            }
+            const isDuplicate = activities.some(newAct =>
+                existingActivity.activities.some(act => act.name === newAct.name)
+              );
+              
+              if (isDuplicate) {
+                return res.status(400).json({ error: "Une ou plusieurs activités existent déjà." });
+              }
 
             // Ajoute la nouvelle activité
-            existingActivity.activities.push({ number, name, points });
+           // existingActivity.activities.push({ number, name, points });
+            existingActivity.activities.push(...activities);
             await existingActivity.save();
 
             return res.status(200).json({ message: "Activité ajoutée avec succès.", data: existingActivity });
         } else {
             // Crée un nouvel objet si la lettre n'existe pas encore
-            const newActivity = new Activity({ letter, label, activities: [{ number, name, points }] });
+            const newActivity = new Activity({ letter, label, activities });
             const savedActivity = await newActivity.save();
 
             return res.status(201).json({ message: "Nouvelle activité créée.", data: savedActivity });
