@@ -30,11 +30,12 @@ export const ManagerProvider = ({ children }) => {
           });
 
           if (!response.ok) {
-              throw new Error("Erreur lors de l'ajout du case");
+              throw new Error(data.error || "Erreur lors de l'ajout du case");
           }
 
           const data = await response.json();
       } catch (error) {
+          alert(error)
           console.error("Erreur:", error.message);
       }
    };
@@ -48,11 +49,12 @@ export const ManagerProvider = ({ children }) => {
         });
 
         if (!response.ok) {
-            throw new Error("Erreur lors de l'ajout du case");
+            throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
         const data = await response.json();
     } catch (error) {
+        alert(error)
         console.error("Erreur:", error.message);
     }
 };
@@ -73,11 +75,12 @@ export const ManagerProvider = ({ children }) => {
           });
 
           if (!response.ok) {
-              throw new Error("Erreur lors de l'ajout du case");
+              throw new Error(data.error || "Erreur lors de l'ajout du case");
           }
 
           const data = await response.json();
       } catch (error) {
+        alert(error)
           console.error("Erreur:", error.message);
       }
   };
@@ -95,11 +98,12 @@ export const ManagerProvider = ({ children }) => {
         });
 
         if (!response.ok) {
-            throw new Error("Erreur lors de l'ajout du case");
+            throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
         const data = await response.json();
     } catch (error) {
+      alert(error)
         console.error("Erreur:", error.message);
     }
   };
@@ -115,11 +119,12 @@ export const ManagerProvider = ({ children }) => {
         });
 
         if (!response.ok) {
-            throw new Error("Erreur lors de l'ajout du case");
+            throw new Error(data.error ||"Erreur lors de l'ajout du case");
         }
 
         const data = await response.json();
     } catch (error) {
+      alert(error)
         console.error("Erreur:", error.message);
     }
 };
@@ -139,11 +144,12 @@ export const ManagerProvider = ({ children }) => {
         });
 
         if (!response.ok) {
-            throw new Error("Erreur lors de l'ajout du case");
+            throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
         const data = await response.json();
     } catch (error) {
+      alert(error)
         console.error("Erreur:", error.message);
     }
 };
@@ -169,12 +175,13 @@ export const ManagerProvider = ({ children }) => {
             if (response.ok) {
                 setActivities((prev) => [...prev, data]); // Mise à jour locale
             } else {
-                throw new Error(data.message || "Erreur lors de la création de l'activité");
+                throw new Error(data.error || "Erreur lors de la création de l'activité");
             }
-            console.log(data)
+            //console.log(data)
             return data.data;
-        } catch (err) {
-            console.log('An error occured', err)
+        } catch (error) {
+          alert(error)
+            console.log('An error occured', error)
             return false
         } finally {
             
@@ -198,12 +205,13 @@ export const ManagerProvider = ({ children }) => {
             if (response.ok) {
                 setActivities((prev) => [...prev, data]); // Mise à jour locale
             } else {
-                throw new Error(data.message || "Erreur lors de la création de l'activité");
+                throw new Error(data.error || "Erreur lors de la création de l'activité");
             }
-            console.log(data)
+            //console.log(data)
             return data.data;
-        } catch (err) {
-            console.log('An error occured', err)
+        } catch (error) {
+          alert(error)
+            console.log('An error occured', error)
             return false
         } finally {
             
@@ -227,12 +235,13 @@ export const ManagerProvider = ({ children }) => {
             if (response.ok) {
                 setActivities((prev) => [...prev, data]); // Mise à jour locale
             } else {
-                throw new Error(data.message || "Erreur lors de la création de l'activité");
+                throw new Error(data.error || "Erreur lors de la création de l'activité");
             }
-            console.log(data)
+            //console.log(data)
             return data.data;
-        } catch (err) {
-            console.log('An error occured', err)
+        } catch (error) {
+          alert(error)
+            console.log('An error occured', error)
             return false
         } finally {
             
@@ -253,7 +262,7 @@ export const ManagerProvider = ({ children }) => {
           });
       
           if (!response.ok) {
-            throw new Error('Failed to update activity');
+            throw new Error(data.error || 'Failed to update activity');
           }
       
           const data = await response.json();
@@ -267,6 +276,7 @@ export const ManagerProvider = ({ children }) => {
           );*/
           setIsActivitiesLoading(true)
         } catch (error) {
+          alert(error)
           console.error('Error updating activity:', error);
         }
       };
@@ -283,7 +293,7 @@ export const ManagerProvider = ({ children }) => {
           });
       
           if (!response.ok) {
-            throw new Error('Failed to delete activity');
+            throw new Error(data.error || 'Failed to delete activity');
           }
       
           const data = await response.json();
@@ -298,6 +308,7 @@ export const ManagerProvider = ({ children }) => {
           
           setIsActivitiesLoading(true); // Si vous avez un état de chargement des activités
         } catch (error) {
+          alert(error)
           console.error('Error deleting activity:', error);
         }
       };
@@ -322,12 +333,13 @@ export const ManagerProvider = ({ children }) => {
           if (response.ok) {
               //setActivities((prev) => [...prev, data]); // Mise à jour locale
           } else {
-              throw new Error(data.message || "Erreur lors de la création du form");
+              throw new Error(data.error || "Erreur lors de la création du form");
           }
           console.log(data)
           return data.data;
       } catch (err) {
           console.log('An error occured', err)
+          alert(err)
           return false
       } finally {
           
@@ -346,7 +358,7 @@ export const ManagerProvider = ({ children }) => {
       });
   
       if (!response.ok) {
-        throw new Error('Failed to update activity');
+        throw new Error(data.error || 'Failed to update activity');
       }
   
       const data = await response.json();
@@ -360,6 +372,7 @@ export const ManagerProvider = ({ children }) => {
       );*/
       //setIsActivitiesLoading(true)
     } catch (error) {
+      alert(error)
       console.error('Error updating activity:', error);
     }
   };
@@ -376,7 +389,7 @@ export const ManagerProvider = ({ children }) => {
       });
   
       if (!response.ok) {
-        throw new Error('Failed to delete activity');
+        throw new Error(data.error || 'Failed to delete activity');
       }
   
       const data = await response.json();
@@ -391,6 +404,7 @@ export const ManagerProvider = ({ children }) => {
       
       //setIsActivitiesLoading(true); // Si vous avez un état de chargement des activités
     } catch (error) {
+      alert(error)
       console.error('Error deleting activity:', error);
     }
   };

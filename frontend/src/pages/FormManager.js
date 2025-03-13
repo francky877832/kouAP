@@ -50,6 +50,7 @@ const FormManager = () => {
     setShowModal(false);
     setCurrentForm(null);
     setIsLaoding(false)
+    setIsUserFormsLoading(true)
   };
 
   // Fermer le modal sans sauvegarder
@@ -73,12 +74,13 @@ const FormManager = () => {
 
   // Supprimer un formulaire
   const handleDeleteForm = async (id) => {
-    setIsLaoding(true)
-    //setForms(forms.filter((form) => form._id !== id));
-    await deleteForm(id)
-    setIsLaoding(false)
+    const isConfirmed = window.confirm("Voulez-vous vraiment supprimer ce formulaire ?");
+    if (!isConfirmed) return;
+  
+    setIsLaoding(true);
+    await deleteForm(id);
+    setIsLaoding(false);
   };
-
   
   // Ajouter un champ au formulaire
   const addField = () => {
@@ -131,11 +133,11 @@ const FormManager = () => {
   }
   return (
     <div className="container mt-4">
-      <h2>Gestion des Formulaires</h2>
+      <h2>Forms Management</h2>
 
       {/* Bouton pour ajouter un nouveau formulaire */}
       <Button variant="primary" className="mb-3" onClick={handleAddForm}>
-        Ajouter un Nouveau Formulaire
+       Add A New Form
       </Button>
 
       {/* Table des formulaires */}
@@ -143,8 +145,8 @@ const FormManager = () => {
         <thead>
           <tr>
             <th>#</th>
-            <th>Lettre</th>
-            <th>Champs</th>
+            <th>Letter</th>
+            <th>Fields</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -153,13 +155,13 @@ const FormManager = () => {
             <tr key={form._id}>
               <td>{index+1}</td>
               <td>{form.letter}</td>
-              <td>{form.fields.length} champs</td>
+              <td>{form.fields.length} fields</td>
               <td>
                 <Button variant="warning" size="sm" onClick={() => handleEditForm(form._id)}>
-                  Modifier
+                  Update
                 </Button>
                 <Button variant="danger" size="sm" className="ml-2" onClick={() => handleDeleteForm(form._id)}>
-                  Supprimer
+                  Delete
                 </Button>
               </td>
             </tr>
@@ -177,16 +179,20 @@ const FormManager = () => {
             <Form>
               {/* Modification de la lettre du formulaire */}
               <Form.Group controlId="formLetter">
-                <Form.Label>Lettre</Form.Label>
-                <Form.Control
-                  type="text"
+                <Form.Label>Letter</Form.Label>
+                <Form.Select
                   name="letter"
                   value={currentForm.letter}
                   onChange={(e) => handleFieldChange(e, 'letter', false)}
-                />
+                >
+                  <option value="">Sélectionnez une lettre</option>
+                  {Array.from({ length: 12 }, (_, i) => String.fromCharCode(65 + i)).map((letter) => (
+                    <option key={letter} value={letter}>{letter}</option>
+                  ))}
+                </Form.Select>
               </Form.Group>
 
-              
+              <br/>
 
               {/* Liste des champs existants */}
               <h5>Champs existants</h5>
@@ -214,12 +220,14 @@ const FormManager = () => {
                       value={field.type}
                       onChange={(e) => handleFieldChange(e, field.name)}
                     >
-                      <option value="text">Texte</option>
+                      <option value="text">Text</option>
                       <option value="textarea">Textarea</option>
                       <option value="number">Number</option>
                       <option value="radio">Radio</option>
                       <option value="checkbox">Checkbox</option>
-                      <option value="file">Fichier</option>
+                      <option value="file">File</option>
+                      <option value="date">Date</option>
+                      <option value="Year">Year</option>
                     </Form.Control>
                     {/* Si c'est un champ radio ou checkbox, afficher les options */}
                     {(field.type === 'radio' || field.type === 'checkbox') && (
@@ -235,15 +243,15 @@ const FormManager = () => {
 
                   {/* Bouton pour supprimer le champ */}
                   <Button variant="danger" size="sm" onClick={() => {deleteField(field.name)}}>
-                    Supprimer le champ
+                   Delete field
                   </Button>
                 </div>
               ))}
 
               {/* Formulaire pour ajouter un nouveau champ */}
-              <h5>Ajouter un Nouveau Champ</h5>
+              <h5>Add A New Field</h5>
               <Form.Group controlId="newFieldName">
-                <Form.Label>Nom du Champ</Form.Label>
+                <Form.Label>Field Name</Form.Label>
                 <Form.Control
                   type="text"
                   name="name"
@@ -253,7 +261,7 @@ const FormManager = () => {
                 />
               </Form.Group>
               <Form.Group controlId="newFieldLabel">
-                <Form.Label>Label du Champ</Form.Label>
+                <Form.Label>Field Label</Form.Label>
                 <Form.Control
                   type="text"
                   name="label"
@@ -263,26 +271,28 @@ const FormManager = () => {
                 />
               </Form.Group>
               <Form.Group controlId="newFieldType">
-                <Form.Label>Type du Champ</Form.Label>
+                <Form.Label>Field Type</Form.Label>
                 <Form.Control
                   as="select"
                   name="type"
                   value={newField.type}
                   onChange={handleNewFieldChange}
                 >
-                  <option value="text">Texte</option>
+                  <option value="text">Text</option>
                   <option value="textarea">Textarea</option>
                   <option value="number">Number</option>
                   <option value="radio">Radio</option>
                   <option value="checkbox">Checkbox</option>
-                  <option value="file">Fichier</option>
+                  <option value="file">File</option>
+                  <option value="date">Date</option>
+                  <option value="year">Year</option>
                 </Form.Control>
               </Form.Group>
 
               {/* Affichage des options si le type est radio ou checkbox */}
               {(newField.type === 'radio' || newField.type === 'checkbox') && (
                 <Form.Group controlId="newFieldOptions">
-                  <Form.Label>Options (séparées par des ;)</Form.Label>
+                  <Form.Label>Options (separated by ;)</Form.Label>
                   <Form.Control
                     type="text"
                     name="options"
@@ -295,16 +305,16 @@ const FormManager = () => {
 
               {/* Bouton pour ajouter un champ */}
               <Button variant="secondary" onClick={(e) => {addField()}}>
-                Ajouter un Champ
+                Add A Field
               </Button>
             </Form>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={closeModal}>
-              Fermer
+              Close
             </Button>
             <Button variant="primary" onClick={handleSaveForm}>
-              Sauvegarder
+              Save
             </Button>
           </Modal.Footer>
         </Modal>
