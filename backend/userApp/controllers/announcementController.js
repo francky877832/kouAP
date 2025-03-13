@@ -81,13 +81,56 @@ exports.getAnnouncementsByPage = async (req, res) => {
     //console.log(req.query)
       const { page = 1, limit = 10 } = req.query;
 
+      /*
       const announcements = await Announcement.find()
           .populate('postedBy')
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
           .limit(parseInt(limit));
-          
-          //console.log(announcements)
+      */
+
+      const announcements = await Announcement.aggregate([
+            {
+              $lookup: {
+                from: 'departments',
+                localField: 'department',
+                foreignField: '_id',
+                as: 'department'
+              }
+            },
+            {
+              $unwind: {
+                path: '$department',
+                preserveNullAndEmptyArrays: true
+              }
+            },
+            {
+              $lookup: {
+                from: 'faculties',
+                localField: 'department.faculty',
+                foreignField: '_id',
+                as: 'department.faculty'
+              }
+            },
+            {
+              $unwind: {
+                path: '$department.faculty',
+                preserveNullAndEmptyArrays: true
+              }
+            },
+            // Stage 3: Tri par createdAt
+            {
+              $sort: { createdAt: -1 }
+            },
+            // Stage 4: Pagination
+            {
+              $skip: (page - 1) * limit
+            },
+            {
+              $limit: parseInt(limit)
+            }
+          ]);
+        //console.log(announcements)
 
       const total = await Announcement.countDocuments();
       //console.log(total)
@@ -107,11 +150,7 @@ exports.getAnnouncementsByPage = async (req, res) => {
 
 // Récupérer une annonce par ID
 exports.getAnnouncementsPostedBy = async (req, res) => {
-  //console.log(req.params)
   try {
-
-   
-
     const { userId } = req.params;
 
     // Vérifier si l'ID est valide
@@ -120,19 +159,59 @@ exports.getAnnouncementsPostedBy = async (req, res) => {
     }
 
     // Trouver les annonces de cet utilisateur
-    const announcements = await Announcement.find({ postedBy: userId }) //.populate("postedBy").exec();
-    //console.log(announcements)
-    if (!announcements) {
-      console.log("error")
-      return res.status(404).json({ message: "Announcement not found." });
+    const announcements = await Announcement.aggregate([
+      {
+        $match: { 
+          postedBy: new mongoose.Types.ObjectId(userId) 
+        }
+      },
+      {
+        $lookup: {
+          from: 'departments',
+          localField: 'department',
+          foreignField: '_id',
+          as: 'department'
+        }
+      },
+      {
+        $unwind: {
+          path: '$department',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'faculties',
+          localField: 'department.faculty',
+          foreignField: '_id',
+          as: 'department.faculty'
+        }
+      },
+      {
+        $unwind: {
+          path: '$department.faculty',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      // Stage 3: Tri par createdAt
+      {
+        $sort: { createdAt: -1 }
+      },
+    ]);
+
+    console.log(announcements)
+
+    if (!announcements || announcements.length === 0) {
+      return res.status(404).json({ message: "Aucune annonce trouvée pour cet utilisateur." });
     }
 
-    res.status(200).json({message:"success", data:announcements});
+    res.status(200).json({ message: "Success", data: announcements });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: "Server error.", error: error.message });
+    console.log(error);
+    res.status(500).json({ message: "Erreur serveur.", error: error.message });
   }
 };
+
 
 // Mettre à jour une annonce
 exports.updateAnnouncement = async (req, res) => {

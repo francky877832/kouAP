@@ -9,16 +9,14 @@ import InlineLoading from '../components/InlineLoading';
 import { AdminContext } from '../context/AdminContext';
 
 const AdminPanel = () => {
-  const [announcements, setAnnouncements] = useState([]);
   const [applications, setApplications] = useState(mockApplications);
   const [jurors, setJurors] = useState(mockJuries);
   const [selectedJuries, setSelectedJuries] = useState({});
   const [viewJuries, setViewJuries] = useState(null);
-  const [isAnnouncementsLoading, setIsAnnouncementsLoading] = useState(true)
   const [isApplicationsLoading, setIsApplicationsLoading] = useState(true)
   
-  const {user} = useContext(UserContext)
-  const {fetchAnnouncementsByUser} = useContext(AdminContext)
+
+  const {fetchAnnouncementsByUser, announcements, isAnnouncementsLoading} = useContext(AdminContext)
 
   useEffect(() => {
     // Simule le chargement des données ici
@@ -29,21 +27,7 @@ const AdminPanel = () => {
 
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetchAnnouncementsByUser(user._id);
-      console.log(result)
-      setAnnouncements(result);
-      setIsAnnouncementsLoading(false);
-    };
 
-    if(isAnnouncementsLoading)
-    {
-      fetchData();
-    }
-    
-
-  }, [user, isAnnouncementsLoading]);
 
 
 

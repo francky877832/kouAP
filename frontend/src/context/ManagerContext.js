@@ -344,7 +344,7 @@ export const ManagerProvider = ({ children }) => {
           } else {
               throw new Error(data.error || "Erreur lors de la création du form");
           }
-          console.log(data)
+          //console.log(data)
           return data.data;
       } catch (err) {
           console.log('An error occured', err)

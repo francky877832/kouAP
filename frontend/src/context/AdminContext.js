@@ -1,10 +1,15 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import { server } from "../remote/server";
+import { UserContext } from "./UserContext";
 
 export const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const {user} = useContext(UserContext)
+    const [isAnnouncementsLoading, setIsAnnouncementsLoading] = useState(true)
+    const [announcements, setAnnouncements] = useState([]);
+      
+    
 
 
 
@@ -58,11 +63,28 @@ export const AdminProvider = ({ children }) => {
   };
     
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsAnnouncementsLoading(true);
+      const result = await fetchAnnouncementsByUser(user._id);
+      //console.log(result)
+      setAnnouncements(result);
+      setIsAnnouncementsLoading(false);
+    };
+
+    if(isAnnouncementsLoading)
+    {
+      fetchData();
+    }
+    
+
+  }, [user, isAnnouncementsLoading]);
+
     
 
 
-    const stateVars = {user}
-    const stateFunctions = {}
+    const stateVars = {user, isAnnouncementsLoading, announcements}
+    const stateFunctions = {setIsAnnouncementsLoading, setAnnouncements}
     const utilFunctions = {fetchAnnouncementsByUser, fetchAnnouncements}
 
 

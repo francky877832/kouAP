@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { titles } from "../datas/schoolDepartments";
 
-const AnnouncementItem = ({ announcement, formatDate }) => {
+const AnnouncementItem = ({ announcement, user, formatDate }) => {
     const daysRemaining = Math.max(
         Math.ceil((new Date(announcement.deadline) - new Date()) / (1000 * 60 * 60 * 24)),
         0
@@ -11,7 +12,7 @@ const AnnouncementItem = ({ announcement, formatDate }) => {
         <Link
             to={`/view-announcement`}
             className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            state={{ announcement }}
+            state={{ announcement, user }}
         >
             <div>
                 <h5 className="mb-1">
@@ -25,7 +26,7 @@ const AnnouncementItem = ({ announcement, formatDate }) => {
                     Ends on: {formatDate(announcement.deadline)}
                 </p>
             </div>
-            <span className="badge bg-primary">{announcement.position}</span>
+            <span className="badge bg-primary">{(titles.find(el => el._id==announcement.position)).label}</span>
         </Link>
     );
 };
