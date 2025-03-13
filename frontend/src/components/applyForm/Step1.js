@@ -61,6 +61,18 @@ const Step1 = ({ formData, handleChange }) => {
           required
         />
       </div>
+
+      {/* Champ pour télécharger le CV */}
+      <div className="mb-3">
+        <label className="form-label">Upload CV (PDF only):</label>
+        <input
+          type="file"
+          name="cv"
+          className="form-control"
+          accept=".pdf"
+          onChange={(e) => { handleChange(e, "step1"); }}
+        />
+      </div>
     </div>
   );
 };

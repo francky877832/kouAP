@@ -28,12 +28,14 @@ export const ManagerProvider = ({ children }) => {
                   "Content-Type": "application/json",
               },
           });
+          
+          const data = await response.json();
 
           if (!response.ok) {
               throw new Error(data.error || "Erreur lors de l'ajout du case");
           }
 
-          const data = await response.json();
+        
       } catch (error) {
           alert(error)
           console.error("Erreur:", error.message);
@@ -48,11 +50,12 @@ export const ManagerProvider = ({ children }) => {
             },
         });
 
+        const data = await response.json();
         if (!response.ok) {
             throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
-        const data = await response.json();
+        
     } catch (error) {
         alert(error)
         console.error("Erreur:", error.message);
@@ -74,11 +77,13 @@ export const ManagerProvider = ({ children }) => {
               body: JSON.stringify(newCase),
           });
 
+
+          const data = await response.json();
           if (!response.ok) {
               throw new Error(data.error || "Erreur lors de l'ajout du case");
           }
 
-          const data = await response.json();
+         
       } catch (error) {
         alert(error)
           console.error("Erreur:", error.message);
@@ -97,11 +102,12 @@ export const ManagerProvider = ({ children }) => {
             body: JSON.stringify(newCase),
         });
 
+        const data = await response.json();
         if (!response.ok) {
             throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
-        const data = await response.json();
+       
     } catch (error) {
       alert(error)
         console.error("Erreur:", error.message);
@@ -117,12 +123,13 @@ export const ManagerProvider = ({ children }) => {
             },
             body: JSON.stringify(newCoef),
         });
-
+        
+        const data = await response.json();
         if (!response.ok) {
             throw new Error(data.error ||"Erreur lors de l'ajout du case");
         }
 
-        const data = await response.json();
+        
     } catch (error) {
       alert(error)
         console.error("Erreur:", error.message);
@@ -142,12 +149,12 @@ export const ManagerProvider = ({ children }) => {
             },
             body: JSON.stringify(newCoef),
         });
-
+          const data = await response.json();
         if (!response.ok) {
             throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
-        const data = await response.json();
+      
     } catch (error) {
       alert(error)
         console.error("Erreur:", error.message);
@@ -260,12 +267,13 @@ export const ManagerProvider = ({ children }) => {
             },
             body: JSON.stringify(updatedActivity),
           });
-      
+
+      const data = await response.json();
           if (!response.ok) {
             throw new Error(data.error || 'Failed to update activity');
           }
       
-          const data = await response.json();
+          
           
           /*
           // Mettre à jour l'activité localement si l'API réussit
@@ -291,13 +299,14 @@ export const ManagerProvider = ({ children }) => {
               'Content-Type': 'application/json',
             },
           });
-      
-          if (!response.ok) {
-            throw new Error(data.error || 'Failed to delete activity');
-          }
+
       
           const data = await response.json();
           console.log('Activity deleted successfully:', data);
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to delete activity');
+          }
       
           /*
             // Mettre à jour localement la liste des activités après la suppression
@@ -357,11 +366,11 @@ export const ManagerProvider = ({ children }) => {
         body: JSON.stringify(updatedForm),
       });
   
+      const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update activity');
       }
   
-      const data = await response.json();
       
       /*
       // Mettre à jour l'activité localement si l'API réussit
@@ -388,12 +397,15 @@ export const ManagerProvider = ({ children }) => {
         },
       });
   
+
+      const data = await response.json();
+      console.log('Activity deleted successfully:', data);
+      
       if (!response.ok) {
         throw new Error(data.error || 'Failed to delete activity');
       }
   
-      const data = await response.json();
-      console.log('Activity deleted successfully:', data);
+    
   
       /*
         // Mettre à jour localement la liste des activités après la suppression

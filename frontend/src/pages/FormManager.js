@@ -66,7 +66,7 @@ const FormManager = () => {
       letter: '',
       fields: [],
     };
-    setForms([...forms, newForm]);
+    //setForms([...forms, newForm]);
     setCurrentForm(newForm);
     setShowModal(true);
     setIsEdit(false)
@@ -152,7 +152,7 @@ const FormManager = () => {
         </thead>
         <tbody>
           {forms.map((form, index) => (
-            <tr key={form._id}>
+            <tr key={index}>
               <td>{index+1}</td>
               <td>{form.letter}</td>
               <td>{form.fields.length} fields</td>

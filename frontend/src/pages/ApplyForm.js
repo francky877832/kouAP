@@ -12,8 +12,8 @@ import { UserContext } from '../context/UserContext';
 import { ManagerContext } from '../context/ManagerContext';
 
 const ApplyForm = () => {
-  const [step, setStep] = useState(2);
-  const steps = 20
+  const [step, setStep] = useState(0);
+  const steps = 13 // 0 - 11 + 1 
 
   const { userForms, isUserFormsLoading } = useContext(UserContext)
   //console.log(userForms)
@@ -28,30 +28,83 @@ const ApplyForm = () => {
 
 
 //CASE AND COEF END
+const [submittedD, setSubmittedD] = useState([]);
+const [submittedE, setSubmittedE] = useState([]);
+const [submittedF, setSubmittedF] = useState([]);
+const [submittedG, setSubmittedG] = useState([]);
+const [submittedH, setSubmittedH] = useState([]);
+const [submittedI, setSubmittedI] = useState([]);
+const [submittedJ, setSubmittedJ] = useState([]);
+const [submittedK, setSubmittedK] = useState([]);
+const [submittedL, setSubmittedL] = useState([]);
 const [submittedArticles, setSubmittedArticles] = useState([]);
-const [submittedActivities, setSubmittedActivites] = useState([]);
+const [submittedActivities, setSubmittedActivities] = useState([]);
 const [submittedBooks, setSubmittedBooks] = useState([]);
 
+// Fonctions pour ajouter des données
+const addArticle = (newArticle) => {
+  setSubmittedArticles((prevArticles) => [...prevArticles, newArticle]);
+};
 
-  const addArticle = (newArticle) => {
-    //console.log(newArticle)
-    setSubmittedArticles((prevArticles) => [...prevArticles, newArticle]);
-  };
-  const addActivity = (newActivity) => {
-    //console.log(submittedArticles)
-    setSubmittedActivites((prevActivity) => [...prevActivity, newActivity]);
-  };
-  const addBook = (newActivity) => {
-    console.log(newActivity)
-    setSubmittedBooks((prevActivity) => [...prevActivity, newActivity]);
-  };
+const addActivity = (newActivity) => {
+  setSubmittedActivities((prevActivities) => [...prevActivities, newActivity]);
+};
 
-  const handleDataFunctions = [
-      {function : addArticle, data:submittedArticles},
-      {function :  addActivity, data:submittedActivities},
-      {function : addBook, data:submittedBooks},
-    ]
+const addBook = (newBook) => {
+  setSubmittedBooks((prevBooks) => [...prevBooks, newBook]);
+};
 
+// Fonctions pour ajouter des données spécifiques à chaque groupe
+const addD = (newD) => {
+  setSubmittedD((prevD) => [...prevD, newD]);
+};
+
+const addE = (newE) => {
+  setSubmittedE((prevE) => [...prevE, newE]);
+};
+
+const addF = (newF) => {
+  setSubmittedF((prevF) => [...prevF, newF]);
+};
+
+const addG = (newG) => {
+  setSubmittedG((prevG) => [...prevG, newG]);
+};
+
+const addH = (newH) => {
+  setSubmittedH((prevH) => [...prevH, newH]);
+};
+
+const addI = (newI) => {
+  setSubmittedI((prevI) => [...prevI, newI]);
+};
+
+const addJ = (newJ) => {
+  setSubmittedJ((prevJ) => [...prevJ, newJ]);
+};
+
+const addK = (newK) => {
+  setSubmittedK((prevK) => [...prevK, newK]);
+};
+
+const addL = (newL) => {
+  setSubmittedL((prevL) => [...prevL, newL]);
+};
+
+const handleDataFunctions = [
+  { function: addArticle, data: submittedArticles },
+  { function: addActivity, data: submittedActivities },
+  { function: addBook, data: submittedBooks },
+  { function: addD, data: submittedD },
+  { function: addE, data: submittedE },
+  { function: addF, data: submittedF },
+  { function: addG, data: submittedG },
+  { function: addH, data: submittedH },
+  { function: addI, data: submittedI },
+  { function: addJ, data: submittedJ },
+  { function: addK, data: submittedK },
+  { function: addL, data: submittedL },
+];
 
 
   
@@ -195,6 +248,7 @@ useEffect(() => {
   }
   //console.log(userForms)
 
+  /*
   const printForms = () => {
       return ( <form onSubmit={handleSubmit} encType="multipart/form-data">
         {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
@@ -212,6 +266,7 @@ useEffect(() => {
         </div>
       </form>)
   }
+*/
 
   return (
     <div className="container mt-5">
@@ -222,19 +277,21 @@ useEffect(() => {
       </div>
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
+        {step === 0 && <Step1 formData={formData.step1} handleChange={handleChange} />}
+
         {
           userForms.map((form, index) => {
             return (
-              step === index+1 && <A key={form._id} userForms={userForms[index]} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleData={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[0].data, cases, coefs}} />
+              step === index+1 && <A key={form._id} userForms={userForms[index]} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleData={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[index].data, cases, coefs}} />
 
             )
           })
         }
   
-        {step === 6 && <ReviewForm formData={formData} />}
+        {step === steps && <ReviewForm formData={formData} />}
         
         <div className="mt-4 d-flex justify-content-between">
-          {step > 1 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}
+          {step > 0 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}
           {step < steps && <button type="button" className="btn btn-primary" onClick={nextStep}>Next</button>}
           {step === steps && <button type="submit" className="btn btn-success">Submit Application</button>}
         </div>
