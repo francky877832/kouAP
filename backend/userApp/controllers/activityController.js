@@ -85,7 +85,7 @@ exports.createActivity = async (req, res, next) => {
 // Récupérer toutes les activités
 exports.getAllActivities = async (req, res) => {
     try {
-        console.log("okok")
+       // console.log("okok")
         const activities = await Activity.find();
         res.status(200).json({message:"success", data:activities});
     } catch (error) {

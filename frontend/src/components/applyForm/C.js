@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const B = ({ formData, userForms, handleChange, handleData, data}) => {
-  const {submittedArticles, cases, coefs} = data
+const C = ({ formData, userForms, handleChange, handleData, data}) => {
+  const {submittedData, cases, coefs} = data
   const [selectedCategory, setSelectedCategory] = useState('');
   //console.log(formData)
   const formCases = formData
@@ -20,7 +20,8 @@ const B = ({ formData, userForms, handleChange, handleData, data}) => {
       return;
     }
 
-    const articleData = {
+    
+    /*const articleData = {
       category: selectedCategory,
       author: formData['author'] || '',
       articleTitle: formData['articleTitle'] || '',
@@ -28,9 +29,12 @@ const B = ({ formData, userForms, handleChange, handleData, data}) => {
       volume: formData['volume'] || '',
       pages: formData['pages'] || '',
       year: formData['year'] || '',
-    };
+    };*/
+    //console.log(formData)
 
-    handleData(articleData);
+    const data = {...formData}
+
+    handleData(data);
     setSelectedCategory('');
     handleChange({ target: { name: 'author', value: '' } }, userForms.activity.letter.trim(), true);
   };
@@ -182,9 +186,9 @@ const B = ({ formData, userForms, handleChange, handleData, data}) => {
       <div className="mt-4">
         <h5>Articles Ajoutés:</h5>
         <ul>
-          {submittedArticles.map((article, index) => (
+          {submittedData.map((article, index) => (
             <li key={index}>
-              <strong>{article.category}:</strong> {article.articleTitle} by {article.author}
+              <strong>{index}:</strong> {article.conferanceName} by {article.author}
             </li>
           ))}
         </ul>
@@ -193,4 +197,4 @@ const B = ({ formData, userForms, handleChange, handleData, data}) => {
   );
 };
 
-export default B;
+export default C;

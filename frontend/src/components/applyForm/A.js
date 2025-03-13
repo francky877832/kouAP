@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 const A = ({ formData, userForms, handleChange, handleData, data}) => {
-  const {submittedArticles, cases, coefs} = data
+  const {submittedData, cases, coefs} = data
   const [selectedCategory, setSelectedCategory] = useState('');
-  console.log("formData")
-  console.log(formData)
+  //console.log("formData")
+  //console.log(cases)
   const formCases = formData
   const formCoefs = formData
 
@@ -21,6 +21,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
       return;
     }
 
+    /*
     const articleData = {
       category: selectedCategory,
       author: formData['author'] || '',
@@ -30,10 +31,11 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
       pages: formData['pages'] || '',
       year: formData['year'] || '',
     };
-
+*/  
+    const articleData = {...formData}
     handleData(articleData);
     setSelectedCategory('');
-    handleChange({ target: { name: 'author', value: '' } }, 'A', true);
+    handleChange({ target: { name: 'author', value: '' } },  userForms.activity.letter.trim(), true);
   };
 
   // Fonction pour rendre dynamiquement les champs en fonction du type
@@ -47,7 +49,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
               name={field.name}
               value={option}
               checked={formData[field.name]?.includes(option) || false}
-              onChange={(e) => handleChange(e, 'A')}
+              onChange={(e) => handleChange(e,  userForms.activity.letter.trim())}
             />
             {option}
           </label>
@@ -60,7 +62,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
           id={field.name}
           name={field.name}
           value={formData[field.name] || ''}
-          onChange={(e) => handleChange(e, 'A')}
+          onChange={(e) => handleChange(e, userForms.activity.letter.trim())}
         />
       );
     } else {
@@ -71,7 +73,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
           id={field.name}
           name={field.name}
           value={formData[field.name] || ''}
-          onChange={(e) => handleChange(e, 'A')}
+          onChange={(e) => handleChange(e, userForms.activity.letter.trim())}
         />
       );
     } 
@@ -90,7 +92,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
   return (
     <div>
       <div className="form-group">
-        <label htmlFor="category">Catégorie</label>
+        <label htmlFor="category"><h3>{userForms.activity.letter+" - "+userForms.activity.label}</h3></label>
         <select
           className="form-control"
           id="category"
@@ -98,13 +100,15 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
           onChange={handleCategoryChange}
         >
           <option value="">Sélectionner une catégorie</option>
-          {userForms?.activity?.activities.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.name}
+          {userForms.activity.activities.map((activity) => (
+            <option key={activity._id} value={activity._id}>
+              {activity.number+"- "+activity.name}
             </option>
           ))}
         </select>
       </div>
+
+<br/>
 
 
 
@@ -131,7 +135,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
                     name="messages"
                     value={item._id}
                     checked={formCases.cases[item._id]}
-                    onChange={(e) => {setSelectedMessage(item._id);handleChange(e, 'A', false, 'cases')}}
+                    onChange={(e) => {setSelectedMessage(item._id);handleChange(e, userForms.activity.letter.trim(), false, 'cases')}}
                   />
                   <label className="form-check-label">
                     {item.message}
@@ -153,7 +157,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
                           name="participants"
                           value={p.title}
                           checked={formCases.participants[p.title]}
-                          onChange={(e) => handleChange(e, 'A', false, 'participants')}
+                          onChange={(e) => handleChange(e, userForms.activity.letter.trim(), false, 'participants')}
                         />
                         <label className="form-check-label">{p.title}</label>
                       </div>
@@ -169,7 +173,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
               className="btn btn-success"
               onClick={handleAddButtonClick}
             >
-              Ajouter Article
+              Add An Activity
             </button>
           </div>
         </>
@@ -180,13 +184,16 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
 
 
       <div className="mt-4">
-        <h5>Articles Ajoutés:</h5>
+        <h5>Added Activities:</h5>
         <ul>
-          {submittedArticles.map((article, index) => (
+          {submittedData.map((article, index) => {
+            const infos = Object.keys(article)
+            return(
             <li key={index}>
-              <strong>{article.category}:</strong> {article.articleTitle} by {article.author}
+              <strong>{index}:</strong> {article[infos[0]]} - {article[infos[1]]}
             </li>
-          ))}
+            )
+      })}
         </ul>
       </div>
     </div>

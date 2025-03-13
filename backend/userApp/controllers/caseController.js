@@ -10,8 +10,10 @@ const Case = require("../models/caseModel");
 
 // 🔹 Récupérer toutes les cases
 exports.getAllCases = async (req, res) => {
+    //console.log("cases")
     try {
         const cases = await Case.find();
+        
         res.status(200).json({message:'success', data:cases});
     } catch (error) {
         console.log(error)

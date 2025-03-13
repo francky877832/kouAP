@@ -200,7 +200,7 @@ useEffect(() => {
         {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
         {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={{submittedData:submittedArticles, cases, coefs}} />}
         {step === 3 && <A userForms={userForms[1]} formData={formData.B} setFormData={setFormData} handleChange={handleChange} handleData={addActivity} data={{submittedData:submittedArticles, cases, coefs}}  />}
-        {step === 4 && <A userForms={userForms[2]} formData={formData.C} setFormData={setFormData} handleChange={handleChange} handleData={addBook} data={{submittedData:submittedBooks, cases, coefs}}  />}
+        {step === 4 && <A userForms={userForms[2]} formData={formData.C} setFormData={setFormData} handleChange={handleChange} handleData={addDataC} data={{submittedData:submittedDataC, cases, coefs}}  />}
 
         {step === 5 && <Step5 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
         {step === 6 && <ReviewForm formData={formData} />}
@@ -222,15 +222,13 @@ useEffect(() => {
       </div>
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-        {
-          userForms.map((form, index) => {
-            return (
-              step === index+1 && <A key={form._id} userForms={userForms[index]} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleData={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[0].data, cases, coefs}} />
+      
+        {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
+        {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={{submittedData:submittedArticles, cases, coefs}} />}
+        {step === 3 && <A userForms={userForms[1]} formData={formData.B} setFormData={setFormData} handleChange={handleChange} handleData={addActivity} data={{submittedData:submittedArticles, cases, coefs}}  />}
+        {step === 4 && <A userForms={userForms[2]} formData={formData.C} setFormData={setFormData} handleChange={handleChange} handleData={addDataC} data={{submittedData:submittedDataC, cases, coefs}}  />}
 
-            )
-          })
-        }
-  
+        {step === 5 && <Step5 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
         {step === 6 && <ReviewForm formData={formData} />}
         
         <div className="mt-4 d-flex justify-content-between">

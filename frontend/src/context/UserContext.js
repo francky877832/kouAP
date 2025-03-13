@@ -118,7 +118,7 @@ const fetchCoefs = async () => {
               throw new Error(data?.message || "Erreur lors du chargement des activités");
           }
 
-        console.log(data.data)
+       // console.log(data.data)
         return data?.data
       } catch (err) {
           console.log(err);
@@ -144,7 +144,7 @@ const fetchCoefs = async () => {
              throw new Error(data?.message || "Erreur lors du chargement des activités");
          }
 
-       console.log(data.data)
+       //console.log(data.data)
        return data?.data
      } catch (err) {
          console.log(err);
@@ -169,7 +169,7 @@ const fetchCoefs = async () => {
            throw new Error(data?.message || "Erreur lors du chargement des activités");
        }
 
-     console.log(data.data)
+     //console.log(data.data)
      return data?.data
    } catch (err) {
        console.log(err);
@@ -295,7 +295,7 @@ const fetchUserForms= async () => {
       const fetchCasesEffect = async () => {
         setIsCasesLoading(true)
           const act = await fetchCases()
-          //console.log(act)
+          console.log(act)
           setCases(act)
           setIsCasesLoading(false)
       };

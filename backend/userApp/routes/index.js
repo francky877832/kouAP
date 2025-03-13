@@ -20,7 +20,7 @@ router.use('/evaluations', evaluationRoutes);
 router.use('/activities', activityRoutes);
 router.use('/faculties', facultyRoutes);
 router.use('/forms', formRoutes);
-router.use('/cases-+', caseRoutes);
+router.use('/cases', caseRoutes);
 
 
 

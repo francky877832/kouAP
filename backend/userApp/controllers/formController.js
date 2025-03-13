@@ -26,7 +26,7 @@ exports.createForm = async (req, res) => {
 exports.getForms = async (req, res) => {
     try {
         const forms = await Form.find().populate('activity');
-        console.log(forms)
+       // console.log(forms)
         res.status(200).json({message:'success', data:forms});
     } catch (error) {
         console.log(error)
