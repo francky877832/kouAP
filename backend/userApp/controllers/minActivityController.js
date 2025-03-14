@@ -54,24 +54,26 @@ exports.createMinActivity = async (req, res, next) => {
 exports.getAllMinActivities = async (req, res) => {
     try {
         const minActivities = await MinActivity.aggregate([
-     
             {
-              $unwind: '$groups'  // Décomposer l'array 'groups' pour peupler le champ 'faculty'
+              $unwind: '$groups'  // Décomposer l'array 'groups'
             },
             {
               $lookup: {
-                from: 'facultygroups',  // Nom de la collection de 'Faculty'
-                localField: 'groups.faculty',  // Champ dans 'groups' qui fait référence à 'faculty'
-                foreignField: '_id',  // Champ dans 'Faculty' qui correspond à la référence
-                as: 'groups.faculty'  // Le nom du champ de sortie
+                from: 'facultygroups',  
+                localField: 'groups.faculty',  
+                foreignField: '_id',  
+                as: 'facultyDetails'  
               }
             },
             {
+              $unwind: { path: "$facultyDetails", preserveNullAndEmptyArrays: true }
+            },
+            {
               $lookup: {
-                from: 'faculties',  // Nom de la collection de 'Faculty'
-                localField: 'groups.faculty.faculties',  // Champ 'faculties' dans 'faculty'
-                foreignField: '_id',  // Champ dans 'Faculty' qui correspond à la référence
-                as: 'groups.faculty.faculties'  // Le nom du champ de sortie
+                from: 'faculties',  
+                localField: 'facultyDetails.faculties',  
+                foreignField: '_id',  
+                as: 'facultyDetails.faculties'  
               }
             },
             {
@@ -83,12 +85,20 @@ exports.getAllMinActivities = async (req, res) => {
                 to: { $first: '$to' }, 
                 criteria: { $first: '$criteria' }, 
                 activity: { $first: '$activity' },
-                groups: { $push: '$groups' },
                 createdAt: { $first: '$createdAt' }, 
                 updatedAt: { $first: '$updatedAt' },
+                groups: {
+                  $push: {
+                    _id: '$groups._id',
+                    facultyId: '$groups.faculty',  // Conserver l'ID d'origine
+                    faculty: '$facultyDetails',  // Conserver faculty tel quel
+                    positions : '$groups.positions' ,
+                  }
+                }
               }
             }
           ]);
+          
       
         //console.log(minActivities)
         res.status(200).json({message:"success", data:minActivities});
@@ -114,6 +124,7 @@ exports.getMinActivityById = async (req, res) => {
 // 📌 Mettre à jour une MinActivity
 exports.updateMinActivity = async (req, res) => {
     try {
+        console.log(req.body)
         const updatedMinActivity = await MinActivity.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedMinActivity) {
             return res.status(404).json({ message: "MinActivity non trouvée" });

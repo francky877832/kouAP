@@ -297,15 +297,16 @@ export const ManagerProvider = ({ children }) => {
           if (!response.ok) {
             throw new Error(data.error || 'Failed to update activity');
           }
-
+          return data.data
           //setIsActivitiesLoading(true)
         } catch (error) {
           alert(error)
           console.error('Error updating activity:', error);
+          return null
         }
       };
 
-      const updateMinPoints = async (updatedActivity) => {
+      const updateMinPoint = async (updatedActivity) => {
         try {
 
           const response = await fetch(`${server}/api/datas/activities/minPoint/update/${updatedActivity._id}`, {
@@ -320,11 +321,12 @@ export const ManagerProvider = ({ children }) => {
           if (!response.ok) {
             throw new Error(data.error || 'Failed to update activity');
           }
-
+          return data.data
           //setIsActivitiesLoading(true)
         } catch (error) {
           alert(error)
           console.error('Error updating activity:', error);
+          return null
         }
       };
       
@@ -355,6 +357,60 @@ export const ManagerProvider = ({ children }) => {
           */
           
           setIsActivitiesLoading(true); // Si vous avez un état de chargement des activités
+        } catch (error) {
+          alert(error)
+          console.error('Error deleting activity:', error);
+        }
+      };
+
+
+      const deleteMinActivity = async (activityId) => {
+        try {
+          const response = await fetch(`${server}/api/datas/activities/minActivity/delete/${activityId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+      
+          const data = await response.json();
+          console.log('Activity deleted successfully:', data);
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to delete activity');
+          }
+      
+          
+          
+          //setIsActivitiesLoading(true); // Si vous avez un état de chargement des activités
+        } catch (error) {
+          alert(error)
+          console.error('Error deleting activity:', error);
+        }
+      };
+
+
+      const deleteMinPoint = async (activityId) => {
+        try {
+          const response = await fetch(`${server}/api/datas/activities/minPoint/delete/${activityId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+      
+          const data = await response.json();
+          console.log('Activity deleted successfully:', data);
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to delete activity');
+          }
+      
+          
+          
+          //setIsActivitiesLoading(true); // Si vous avez un état de chargement des activités
         } catch (error) {
           alert(error)
           console.error('Error deleting activity:', error);
@@ -469,7 +525,8 @@ export const ManagerProvider = ({ children }) => {
     const stateFunctions = {}
     const utilFunctions = {createActivity, createMinActivity, createMinPoint, deleteActivity, updateActivity, 
        addCase, addCoef, updateCoef, updateCase, deleteCase, deleteCoef,
-       deleteForm, updateForm, createForm
+       deleteForm, updateForm, createForm, 
+       updateMinActivity, updateMinPoint, deleteMinActivity, deleteMinPoint,
     }
 
 

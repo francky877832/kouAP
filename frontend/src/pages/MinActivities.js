@@ -3,11 +3,13 @@ import { Card, Spinner, Modal, Button, Form } from "react-bootstrap";
 import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
 import { titles } from "../datas/schoolDepartments";
+import { ManagerContext } from "../context/ManagerContext";
 
 
 
 const MinActivityDisplay = () => {
-    const { minActivities, facultyDepartments, facultyGroups, isFacultyLoading, isMinActivitiesLoading,  } = useContext(UserContext);
+  const { minActivities, facultyDepartments, facultyGroups, isFacultyLoading, isMinActivitiesLoading, setIsMinActivitiesLoading } = useContext(UserContext);
+  const { updateMinActivity, updateMinPoint, deleteMinActivity, deleteMinPoint, } = useContext(ManagerContext)
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,23 +21,25 @@ const MinActivityDisplay = () => {
     
   }, []);
 
-  const handleDeleteActivity = (index) => {
+  const handleDeleteActivity = async (index) => {
     const isConfirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cette activité ?");
     
     if (isConfirmed) {
-      
+      await deleteMinActivity()
     }
   };
   
   const handleModifyGroup = (index, field, value) => {
     const updatedGroups = [...editedGroups];
     updatedGroups[index] = { ...updatedGroups[index], [field]: value };
+    //console.log(field, value)
+    console.log(updatedGroups)
     setEditedGroups(updatedGroups);
   };
 
   const handleModalOpen = (activity) => {
     setSelectedActivity(activity);
-    setEditedGroups(activity.groups.map(group => ({ ...group })));
+    setEditedGroups(activity.groups.map(group => ({ ...group, faculty:group.faculty._id })));
     setIsEditing(false);
   };
 
@@ -45,13 +49,16 @@ const MinActivityDisplay = () => {
     setIsEditing(false);
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     //console.log(editedGroups)
 
     const updatedActivity = {...minActivities.find(act => act._id == selectedActivity._id), groups : editedGroups}
     //database
-    console.log(updatedActivity)
+    //console.log(updatedActivity)
+    await updateMinActivity(updatedActivity)
+    setIsMinActivitiesLoading(true)
     setIsEditing(false);
+    handleModalClose()
   };
 
   if(isFacultyLoading || isMinActivitiesLoading)
@@ -119,11 +126,11 @@ const MinActivityDisplay = () => {
                 <div key={i} className="mb-3">
                   <Form.Label>Faculty:</Form.Label>
                   <Form.Select
-                    value={group.faculty?.name || ""}
-                    onChange={(e) => handleModifyGroup(i, "faculty", { name: e.target.value })}
+                    value={group.faculty}
+                    onChange={(e) => handleModifyGroup(i, "faculty", e.target.value)}
                   >
                     {facultyGroups.map((fac) => (
-                      <option key={fac._id} value={fac.name}>
+                      <option key={fac._id} value={fac._id}>
                         {fac.faculties.map(f => f.name).join(", ")}
                       </option>
                     ))}

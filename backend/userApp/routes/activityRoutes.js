@@ -13,11 +13,15 @@ router.get('/activities/all', activityController.getAllActivities);
 //minActivity
 router.post("/minActivity/create", minActivityController.createMinActivity);
 router.get('/minActivities/all', minActivityController.getAllMinActivities);
-router.put('/minActivities/update/:id', minActivityController.updateMinActivity);
+router.put('/minActivity/update/:id', minActivityController.updateMinActivity);
+router.delete('/minActivity/delete/:id', minActivityController.deleteMinActivity);
 
 //minPoint
 router.post("/minPoint/create", minPointController.createMinPoint);
 router.get('/minPoints/all', minPointController.getAllMinPoints);
+
+//router.put('/minPoint/update/:id', minActivityController.updateMinPoints);
+//router.delte('/minPoint/delete', minPointController.deleteMinPoint);
 
 
 
