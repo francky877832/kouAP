@@ -25,6 +25,8 @@ const FormSchema = new mongoose.Schema({
             options: { type: [String], required: false },
         }
     ],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
 });
 
 module.exports = db.model("Form", FormSchema);

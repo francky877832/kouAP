@@ -15,12 +15,17 @@ exports.createMinActivity = async (req, res, next) => {
     //console.log('okok')
     try {
        console.log(req.body)
-       console.log(req.body.positions[0])
+       //console.log(req.body.positions[0])
 
         //const activityId = "67c776634035a02db2ee38e0";
-        const { /*activity*/ letter, range, from, to, criteria, position, quantity, faculty, positions} = req.body;
+        const { /*activity*/ letter, range, from, to, criteria, position, quantity, faculty, positions, groups} = req.body;
 // 
-        if ((range && (!from || !to || !letter)) || (!range && !criteria) || !faculty || !positions) {
+       /* if ((range && (!from || !to || !letter)) || (!range && !criteria) || !faculty || !positions) {
+            console.log("Tous les champs sont requis.")
+            return res.status(400).json({ message: "Tous les champs sont requis." });
+        }*/
+
+        if ((range && (!from || !to || !letter)) || (!range && !criteria) && !groups) {
             console.log("Tous les champs sont requis.")
             return res.status(400).json({ message: "Tous les champs sont requis." });
         }
@@ -29,9 +34,9 @@ exports.createMinActivity = async (req, res, next) => {
             quantity,
             faculty,
         }*/
-        console.log("req.body")
+        //console.log(req.body)
 
-        const newActivity = new MinActivity({ letter, range, from, to, criteria, positions:positions });
+        const newActivity = new MinActivity({ letter, range, from, to, criteria, groups});
         const savedActivity = await newActivity.save();
         console.log(savedActivity)
         res.status(201).json({ message: "success", activity: savedActivity });
@@ -48,7 +53,7 @@ exports.createMinActivity = async (req, res, next) => {
 // 📌 Récupérer toutes les MinActivities
 exports.getAllMinActivities = async (req, res) => {
     try {
-        const minActivities = await MinActivity.find().populate("activity").populate("positions.faculty");
+        const minActivities = await MinActivity.find().populate("activity").populate("groups.faculty");
         //console.log(minActivities)
         res.status(200).json({message:"success", data:minActivities});
     } catch (error) {

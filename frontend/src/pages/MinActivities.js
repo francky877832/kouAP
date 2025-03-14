@@ -172,7 +172,7 @@ const MinActivities = () => {
                 <Row>
                   {activity.positions.map((pos, positionIndex) => (
                     <Col key={positionIndex} md={4} className="mb-2">
-                      <h5>{titles[parseInt(pos.position)].value}</h5>
+                      <h5>{titles[parseInt(pos.position)-1].value}</h5>
                       <p>Quantity: {pos.quantity}</p>
                       
                       

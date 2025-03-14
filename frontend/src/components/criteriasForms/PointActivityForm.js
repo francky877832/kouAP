@@ -17,6 +17,9 @@ const PointActivityForm = ({
   selectedFaculties, setSelectedFaculties,
   handleAddPosition, handlePositionChange,
   positionData, positions,
+
+  facultyGroups, handleDeletePosition,
+  handleAddGroup, handleDeleteGroup, groups
 }) => {
   return (
     <form onSubmit={handleSubmitThirdForm} className="container p-4 border rounded bg-light">
@@ -123,73 +126,118 @@ const PointActivityForm = ({
       </div>
 
        {/* Afficher et gérer le select de la faculté */}
-       <div className="mb-3">
-        <label className="form-label">Faculty</label>
-        <select
-          className="form-select"
-          name="faculty"
-          value={selectedFaculty}
-          onChange={(e) => setSelectedFaculty(e.target.value)}
-          
-        >
-          <option value="">Select a faculty</option>
-          {Object.keys(facultyDepartments).map((fac) => (
-            <option key={facultyDepartments[fac]._id} value={fac}>
-              {fac}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Bouton pour ajouter une faculté */}
-      <div className="text-center mb-3">
-        <button type="button" className="btn btn-success" onClick={handleAddFaculty}>
-          Add Faculty
-        </button>
-      </div>
-
-      {/* Afficher la liste des facultés ajoutées */}
-      <div className="mb-3">
-        <h5>Added Faculties:</h5>
-        <ul className="list-group">
-          {selectedFaculties.map((faculty, index) => (
-            <li key={index} className="list-group-item d-flex justify-content-between">
-              {faculty}
-              <button
-                type="button"
-                className="btn btn-danger btn-sm"
-                onClick={() => handleDeleteFaculty(index)}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-
-      {/* Bouton pour ajouter la position complète */}
-      <div className="text-center mb-3">
-        <button type="button" className="btn btn-primary" onClick={handleAddPosition}>
-          Add Position
-        </button>
-      </div>
-      {/* Liste des positions ajoutées */}
-      <div className="mb-3">
-        <h5>Added Positions:</h5>
-        <ul className="list-group">
-          {positions.map((pos, index) => (
-            <li key={index} className="list-group-item">
-              <strong>Position:</strong> {pos.position}, <strong>Quantity:</strong> {pos.quantity}, <strong>Faculties:</strong> {pos.faculties.join(', ')}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="text-center">
-        <button type="submit" className="btn btn-primary">Submit Third Form</button>
-      </div>
-    </form>
+        {/* Sélection de la faculté */}
+             <div className="mb-3">
+               <label className="form-label">Faculty</label>
+               <select
+                 className="form-select"
+                 value={selectedFaculty}
+                 onChange={(e) => setSelectedFaculty(e.target.value)}
+               >
+                 <option value="">Select a faculty</option>
+                 {facultyGroups.map((fac) => (
+                   <option key={fac._id} value={fac.name}>
+                     {fac.faculties.map(f => (f.name+", "))}
+                   </option>
+                 ))}
+               </select>
+             </div>
+       
+             {/* Bouton pour ajouter une faculté 
+             <div className="text-center mb-3">
+               <button type="button" className="btn btn-success" onClick={handleAddFaculty}>
+                 Add Faculty
+               </button>
+             </div>
+       
+             {
+             /* Liste des facultés ajoutées 
+             <div className="mb-3">
+               <h5>Added Faculties:</h5>
+               <ul className="list-group">
+                 {selectedFaculties.map((faculty, index) => (
+                   <li key={index} className="list-group-item d-flex justify-content-between">
+                     {faculty}
+                     <button
+                       type="button"
+                       className="btn btn-danger btn-sm"
+                       onClick={() => handleDeleteFaculty(index)}
+                     >
+                       Delete
+                     </button>
+                   </li>
+                 ))}
+               </ul>
+             </div>
+             */}
+       
+             {/* Bouton pour ajouter la position complète */}
+           {positions.length < 3 &&
+             <div className="text-center mb-3">
+               <button type="button" className="btn btn-primary" onClick={handleAddPosition}>
+                 Add Position
+               </button>
+             </div>
+           }
+             <div className="mb-3 ">
+               <h5>Added Positions:</h5>
+               <ul className="list-group ">
+                 {positions.map((pos, index) => (
+                   <li key={index} className="list-group-item d-flex justify-content-between">
+                     <strong>Position:</strong> {pos.position}, <strong>Quantity:</strong> {pos.quantity}
+                     <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDeletePosition(index)}
+                          >
+                            Delete
+                     </button>
+                   </li>
+                 ))}
+               </ul>
+             </div>
+       
+               {positions.length === 3 &&
+                     <div className="text-center mb-3">
+                       <button type="button" className="btn btn-primary" onClick={handleAddGroup}>
+                         Add Group
+                       </button>
+                     </div>
+               }
+             {/* Liste des positions ajoutées */}
+             <div className="mb-3">
+               <h5>Added Group:</h5>
+               <ul className="list-group">
+                   {groups.map((group, groupIndex) => (
+                       <li key={groupIndex} className="list-group-item d-flex justify-content-between">
+                         {group.positions.map((pos, posIndex) => (
+                           <div key={posIndex}>
+                             <strong> Position:</strong> {(titles.find(t => t.value==pos.position)).label},  
+                             <strong> Min: </strong> {pos.minPoint}, 
+                             <strong> Max: </strong> {pos.maxPoint}
+                           </div>
+                         ))}
+       
+                         <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDeleteGroup(groupIndex)}
+                          >
+                            Delete
+                          </button>
+                  
+                   </li>
+                 ))}
+       
+                  
+               </ul>
+             </div>
+       
+             {/* Soumission du formulaire */}
+             <div className="text-center">
+               <button type="submit" className="btn btn-primary">Submit Third Form</button>
+             </div>
+           </form>
   );
 };
 

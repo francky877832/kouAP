@@ -8,6 +8,7 @@ export const UserProvider = ({ children }) => {
     
      const [facultyDepartments, setFacultyDepartments] = useState({});
      const [faculties, setFaculties] = useState({});
+     const [facultyGroups, setFacultyGroups] = useState({});
 
      const [activities, setActivities] = useState([])
      const [minActivities, setMinActivities] = useState([])
@@ -17,7 +18,8 @@ export const UserProvider = ({ children }) => {
     const [cases, setCases] = useState([]);
 
 
-     const [isUserLoading, setIsUserLoading] = useState(true)
+     const [isUserLoading, setIsUserLoading] = useState(false)
+     const [isFacultyLoading, setIsFacultyLoading] = useState(true)
      const [isActivitiesLoading, setIsActivitiesLoading] = useState(true)
      const [isMinActivitiesLoading, setIsMinActivitiesLoading] = useState(true)
      const [isMinPointsLoading, setIsMinPointsLoading] = useState(true)
@@ -78,7 +80,7 @@ const fetchCoefs = async () => {
 
 
      
-        const fetchFaculties = async (userId) => {
+        const fetchFaculties = async () => {
           try {
             const response = await fetch(`${server}/api/datas/faculties/get`, {
               method: "GET", // Méthode GET pour récupérer les annonces
@@ -91,9 +93,12 @@ const fetchCoefs = async () => {
               throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
             }
         
-            // Récupérer les données au format JSON
-            const data = await response.json();
-            //console.log(data)
+             // Récupérer les données au format JSON
+             const data = await response.json();
+            
+             if (!response.ok) {
+               throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
+             }
             return data.data; // Retourner les annonces récupérées
           } catch (error) {
             console.error("Erreur:", error.message);
@@ -101,6 +106,29 @@ const fetchCoefs = async () => {
           }
         }
 
+        const fetchFacultyGroups = async () => {
+          try {
+            const response = await fetch(`${server}/api/datas/faculties/get/groups`, {
+              method: "GET", // Méthode GET pour récupérer les annonces
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+        
+        
+            // Récupérer les données au format JSON
+            const data = await response.json();
+            
+            if (!response.ok) {
+              throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
+            }
+            console.log(data)
+            return data.data; // Retourner les annonces récupérées
+          } catch (error) {
+            console.error("Erreur:", error.message);
+            return []; // Retourner un tableau vide en cas d'erreur
+          }
+        }
 
         // Fonction pour récupérer les activités
     const fetchActivities = async () => {
@@ -209,19 +237,22 @@ const fetchUserForms= async () => {
 
      useEffect(() => {
             const fetchFacultiesEffect = async () => {
-                setIsUserLoading(true)
+                setIsFacultyLoading(true)
                 const fac = await fetchFaculties()
+                const facG = await fetchFacultyGroups()
                 setFacultyDepartments(fac)
                 setFaculties(fac)
-                setIsUserLoading(false)
+                setFacultyGroups(facG)
+                //console.log(fac)
+                setIsFacultyLoading(false)
             };
 
-            if(isUserLoading)
+            if(isFacultyLoading)
             {
               fetchFacultiesEffect();
             }
            
-        }, [facultyDepartments, isUserLoading]);
+        }, [facultyDepartments, isFacultyLoading]);
 
 
 
@@ -328,14 +359,15 @@ const fetchUserForms= async () => {
 
         const stateVars = {user, isUserLoading, faculties, facultyDepartments, isActivitiesLoading, activities, isMinActivitiesLoading,
            minActivities, isMinPointsLoading, minPoints, userForms, isUserFormsLoading,
-           cases, coefs, isCasesLoading, isCoefsLoading
+           cases, coefs, isCasesLoading, isCoefsLoading, isFacultyLoading,
+           facultyGroups,
           
           }
         const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading, setActivities,
           setIsUserFormsLoading
         }
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
-          fetchCases, fetchCoefs
+          fetchCases, fetchCoefs, fetchFacultyGroups
         }
 
   return (

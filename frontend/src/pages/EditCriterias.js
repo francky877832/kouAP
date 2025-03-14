@@ -9,15 +9,17 @@ import { ManagerContext } from '../context/ManagerContext';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
 
+
 const EditCriterias = () => {
 
     const { createActivity, createMinActivity, createMinPoint } = useContext(ManagerContext)
-    const {facultyDepartments,  isUserLoading} = useContext(UserContext)
+    const {facultyDepartments, isUserLoading, isFacultyLoading, facultyGroups} = useContext(UserContext)
 
   const [selectedFaculties, setSelectedFaculties] = useState([]); // État pour la faculté sélectionnée
     const [selectedFaculty, setSelectedFaculty] = useState(''); // État pour la faculté sélectionnée
 
     const [positions, setPositions] = useState([]); 
+    const [groups, setGroups] = useState([]); 
     const [positionData, setPositionData] = useState({
         position: '',
         quantity: '',
@@ -29,7 +31,7 @@ const EditCriterias = () => {
       setPositionData({ ...positionData, [e.target.name]: e.target.value });
     };
     const handleAddPosition = () => {
-      if (positionData.position && (positionData.quantity || (positionData.minPoint && positionData.maxPoint)) && selectedFaculties.length > 0) {
+      if (positionData.position && (positionData.quantity || (positionData.minPoint && positionData.maxPoint))) {
         setPositions([...positions, { ...positionData, faculties: selectedFaculties}]);
         setPositionData({ position: '', quantity: '', faculties: [], minPoint:'', maxPoint:''});
         setSelectedFaculties([]);
@@ -49,6 +51,24 @@ const EditCriterias = () => {
         setSelectedFaculty(''); // Réinitialiser le champ select après ajout
       }
     };
+
+
+    const handleAddGroup = () => {
+      if(positions.length > 0) {
+        //console.log(positions)
+        setGroups(prev => [...prev, 
+            { 
+              faculty : selectedFaculty,
+              positions,
+            }
+        ]);
+        setPositions([])
+      }else{
+        alert('All the fileds are required before adding a position.')
+      }
+    };
+
+
   
     const handleDeleteFaculty = (index) => {
       const confirmDelete = window.confirm("Are you sure you want to delete this faculty?");
@@ -57,6 +77,23 @@ const EditCriterias = () => {
         setSelectedFaculties(updatedFaculties); // Met à jour l'état avec la nouvelle liste
       }
     };
+
+    const handleDeletePosition = (index) => {
+      const confirmDelete = window.confirm("Are you sure you want to delete this position?");
+      if (confirmDelete) {
+        const updatedPos = positions.filter((_, i) => i !== index); // Supprimer la faculté par index
+        setPositions(updatedPos); // Met à jour l'état avec la nouvelle liste
+      }
+    };
+
+    const handleDeleteGroup = (index) => {
+      const confirmDelete = window.confirm("Are you sure you want to delete this group ?");
+      if (confirmDelete) {
+        const updatedGroup = groups.filter((_, i) => i !== index); // Supprimer la faculté par index
+        setGroups(updatedGroup); // Met à jour l'état avec la nouvelle liste
+      }
+    };
+
   
   const [letter, setLetter] = useState('');
   const [name, setName] = useState('');
@@ -143,14 +180,24 @@ const [activityId, setActivityId] = useState(null)
 
   const handleSubmitSecondForm = async (event) => {
     event.preventDefault();
-    if(positions.length === 0 )
+    if(groups.length === 0 )
     {
       alert("Veiller choisir au moins une faculté.")
       return;
     }
     //console.log(selectedFaculties)
     //console.log(facultyDepartments)
-    console.log(positions)
+    //console.log(facultyGroups)
+   // const p = positions.map(pos => { return {...pos, position: (titles.find(title => title.value==pos.position))._id }})
+    //faculty : pos.faculties.map(g1 => (facultyGroups.find(g2 => g2.name=="Group 1"))._id)
+
+    //console.log(p)
+
+
+
+    //console.log(groups)
+
+    
     const activity = {
         //activity : activityId, //"67c7f2ed92f75287d481f2aa",
         letter,
@@ -158,13 +205,16 @@ const [activityId, setActivityId] = useState(null)
         from,
         to,
         criteria,
+        groups : groups.map(group => ({...group, faculty:(facultyGroups.find(g => g.name==group.faculty))._id, positions:group.positions.map(pos => { return {...pos, position: (titles.find(title => title.value==pos.position))._id }})})),
         position : positionsCount.position,
         quantity : positionsCount.quantity,
-        faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
-        positions : positions.map(pos => { return {...pos, position: (titles.find(title => title.value==pos.position))._id, faculty : pos.faculties.map(fac => facultyDepartments[fac]._id) }}),
+        faculty :  selectedFaculties.map(sf => sf._id),
+       // positions : p,
         //faculty :  facultyDepartments[positionsCount.faculty]._id,
         //positions : positionsCount,
     }
+    //console.log(activity)
+  
     const data = await createMinActivity(activity)
     if(data)
     {  
@@ -197,31 +247,26 @@ const [activityId, setActivityId] = useState(null)
   const handleSubmitThirdForm = async (event) => {
     event.preventDefault();
     
-    if(positions.length === 0)
+    if(groups.length === 0)
     {
       alert("Veiller choisir au moins une faculté.")
       return;
     }
 
-    //console.log(selectedFaculties)
-    //console.log(positions)
+    //
     const activity = {
-        //activity : activityId, //"67c7f2ed92f75287d481f2aa",
-        letter,
-        range,
-        from,
-        to,
-        criteria,
-        position : positionsPoint.position ,
-        minPoint : positionsPoint.minPoint,
-        maxPoint : positionsPoint.maxPoint,
-        faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
-        //positions : positions,
-        positions : positions.map(pos => { return {...pos, position: (titles.find(title => title.value==pos.position))._id, faculty : pos.faculties.map(fac => facultyDepartments[fac]._id) }}),
-
-        //facultyDepartments[positionsPoint.faculty]._id,
-        //positions : positionsCount,
-    }
+      //activity : activityId, //"67c7f2ed92f75287d481f2aa",
+      letter,
+      range,
+      from,
+      to,
+      criteria,
+      groups : groups.map(group => ({...group, faculty:(facultyGroups.find(g => g.name==group.faculty))._id, positions:group.positions.map(pos => { return {...pos, position: (titles.find(title => title.value==pos.position))._id }})})),
+      
+     // positions : p,
+      //faculty :  facultyDepartments[positionsCount.faculty]._id,
+      //positions : positionsCount,
+  }
     const data = await createMinPoint(activity)
     if(data)
     {  
@@ -249,7 +294,7 @@ const [activityId, setActivityId] = useState(null)
     }
 
   };
-  if(isUserLoading)
+  if(isUserLoading || isFacultyLoading)
   {
     return <Loading/>
   }
@@ -270,13 +315,13 @@ const [activityId, setActivityId] = useState(null)
           className={`btn ${currentForm === 2 ? "btn-primary" : "btn-outline-primary"}`}
           onClick={() => setCurrentForm(2)}
         >
-          Min. Points
+          Min. Activity
         </button>
         <button
           className={`btn ${currentForm === 3 ? "btn-primary" : "btn-outline-primary"}`}
           onClick={() => setCurrentForm(3)}
         >
-          Max. Points
+          Points
         </button>
       </div>
   
@@ -329,6 +374,12 @@ const [activityId, setActivityId] = useState(null)
             handleAddPosition={handleAddPosition}
             positionData={positionData}
             positions={positions}
+
+            facultyGroups={facultyGroups}
+            handleDeletePosition={handleDeletePosition}
+            handleAddGroup={handleAddGroup}
+            handleDeleteGroup={handleDeleteGroup}
+            groups={groups}
         />
       )}
 
@@ -360,6 +411,12 @@ const [activityId, setActivityId] = useState(null)
             handleAddPosition={handleAddPosition}
             positionData={positionData}
             positions={positions}
+
+            facultyGroups={facultyGroups}
+            handleDeletePosition={handleDeletePosition}
+            handleAddGroup={handleAddGroup}
+            handleDeleteGroup={handleDeleteGroup}
+            groups={groups}
         />
       )}
     </div>

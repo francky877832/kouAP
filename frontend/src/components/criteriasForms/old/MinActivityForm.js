@@ -15,7 +15,7 @@ const MinActivityForm = ({
   selectedFaculty, setSelectedFaculty,
   selectedFaculties, setSelectedFaculties,
 }) => {
-  
+  //console.log(facultyDepartments)
 
   return (
       <form onSubmit={handleSubmitSecondForm} className="container p-4 border rounded bg-light">
@@ -125,9 +125,9 @@ const MinActivityForm = ({
           
         >
           <option value="">Select a faculty</option>
-          {Object.keys(facultyDepartments).map((fac) => (
-            <option key={facultyDepartments[fac]._id} value={fac}>
-              {fac}
+          {facultyDepartments.map((fac) => (
+            <option key={fac._id} value={fac.name}>
+              {fac.name}
             </option>
           ))}
         </select>

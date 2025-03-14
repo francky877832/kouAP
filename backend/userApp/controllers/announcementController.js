@@ -157,7 +157,7 @@ exports.getAnnouncementsPostedBy = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "ID utilisateur invalide" });
     }
-
+/*
     // Trouver les annonces de cet utilisateur
     const announcements = await Announcement.aggregate([
       {
@@ -198,8 +198,9 @@ exports.getAnnouncementsPostedBy = async (req, res) => {
         $sort: { createdAt: -1 }
       },
     ]);
-
-    console.log(announcements)
+*/
+    const announcements = await Announcement.find().populate('faculty')
+    //console.log(announcements)
 
     if (!announcements || announcements.length === 0) {
       return res.status(404).json({ message: "Aucune annonce trouvée pour cet utilisateur." });

@@ -19,7 +19,8 @@ const applicationSchema = new Schema({
       default: 'pending' 
   }, // Statut de l'application
   jurys: [{ type: Schema.Types.ObjectId, ref: User }], // Liste des jurés associés
-  createdAt : {type:Date, defaut:Date.now}
+  createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
 });
 
 

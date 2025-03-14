@@ -17,6 +17,8 @@ const CaseSchema = new mongoose.Schema({
             coef: { type: Number, required: true },
         }
     ],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
 });
 
 module.exports = db.model("Case", CaseSchema);

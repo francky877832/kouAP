@@ -17,7 +17,9 @@ const evaluationSchema = new Schema({
         report: { type: String },
         jury: { type: Schema.Types.ObjectId, ref: User, required: true } // Membre du jury
     }
-  ]
+  ],
+  createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
 });
 
 // Ajoute un validateur personnalisé sur le tableau jurys pour garantir l'unicité de `jury`

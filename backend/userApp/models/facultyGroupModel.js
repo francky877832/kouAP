@@ -2,15 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const User = require('../models/userModel')
-const Application = require('../models/applicationModel')
+const Faculty = require('../models/facultyModel')
 const db = mongoose.connection.useDb("kouap");
 
 
 
-const FacultySchema = new mongoose.Schema({
+const FacultyGroupSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
+    faculties : [{ type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true }],
     createdAt : { type : Date, default : Date.now },
     updatedAt : { type : Date, default : Date.now }
 });
 
-module.exports = db.model("Faculty", FacultySchema);
+module.exports = db.model("FacultyGroup", FacultyGroupSchema);
