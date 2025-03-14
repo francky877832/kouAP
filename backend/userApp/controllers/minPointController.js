@@ -46,7 +46,7 @@ exports.createMinPoint = async (req, res, next) => {
 exports.getAllMinPoints = async (req, res) => {
     try {
         console.log('ok-')
-        const minPoints = await MinPoint.find().populate("activity").populate("positions.faculty");
+        const minPoints = await MinPoint.find().populate("activity").populate("groups.faculty");
         //console.log(minActivities)
         res.status(200).json({message:"success", data:minPoints});
     } catch (error) {

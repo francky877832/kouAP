@@ -53,7 +53,43 @@ exports.createMinActivity = async (req, res, next) => {
 // 📌 Récupérer toutes les MinActivities
 exports.getAllMinActivities = async (req, res) => {
     try {
-        const minActivities = await MinActivity.find().populate("activity").populate("groups.faculty");
+        const minActivities = await MinActivity.aggregate([
+     
+            {
+              $unwind: '$groups'  // Décomposer l'array 'groups' pour peupler le champ 'faculty'
+            },
+            {
+              $lookup: {
+                from: 'facultygroups',  // Nom de la collection de 'Faculty'
+                localField: 'groups.faculty',  // Champ dans 'groups' qui fait référence à 'faculty'
+                foreignField: '_id',  // Champ dans 'Faculty' qui correspond à la référence
+                as: 'groups.faculty'  // Le nom du champ de sortie
+              }
+            },
+            {
+              $lookup: {
+                from: 'faculties',  // Nom de la collection de 'Faculty'
+                localField: 'groups.faculty.faculties',  // Champ 'faculties' dans 'faculty'
+                foreignField: '_id',  // Champ dans 'Faculty' qui correspond à la référence
+                as: 'groups.faculty.faculties'  // Le nom du champ de sortie
+              }
+            },
+            {
+              $group: {
+                _id: '$_id',
+                letter: { $first: '$letter' }, 
+                range: { $first: '$range' }, 
+                from: { $first: '$from' }, 
+                to: { $first: '$to' }, 
+                criteria: { $first: '$criteria' }, 
+                activity: { $first: '$activity' },
+                groups: { $push: '$groups' },
+                createdAt: { $first: '$createdAt' }, 
+                updatedAt: { $first: '$updatedAt' },
+              }
+            }
+          ]);
+      
         //console.log(minActivities)
         res.status(200).json({message:"success", data:minActivities});
     } catch (error) {
@@ -82,9 +118,10 @@ exports.updateMinActivity = async (req, res) => {
         if (!updatedMinActivity) {
             return res.status(404).json({ message: "MinActivity non trouvée" });
         }
-        res.status(200).json(updatedMinActivity);
+        res.status(200).json({message:"success", data:updatedMinActivity});
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.log(error)
+        res.status(400).json({ error: error.message });
     }
 };
 
@@ -97,6 +134,7 @@ exports.deleteMinActivity = async (req, res) => {
         }
         res.status(200).json({ message: "MinActivity supprimée avec succès" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.log(error)
+        res.status(500).json({ error: error.message });
     }
 };

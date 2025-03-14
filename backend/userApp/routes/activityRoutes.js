@@ -13,6 +13,7 @@ router.get('/activities/all', activityController.getAllActivities);
 //minActivity
 router.post("/minActivity/create", minActivityController.createMinActivity);
 router.get('/minActivities/all', minActivityController.getAllMinActivities);
+router.put('/minActivities/update/:id', minActivityController.updateMinActivity);
 
 //minPoint
 router.post("/minPoint/create", minPointController.createMinPoint);

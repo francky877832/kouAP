@@ -272,17 +272,56 @@ export const ManagerProvider = ({ children }) => {
           if (!response.ok) {
             throw new Error(data.error || 'Failed to update activity');
           }
-      
-          
-          
-          /*
-          // Mettre à jour l'activité localement si l'API réussit
-          setActivities((prevActivities) =>
-            prevActivities.map((activity) =>
-              activity._id === updatedActivity._id ? updatedActivity : activity
-            )
-          );*/
+
           setIsActivitiesLoading(true)
+        } catch (error) {
+          alert(error)
+          console.error('Error updating activity:', error);
+        }
+      };
+
+
+       
+      const updateMinActivity = async (updatedActivity) => {
+        try {
+
+          const response = await fetch(`${server}/api/datas/activities/minActivity/update/${updatedActivity._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedActivity),
+          });
+
+      const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to update activity');
+          }
+
+          //setIsActivitiesLoading(true)
+        } catch (error) {
+          alert(error)
+          console.error('Error updating activity:', error);
+        }
+      };
+
+      const updateMinPoints = async (updatedActivity) => {
+        try {
+
+          const response = await fetch(`${server}/api/datas/activities/minPoint/update/${updatedActivity._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedActivity),
+          });
+
+      const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to update activity');
+          }
+
+          //setIsActivitiesLoading(true)
         } catch (error) {
           alert(error)
           console.error('Error updating activity:', error);
