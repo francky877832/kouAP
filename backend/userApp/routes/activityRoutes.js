@@ -20,8 +20,8 @@ router.delete('/minActivity/delete/:id', minActivityController.deleteMinActivity
 router.post("/minPoint/create", minPointController.createMinPoint);
 router.get('/minPoints/all', minPointController.getAllMinPoints);
 
-//router.put('/minPoint/update/:id', minActivityController.updateMinPoints);
-//router.delte('/minPoint/delete', minPointController.deleteMinPoint);
+router.put('/minPoint/update/:id', minPointController.updateMinPoint);
+router.delete('/minPoint/delete', minPointController.deleteMinPoint);
 
 
 

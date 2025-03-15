@@ -7,7 +7,7 @@ import { ManagerContext } from "../context/ManagerContext";
 
 
 
-const MinActivityDisplay = () => {
+const MinActivities = () => {
   const { minActivities, facultyDepartments, facultyGroups, isFacultyLoading, isMinActivitiesLoading, setIsMinActivitiesLoading } = useContext(UserContext);
   const { updateMinActivity, updateMinPoint, deleteMinActivity, deleteMinPoint, } = useContext(ManagerContext)
   const [activities, setActivities] = useState([]);
@@ -16,6 +16,22 @@ const MinActivityDisplay = () => {
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [editedGroups, setEditedGroups] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({
+      letter: selectedActivity?.letter,
+      from: selectedActivity?.from,
+      to: selectedActivity?.to,
+      range: selectedActivity?.range,
+      criteria: selectedActivity?.criteria,
+    });
+  
+    const handleChange = (e) => {
+      const { name, value, type, checked } = e.target;
+      setFormData({
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      });
+    };
+   
 
   useEffect(() => {
     
@@ -25,7 +41,7 @@ const MinActivityDisplay = () => {
     const isConfirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cette activité ?");
     
     if (isConfirmed) {
-      await deleteMinActivity()
+      await deleteMinActivity(minActivities[index])
     }
   };
   
@@ -40,6 +56,13 @@ const MinActivityDisplay = () => {
   const handleModalOpen = (activity) => {
     setSelectedActivity(activity);
     setEditedGroups(activity.groups.map(group => ({ ...group, faculty:group.faculty._id })));
+    setFormData({
+      letter: activity?.letter,
+      from: activity?.from,
+      to: activity?.to,
+      range: activity?.range,
+      criteria: activity?.criteria,
+  })
     setIsEditing(false);
   };
 
@@ -52,7 +75,16 @@ const MinActivityDisplay = () => {
   const handleSaveChanges = async () => {
     //console.log(editedGroups)
 
-    const updatedActivity = {...minActivities.find(act => act._id == selectedActivity._id), groups : editedGroups}
+    //const updatedActivity = {...minActivities.find(act => act._id == selectedActivity._id), groups : editedGroups}
+    const currentActivity = minActivities.find(act => act._id == selectedActivity._id)
+    const updatedActivity = {...currentActivity,
+      letter: formData?.letter || currentActivity?.letter,
+      from: formData?.from || currentActivity?.from,
+      to: formData?.to || currentActivity?.to,
+      range: formData?.range || currentActivity?.range,
+      criteria: formData?.criteria || currentActivity?.criteria,
+       groups : editedGroups
+      }
     //database
     //console.log(updatedActivity)
     await updateMinActivity(updatedActivity)
@@ -121,6 +153,75 @@ const MinActivityDisplay = () => {
             </>
           ) : (
             <>
+
+
+            
+            
+            
+                  {/* Range (Checkbox) */}
+                  <Form.Group className="mb-3">
+                    <Form.Check
+                      type="checkbox"
+                      label="Has Range"
+                      name="range"
+                      checked={formData.range}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+
+
+                  {/* Letter (Sélection A - L) */}
+               {formData.range && 
+               <Form.Group className="mb-3">
+                    <Form.Label>Letter</Form.Label>
+                    <Form.Select name="letter" value={formData.letter} onChange={handleChange} required>
+                      {Array.from({ length: 12 }, (_, i) => String.fromCharCode(65 + i)).map((letter) => (
+                        <option key={letter} value={letter}>
+                          {letter}
+                        </option>
+                      ))}
+                    </Form.Select>
+                </Form.Group>
+            }
+                  {/* From & To (Affichés seulement si Range est activé) */}
+                  {formData.range && (
+                    <>
+                      <Form.Group className="mb-3">
+                        <Form.Label>From</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="from"
+                          value={formData.from}
+                          onChange={handleChange}
+                          required={formData.range}
+                        />
+                      </Form.Group>
+            
+                      <Form.Group className="mb-3">
+                        <Form.Label>To</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="to"
+                          value={formData.to}
+                          onChange={handleChange}
+                          required={formData.range}
+                        />
+                      </Form.Group>
+                    </>
+                  )}
+            
+                  {/* Criteria (Désactivé si Range est activé) */}
+                  <Form.Group className="mb-3">
+                    <Form.Label>Criteria</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="criteria"
+                      value={formData.criteria}
+                      onChange={handleChange}
+                      disabled={formData.range}
+                      required={!formData.range}
+                    />
+                  </Form.Group>
               <h5>Edit Groups</h5>
               {editedGroups.map((group, i) => (
                 <div key={i} className="mb-3">
@@ -175,4 +276,4 @@ const MinActivityDisplay = () => {
   )
 };
 
-export default MinActivityDisplay;
+export default MinActivities;

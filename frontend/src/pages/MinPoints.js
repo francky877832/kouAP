@@ -1,409 +1,282 @@
-import React, { useState, useContext } from "react";
-import { Card, Container, Row, Col, Form, Button } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { Card, Spinner, Modal, Button, Form } from "react-bootstrap";
 import { UserContext } from "../context/UserContext";
+import Loading from "../components/Loading";
 import { titles } from "../datas/schoolDepartments";
+import { ManagerContext } from "../context/ManagerContext";
+
+
 
 const MinPoints = () => {
-  const { minPoints } = useContext(UserContext);
-  const { facultyDepartments } = useContext(UserContext);
-  const [selectedFaculty, setSelectedFaculty] = useState(null);
-  const [selectedFacultyName, setSelectedFacultyName] = useState("");
-  const [isFacultyEditable, setIsFacultyEditable] = useState(false);
-  const [newFaculty, setNewFaculty] = useState("");
-  const [isAllDataEditable, setIsAllDataEditable] = useState(false);
-  const [updatedFacultyData, setUpdatedFacultyData] = useState(null); // For form data
-  const [selectedCardIndex, setSelectedCardIndex] = useState(null); // Track selected card index for add faculty form visibility
-  const [selectedPositionIndex, setSelectedPositionIndex] = useState(null); 
+  const { minPoints, facultyDepartments, facultyGroups, isFacultyLoading, isMinPointsLoading, setIsMinPointsLoading } = useContext(UserContext);
+  const { updateMinPoint, deleteMinPoint, } = useContext(ManagerContext)
+  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedPoint, setSelectedPoint] = useState(null);
+  const [editedGroups, setEditedGroups] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    letter: selectedPoint?.letter || "A", // Par défaut "A"
+    from: selectedPoint?.from || "",
+    to: selectedPoint?.to || "",
+    range: selectedPoint?.range || false,
+    criteria: selectedPoint?.criteria || "",
+  });
 
-  const handleFacultyChange = (e, position, activityIndex, positionIndex) => {
-    const facultyName = e.target.value
-    setSelectedCardIndex(activityIndex)
-    setSelectedPositionIndex(positionIndex)
-
-    setSelectedFacultyName(facultyName);
-    const faculty = minPoints[activityIndex].positions[positionIndex].faculty.filter(f => f.name==facultyName)
-    const positions = minPoints[activityIndex].positions[positionIndex]
-   
-   // console.log(minPoints[activityIndex].positions[positionIndex])
-    console.log(positions)
-    if (faculty) {
-        const activity = minPoints[activityIndex]
-      /*  const activity = minPoints.find(
-        (activity) =>
-          activity.positions.some((pos) =>
-            pos.faculty.some((f) => f.name === facultyName)
-          )
-      );*/
-      //console.log(faculty.name)
-      setSelectedFaculty({
-        letter: activity.letter,
-        position : positions.position, //position name
-        range : activity.range,
-        criteria: activity.range ? null : activity.criteria,
-        from: activity.range ? activity.from : null,
-        to: activity.range ? activity.to : null,
-        minPoint: positions.minPoint,
-        maxPoint: positions.maxPoint,
-        facultyName: facultyName,
-        facultyId : facultyDepartments[facultyName]._id,
-        activityIndex: activityIndex, //minPoints.indexOf(activity),
-        positionIndex : positionIndex,
-      });
-    }
-   setSelectedFacultyName("")
-
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
   };
+ 
 
-  const handleDeleteFaculty = async (activityIndex) => {
-    const deleteId = selectedFaculty.facultyId
-    //console.log(deleteId)
-
-
-  };
-
-  const handleModifyFaculty = (activityIndex) => {
-    handleSelectCard(activityIndex)
-    setIsFacultyEditable(true);
-  };
-
-  const handleAddFaculty = async (activityIndex, positionIndex) => {
-    if (newFaculty && Object.keys(facultyDepartments).includes(newFaculty)) {
-
-        //newFaculty
-        const activity = minPoints[activityIndex]
-        
-        const position = activity.positions[positionIndex]
-        position.faculty.push({_id : facultyDepartments[newFaculty]._id, name:newFaculty })
+  useEffect(() => {
     
-        const updatedActivity = {
-            ...activity,
-        }
-        console.log(updatedActivity)
+  }, []);
 
-
-      //setSelectedFaculty(null);
-      //setIsFacultyEditable(false);
-      //setSelectedCardIndex(null); // Reset selected card index
-    } else {
-      alert("Invalid faculty selected.");
-    }
-  };
-
-  const handleModifyAllData = (activityIndex) => {
-    setIsAllDataEditable(true);
-    setUpdatedFacultyData({ ...selectedFaculty }); // Populate form with current data
-  };
-
-  const handleSaveAllData = (activityIndex) => {
-    console.log(minPoints)
-    // Save updated data logic
-    const activity = minPoints[selectedCardIndex];
-   
-    //console.log(activity)
-    const position = activity.positions[selectedPositionIndex]
+  const handleDeletePoint = async (index) => {
+    const isConfirmed = window.confirm("Êtes-vous sûr de vouloir supprimer cette activité ?");
     
-    const modifiedPositions = {
-        ...position,
-        position : updatedFacultyData.position,
-        minPoint : updatedFacultyData.minPoint,
-        maxPoint : updatedFacultyData.maxPoint,
-        faculty : position.faculty
-    }
-    const updatedActivity = {
-        //...activity,
-        range : activity.range,
-        letter : updatedFacultyData.letter,
-        from: updatedFacultyData.from,
-        to: updatedFacultyData.to,
-        criteria: updatedFacultyData.criteria,
-        positions : modifiedPositions,
-        //faculty,
-    }
-
-    console.log(updatedActivity)
-
-    /*
-    letter,
-        range,
-        from,
-        to,
-        criteria,
-        position : positionsCount.position,
-        quantity : positionsCount.quantity,
-        faculty :  selectedFaculties.map(sf => facultyDepartments[sf]._id),
-    */
-
-    //setSelectedFaculty(null);
-    //setIsAllDataEditable(false); // Close edit mode
-  };
-
-  const handleSelectCard = (index) => {
-    setSelectedCardIndex(index === selectedCardIndex ? null : index); // Toggle selection
-  };
-
-  const handleDeleteCard = (activityIndex) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this activity?");
-    if (confirmDelete) {
-      // Logic to delete the activity at activityIndex
-      const updatedActivities = [...minPoints];
-      updatedActivities.splice(activityIndex, 1); // Remove activity at given index
-      //setminPoints(updatedActivities); // Update the state with the new list
+    if (isConfirmed) {
+      await deleteMinPoint(minPoints[index]._id)
     }
   };
   
+  const handleModifyGroup = (index, field, value) => {
+    const updatedGroups = [...editedGroups];
+    updatedGroups[index] = { ...updatedGroups[index], [field]: value };
+    //console.log(field, value)
+    console.log(updatedGroups)
+    setEditedGroups(updatedGroups);
+  };
+
+  const handleModalOpen = (point) => {
+    setSelectedPoint(point);
+    setEditedGroups(point.groups.map(group => ({ ...group, faculty:group.faculty._id })));
+    setFormData({
+      letter: point?.letter || "A", // Par défaut "A"
+      from: point?.from || "",
+      to: point?.to || "",
+      range: point?.range || false,
+      criteria: point?.criteria || "",
+  })
+    setIsEditing(false);
+  };
+
+  const handleModalClose = () => {
+    setSelectedPoint(null);
+    setEditedGroups([]);
+    setIsEditing(false);
+  };
+
+  const handleSaveChanges = async () => {
+    //console.log(editedGroups)
+    const currentPoint =minPoints.find(act => act._id == selectedPoint._id)
+    const updatedPoint = {...currentPoint, 
+      letter: formData?.letter || currentPoint?.letter,
+      from: formData?.from || currentPoint?.from,
+      to: formData?.to || currentPoint?.to,
+      range: formData?.range || currentPoint?.range,
+      criteria: formData?.criteria || currentPoint?.criteria,
+      groups : editedGroups}
+    //database
+    //console.log(updatedPoint)
+    await updateMinPoint(updatedPoint)
+    setIsMinPointsLoading(true)
+    setIsEditing(false);
+    handleModalClose()
+  };
+
+  if(isFacultyLoading || isMinPointsLoading)
+  {
+    return <Loading/>
+  }
+  //console.log(minPoints)
 
   return (
-    <Container fluid>
-      <Row>
-        <Col md={8}>
-          {minPoints.map((activity, activityIndex) => (
-            <Card key={activityIndex} className="mb-3">
-              <Card.Body>
-              <Card.Title>
-                Activity : {activity.range ? activity.letter+activity.from + " - " + activity.letter+activity.to : activity.criteria}
-                <Button
-                    variant="danger"
-                    size="sm"
-                    className="float-end"
-                    onClick={() => handleDeleteCard(activityIndex)}
-                >
-                    Delete
-                </Button>
-                </Card.Title>
+    <div className="container mt-4">
+      {
+        minPoints.map((point, index) => (
+          <Card key={index} className="mb-3">
+            <Card.Body onClick={() => handleModalOpen(point)} style={{ cursor: "pointer" }}>
+              <Card.Title>{point.letter || point.criteria }</Card.Title>
+              <Card.Text className="d-flex justify-content-around">
+                <div>
+                  <strong>Letter:</strong> {point.letter || point.criteria} <br />
+                </div>
+                <div>
+                  <strong>Range:</strong> {point.range ? `${point.letter} ${point.from} - ${point.letter}${point.to}` : "No"} <br/>
+                </div>
+                <div>
+                  <strong>Criteria:</strong> {point?.range ? "N/A" : selectedPoint?.criteria}
+                </div>
+              </Card.Text>
+            </Card.Body>
+            <div className="d-flex justify-content-center">
+              <Button variant="danger" onClick={() => handleDeletePoint(index)} className="m-2">
+                Delete
+              </Button>
+            </div>
+          </Card>
 
-                <Row>
-                  {activity.positions.map((pos, positionIndex) => (
-                    <Col key={positionIndex} md={4} className="mb-2">
-                      <h5>{titles[parseInt(pos.position)].value}</h5>
-                      <p>Min. Points: {pos.minPoint}</p>
-                      <p>Max. Points: {pos.maxPoint}</p>
-                      
-                      
-                      <Form.Control
-                        as="select"
-                        value={selectedFacultyName}
-                        onChange={(e) => handleFacultyChange(e, titles[parseInt(pos.position)].value, activityIndex, positionIndex)}
-                        className="mb-2"
-                      >
-                        <option value="">Choose a faculty</option>
-                        {pos.faculty.map((faculty, fidx) => (
-                          <option key={fidx} value={faculty.name}>
-                            {faculty.name}
-                          </option>
-                        ))}
-                      </Form.Control>
+        ))
+      }
 
-                      <div>
-                        <Button variant="primary" className="mr-2" onClick={() => {handleModifyFaculty(activityIndex, positionIndex)}}>
-                          Modify Faculty
-                        </Button>
-                      </div>
+      <Modal show={!!selectedPoint} onHide={handleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{selectedPoint?.letter || selectedPoint?.criteria  }</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {!isEditing ? (
+            <>
+              <p><strong>Letter:</strong> {selectedPoint?.letter}</p>
+              <p><strong>Range:</strong> {selectedPoint?.range ? `${selectedPoint.letter} ${selectedPoint.from} - ${selectedPoint.letter} ${selectedPoint.to}` : "No"}</p>
+              <p><strong>Criteria:</strong> {selectedPoint?.range ? "N/A" : selectedPoint?.criteria}</p>
+              <p><strong>Created At:</strong> {new Date(selectedPoint?.createdAt).toLocaleDateString()}</p>
+              <h5>Groups:</h5>
+              {selectedPoint?.groups.map((group, i) => (
+                <div key={i}>
+                  <p><strong>Faculties:</strong> {group.faculty?.faculties?.map(f => (f.name+", "))} </p>
+                  <ul>
+                    {group.positions.map((pos, j) => (
+                      <li key={j}><b>Position : </b> {(titles[pos.position-1].label)} - <b>Points : </b> {pos.minPoint} - {pos.maxPoint} </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
 
-                      {/* Add Faculty Section (Only visible for the selected card) */}
-                      {selectedCardIndex === activityIndex && isFacultyEditable && (
-                        <div className="mt-2">
-                          <Form.Control
-                            as="select"
-                            onChange={(e) => setNewFaculty(e.target.value)}
-                          >
-                            <option value="">Select a Faculty</option>
-                            {Object.keys(facultyDepartments).map((fac, idx) => (
-                              <option key={idx} value={fac}>
-                                {fac}
-                              </option>
-                            ))}
-                          </Form.Control>
-                          <Button
-                            variant="success"
-                            className="mt-2"
-                            onClick={() => {handleAddFaculty(activityIndex, positionIndex)}}
-                          >
-                            Add Faculty
-                          </Button>
-                        </div>
-                      )}
-                    </Col>
-                  ))}
-                </Row>
-              </Card.Body>
-            </Card>
-          ))}
-        </Col>
-
-        {/* Details Section on the Right */}
-        <Col md={4}>
-          {selectedFaculty && (
-            <Card className="mt-3">
-              <Card.Body>
-                <Card.Title>Details</Card.Title>
-
-                {/* Display/Edit Form Fields for Faculty Data */}
-                {isAllDataEditable ? (
-                  <div>
-                    <Form>
-                      <Form.Group>
-                        <Form.Label>Label </Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={updatedFacultyData.letter}
-                          disabled
-                        />
-                      </Form.Group>
+ {/* Range (Checkbox) */}
+                  <Form.Group className="mb-3">
+                    <Form.Check
+                      type="checkbox"
+                      label="Has Range"
+                      name="range"
+                      checked={formData.range}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
 
 
-
-
+                  {/* Letter (Sélection A - L) */}
+               {formData.range && 
+               <Form.Group className="mb-3">
+                    <Form.Label>Letter</Form.Label>
+                    <Form.Select name="letter" value={formData.letter} onChange={handleChange} required>
+                      {Array.from({ length: 12 }, (_, i) => String.fromCharCode(65 + i)).map((letter) => (
+                        <option key={letter} value={letter}>
+                          {letter}
+                        </option>
+                      ))}
+                    </Form.Select>
+                </Form.Group>
+            }
+                  {/* From & To (Affichés seulement si Range est activé) */}
+                  {formData.range && (
+                    <>
                       <Form.Group className="mb-3">
-                        <Form.Label>Position:</Form.Label>
-                        <Form.Control
-                            as="select"
-                            name="position"
-                            value={updatedFacultyData.position}
-                            onChange={(e) =>
-                            setUpdatedFacultyData({
-                                ...updatedFacultyData,
-                                position: e.target.value,
-                            })
-                            }
-                            required
-                        >
-                            <option value="">Select a position</option>
-                            {titles.map((title) => (
-                            <option key={title._id} value={title._id}>
-                                {title.value}
-                            </option>
-                            ))}
-                        </Form.Control>
-                        </Form.Group>
-
-
-
-
-
-
-                      <Form.Group>
-                        <Form.Label>Min. Points</Form.Label>
+                        <Form.Label>From</Form.Label>
                         <Form.Control
                           type="number"
-                          value={updatedFacultyData.minPoint}
-                          onChange={(e) =>
-                            setUpdatedFacultyData({
-                              ...updatedFacultyData,
-                              minPoint: e.target.value,
-                            })
-                          }
+                          name="from"
+                          value={formData.from}
+                          onChange={handleChange}
+                          required={formData.range}
                         />
-
-                        <Form.Label>Max. Points</Form.Label>
+                      </Form.Group>
+            
+                      <Form.Group className="mb-3">
+                        <Form.Label>To</Form.Label>
                         <Form.Control
                           type="number"
-                          value={updatedFacultyData.maxPoint}
-                          onChange={(e) =>
-                            setUpdatedFacultyData({
-                              ...updatedFacultyData,
-                              maxPoint: e.target.value,
-                            })
-                          }
+                          name="to"
+                          value={formData.to}
+                          onChange={handleChange}
+                          required={formData.range}
                         />
                       </Form.Group>
+                    </>
+                  )}
+            
+                  {/* Criteria (Désactivé si Range est activé) */}
+                  <Form.Group className="mb-3">
+                    <Form.Label>Criteria</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="criteria"
+                      value={formData.criteria}
+                      onChange={handleChange}
+                      disabled={formData.range}
+                      required={!formData.range}
+                    />
+                  </Form.Group>
+      
+              <h5>Edit Groups</h5>
+              {editedGroups.map((group, i) => (
+                <div key={i} className="mb-3">
+                  <Form.Label>Faculty:</Form.Label>
+                  <Form.Select
+                    value={group.faculty}
+                    onChange={(e) => handleModifyGroup(i, "faculty", e.target.value)}
+                  >
+                    {facultyGroups.map((fac) => (
+                      <option key={fac._id} value={fac._id}>
+                        {fac.faculties.map(f => f.name).join(", ")}
+                      </option>
+                    ))}
+                  </Form.Select>
 
-                     {!minPoints[selectedCardIndex].range &&
-                      <Form.Group>
-                        <Form.Label>Criteria</Form.Label>
+                  <ul>
+                    {group.positions.map((pos, j) => (
+                      <li key={j}>
+                        <b>{titles[pos.position-1].label}</b> 
                         <Form.Control
-                          type="text"
-                          value={updatedFacultyData.criteria || ""}
-                          onChange={(e) =>
-                            setUpdatedFacultyData({
-                              ...updatedFacultyData,
-                              criteria: e.target.value,
-                            })
-                          }
+                          type="number"
+                          value={pos.minPoint}
+                          onChange={(e) => {
+                            const newPositions = [...group.positions];
+                            newPositions[j] = { ...newPositions[j], minPoint: e.target.value };
+                            handleModifyGroup(i, "positions", newPositions);
+                          }}
                         />
-                      </Form.Group>}
-                
-                {minPoints[selectedCardIndex].range &&
-                      <Form.Group>
-                        <Form.Label>Range</Form.Label>
-                        <div className="d-flex">
-                          <Form.Control
-                            type="number"
-                            value={updatedFacultyData.from || ""}
-                            onChange={(e) =>
-                              setUpdatedFacultyData({
-                                ...updatedFacultyData,
-                                from: e.target.value,
-                              })
-                            }
-                          />
-                          <span className="mx-2">-</span>
-                          <Form.Control
-                            type="number"
-                            value={updatedFacultyData.to || ""}
-                            onChange={(e) =>
-                              setUpdatedFacultyData({
-                                ...updatedFacultyData,
-                                to: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </Form.Group>
-                }
-                    </Form>
-                
-                    <Button
-                      variant="success"
-                      className="mt-2"
-                      onClick={handleSaveAllData}
-                    >
-                      Save All Data
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                     {selectedFaculty.criteria ? (
-                      <p>Criteria: {selectedFaculty.criteria}</p>
-                    ) : (
-                        <p>
-                            Label: {minPoints[selectedCardIndex].range ? minPoints[selectedCardIndex].letter+minPoints[selectedCardIndex].from 
-                            + " - " + minPoints[selectedCardIndex].letter+minPoints[selectedCardIndex].to : minPoints[selectedCardIndex].criteria}
-                        </p>
-                    )}
-                   
-                    <p>Position: {titles[selectedFaculty.position].value}</p>
-                    <p>Min. Points: {selectedFaculty.minPoint}</p>
-                    <p>Max. Points: {selectedFaculty.maxPoint}</p>
-                 
-                    <p>Selected Faculty: {selectedFaculty.facultyName}</p>
 
-                    {/* Buttons for modifying or deleting faculty */}
-                    <div className="d-flex flex-column mt-3">
-                        <Button
-                            variant="danger"
-                            className="mb-2 w-100"
-                            onClick={() => { handleDeleteFaculty(selectedCardIndex) }}
-                        >
-                            Delete Faculty
-                        </Button>
-
-                        <Button
-                            variant="warning"
-                            className="mt-2 w-100"
-                            onClick={() => {handleModifyAllData(selectedCardIndex)}}
-                        >
-                            Modify All Data
-                        </Button>
-                    </div>
-                  </>
-                )}
-              </Card.Body>
-            </Card>
+                    <Form.Control
+                          type="number"
+                          value={pos.maxPoint}
+                          onChange={(e) => {
+                            const newPositions = [...group.positions];
+                            newPositions[j] = { ...newPositions[j], maxPoint: e.target.value };
+                            handleModifyGroup(i, "positions", newPositions);
+                          }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </>
           )}
-        </Col>
-      </Row>
-    </Container>
-  );
+        </Modal.Body>
+        <Modal.Footer>
+          {!isEditing ? (
+            <>
+              <Button variant="secondary" onClick={handleModalClose}>Close</Button>
+              <Button variant="primary" onClick={() => setIsEditing(true)}>Modify</Button>
+            </>
+          ) : (
+            <>
+              <Button variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
+              <Button variant="success" onClick={handleSaveChanges}>Save</Button>
+            </>
+          )}
+        </Modal.Footer>
+      </Modal>
+    </div>
+  )
 };
 
 export default MinPoints;

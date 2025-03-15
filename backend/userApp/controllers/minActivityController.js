@@ -35,8 +35,16 @@ exports.createMinActivity = async (req, res, next) => {
             faculty,
         }*/
         //console.log(req.body)
-
-        const newActivity = new MinActivity({ letter, range, from, to, criteria, groups});
+        let data = {}
+        if(range)
+        {
+          data = { letter, range, from, to, criteria, groups}
+        }
+        else
+        {
+          data = {range, from, to, criteria, groups}
+        }
+        const newActivity = new MinActivity(data);
         const savedActivity = await newActivity.save();
         console.log(savedActivity)
         res.status(201).json({ message: "success", activity: savedActivity });

@@ -13,8 +13,8 @@ const db = mongoose.connection.useDb("kouap");
 
 const MinPointSchema = new mongoose.Schema({
    activity: { type: mongoose.Schema.Types.ObjectId, ref: Activity, default: null },
-    letter: { type: String, enum: "A B C D E F G H I J K L".split(" "), required: true },
     range: { type: Boolean, required: true },
+    letter: { type: String, enum: "A B C D E F G H I J K L".split(" "), required: function () { return this.range; } },
     from: { type: Number, required: function () { return this.range; } },
     to: { type: Number, required: function () { return this.range; } },
     criteria: { type: String, required: function () { return !this.range; } },
