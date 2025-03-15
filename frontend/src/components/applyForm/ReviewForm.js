@@ -107,7 +107,7 @@ const ReviewForm = ({ formData }) => {
             
               <>
 
-            {index > 0 && index < userForms.length &&
+            {index < userForms.length &&
               <>
                 <tr>
                   <th colSpan="4">{data.letter} - {userForms[index].activity.label}</th>

@@ -25,8 +25,8 @@ exports.createForm = async (req, res) => {
 // Récupérer tous les formulaires
 exports.getForms = async (req, res) => {
     try {
-        const forms = await Form.find().populate('activity').lean();
-       console.log(forms[forms.length-1].activity.activities.length)
+        const forms = await Form.find().populate('activity');
+       // console.log(forms)
         res.status(200).json({message:'success', data:forms});
     } catch (error) {
         console.log(error)
