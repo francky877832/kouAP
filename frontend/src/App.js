@@ -1,6 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ControlUser from "./pages/ControlUser";
+
 import CallbackLogin from "./pages/CallbackLogin";
 import AnnounceForm from "./pages/AnnounceForm";
 import Home from "./pages/Home";
@@ -50,6 +53,8 @@ const App = () => {
         <Route path="/manager-form/edit-form" element={<FormManager />} />
 
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/control-user" element={<ControlUser />} />
 
         
       </Routes>

@@ -11,6 +11,7 @@ router.get("/auth", userCtrl.redirectForLogin);
 router.get("/callback", userCtrl.getAccessToken);
 router.get("/userinfo", userCtrl.getPersonInfo);
 
+router.post("/control", userCtrl.controlUser);
 
 
 

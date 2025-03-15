@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const fetch = require("node-fetch");
+const xml2js = require('xml2js');
+
 const dotenv = require("dotenv");
 
 const JWT_SECRET = 'WINKEL_RANDOM_TOKEN_SECRET'
@@ -12,7 +14,6 @@ const generateToken = (userId) => {
     const token = jwt.sign({ userId : userId }, JWT_SECRET, { expiresIn: '7d' });
     return token;
 };
-
 
 
 dotenv.config();
@@ -26,6 +27,72 @@ const EDConfiguration = {
     RedirectUri: process.env.ED_REDIRECT_URI,
 };
 
+
+
+const generateSoapRequest = (tcID, name, surname, birthYear) => {
+    return `<?xml version="1.0" encoding="utf-8"?>
+        <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+        <soap12:Body>
+            <TCKimlikNoDogrula xmlns="http://tckimlik.nvi.gov.tr/WS">
+            <TCKimlikNo>${BigInt(tcID)}</TCKimlikNo>
+            <Ad>${name}</Ad>
+            <Soyad>${surname}</Soyad>
+            <DogumYili>${birthYear}</DogumYili>
+            </TCKimlikNoDogrula>
+        </soap12:Body>
+        </soap12:Envelope>`;
+  };
+
+exports.controlUser = async (req, res, next) => {
+    const {tcID, name, surname, birthYear } = req.body
+    console.log(req.body)
+    const soapRequest = generateSoapRequest(tcID, name, surname, birthYear);
+  
+  try {
+    // Faire la requête SOAP
+   // const response = await fetch('https://tckimlik.nvi.gov.tr/service/kpspublic.asmx', {
+        const response = await fetch('https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/soap+xml; charset=utf-8',
+        'SOAPAction': 'http://tckimlik.nvi.gov.tr/WS/TCKimlikNoDogrula',
+      },
+      body: soapRequest,
+    });
+    //const res = await response.text()
+   // console.log(res)
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Failed to call SOAP API' });
+    }
+
+    const responseText = await response.text();
+    //console.log(response)
+    // Parse XML response
+    const parser = new xml2js.Parser();
+    parser.parseString(responseText, (error, result) => {
+      if (error) {
+        console.log(error)
+        return res.status(500).json({ error: 'Failed to parse SOAP response' });
+      }
+      console.log(result["soap:Envelope"]["soap:Body"][0]['TCKimlikNoDogrulaResponse'][0]['TCKimlikNoDogrulaResult'][0])
+
+      // Accéder à TCKimlikNoDogrulaResult
+      const resultValue = result["soap:Envelope"]["soap:Body"][0]['TCKimlikNoDogrulaResponse'][0]['TCKimlikNoDogrulaResult'][0];
+      
+      if (resultValue === 'true') {
+        return res.status(200).json({ message: 'User information is correct' });
+      } else {
+        return res.status(400).json({ error: 'User information is incorrect' });
+      }
+    });
+  } catch (error) {
+    console.error('Error calling SOAP API:', error);
+    return res.status(500).json({ error: 'Failed to call SOAP API' });
+  }
+};
+
+  
 /**
  * Redirige l'utilisateur vers e-Devlet pour l'authentification.
  */

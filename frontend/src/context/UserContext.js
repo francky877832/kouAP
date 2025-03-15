@@ -29,6 +29,60 @@ export const UserProvider = ({ children }) => {
 
 
 
+
+
+     const controlUser = async (user) => {
+      try {
+        
+        const response = await fetch(`${server}/api/users/control`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(user),
+        });
+    
+        
+         const data = await response.json();
+         if (!response.ok) {
+           throw new Error(data.error || `Erreur lors du controle du kimlik: ${response.statusText}`);
+         }
+         return data.data; 
+      } catch (error) {
+        alert(error)
+        console.error(error);
+      }
+    }
+
+
+    
+    const signUpUser = async (newUser) => {
+      try {
+        
+        const response = await fetch(`${server}/api/users/signUp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: newUser,
+        });
+    
+        
+         const data = await response.json();
+         if (!response.ok) {
+           throw new Error(data.error || `Cannot sign Up: ${response.statusText}`);
+         }
+         const user_ = data.data;
+         setUser(user_)
+
+      } catch (error) {
+        alert(error)
+        console.error(error);
+        return null
+      }
+    }
+
+
      const fetchCases = async () => {
       try {
         const response = await fetch(`${server}/api/datas/cases/case/all`, {
@@ -38,12 +92,13 @@ export const UserProvider = ({ children }) => {
           },
         });
     
-        if (!response.ok) {
-          throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
-        }
+        
     
         // Récupérer les données au format JSON
         const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
+        }
         //console.log(data)
         return data.data; // Retourner les annonces récupérées
       } catch (error) {
@@ -367,7 +422,9 @@ const fetchUserForms= async () => {
           setIsUserFormsLoading, setIsFacultyLoading, setIsMinActivitiesLoading, setIsMinPointsLoading,
         }
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
-          fetchCases, fetchCoefs, fetchFacultyGroups
+          fetchCases, fetchCoefs, fetchFacultyGroups,
+
+          controlUser, signUpUser, 
         }
 
   return (
