@@ -15,17 +15,32 @@ const generateToken = (userId) => {
     return token;
 };
 
+function isBcryptHash(pass) {
+    const password = pass
+    //console.log(password)
+    return typeof password === 'string' && password.startsWith('$2') && password.length === 60;
+  }
+  
 
-dotenv.config();
-
-const EDConfiguration = {
-    AuthURL: "https://giris.turkiye.gov.tr/OAuth2AuthorizationServer/AuthorizationController",
-    TokenURL: "https://giris.turkiye.gov.tr/OAuth2AuthorizationServer/AccessTokenController",
-    ResponseURL: "https://giris.turkiye.gov.tr/OAuth2AuthorizationServer/AuthenticationController",
-    ClientId: process.env.ED_CLIENT_ID,
-    ClientSecret: process.env.ED_CLIENT_SECRET,
-    RedirectUri: process.env.ED_REDIRECT_URI,
-};
+async function generateUniqueUsername(user) {
+    const baseName = user.role;
+    let uniqueUsername = '';
+    let isUnique = false;
+  
+    while (!isUnique) {
+      const randomPart = Math.floor(Math.random() * 10000); // entre 0 et 9999999999
+      uniqueUsername = `${baseName}${randomPart}`;
+  
+      const existingUser = await User.findOne({ username: uniqueUsername });
+  
+      if (!existingUser) {
+        isUnique = true;
+      }
+    }
+  
+    return uniqueUsername;
+  }
+  
 
 
 
@@ -92,22 +107,75 @@ exports.controlUser = async (req, res, next) => {
   }
 };
 
+
+exports.signupUser = async (req, res, next) => {
+    //console.log(req.body)
+    try {
+      let user;
+      user = await User.findOne({ email: req.body.email })
+      //console.log(user)
+      if(user)
+      {
+          return res.status(401).json({ error: 'auth/user-already-exists' });
+      }
   
-/**
- * Redirige l'utilisateur vers e-Devlet pour l'authentification.
- */
-exports.redirectForLogin = (req, res) => {
-    const state = "12345"; // Générer un vrai état aléatoire pour éviter les attaques CSRF
-    const scope = "Ad-Soyad"; // Définir les permissions nécessaires
+      const hash = await bcrypt.hash(req.body.password, 10);
+      user = new User({
+        ...req.body, 
+        email: req.body.email,
+        password: hash,
+        username: await generateUniqueUsername(),
+        //image: 'https://www.dropbox.com/scl/fi/41yuy1221z1cklqy2y5jn/new-user.jpg?rlkey=wh4l7xh2ueg6nd3ws3rcfa2zt&st=hecgnuvg&dl=1'//DROPBOX images
+      });
+      await user.save();
+  
+      res.status(200).json({ success: true, message: 'auth/user-created' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'auth/error-creating-user' });
+    }
+  };
+  
+    exports.loginUser =  (req, res, next) => {
+      //console.log("LOGIN")
+      let validePassword=false;
+      
+      User.findOne({ email: req.query.email })
+          .then( async (user) => {
+            
+            //console.log(req.query)
+              if (!user) 
+              {
+   
+                    return res.status(401).json({ error: 'auth/user-not-found--' });
+              }
+         
+              if(!isBcryptHash(req.query.password))
+              {
+                validePassword = await bcrypt.compare(req.query.password, user.password)
+                //console.log("validePassword")
+              }
+              else
+              {
+                validePassword = req.query.password.toString() === user.password.toString()
+                //console.log(" not validePassword")
+              }
+                
+              if (!validePassword) {
+                return res.status(401).json({ error: 'auth/incorrect-password' });
+              }
+              else
+              {
+                const token = generateToken(user._id);
+                res.status(200).json({ token:token, user : user });
+              }    
+  
+          })
+          .catch(error => res.status(500).json({ error }));
+   };
 
-    const authUrl = `${EDConfiguration.AuthURL}?response_type=code&client_id=${EDConfiguration.ClientId}&state=${state}&scope=${scope}&redirect_uri=${EDConfiguration.RedirectUri}`;
+  
 
-    res.redirect(authUrl);
-};
-
-/**
- * Récupère le token d'accès depuis e-Devlet après l'authentification.
- */
 exports.getAccessToken = async (req, res) => {
     const { code } = req.query;
 

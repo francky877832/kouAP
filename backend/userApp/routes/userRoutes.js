@@ -7,7 +7,7 @@ const userCtrl = require('../controllers/userController');
 //User Route
 
 
-router.get("/auth", userCtrl.redirectForLogin);
+
 router.get("/callback", userCtrl.getAccessToken);
 router.get("/userinfo", userCtrl.getPersonInfo);
 

@@ -12,12 +12,18 @@ const userSchema = new mongoose.Schema({
   tcID: { type: String, required: true, trim: true },
   birthDate: { type: Date, required: true, trim: true },
 
+  username: { type: String, required: false, trim: true },
+
+
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   phoneNumber: { type: String, required: true, trim: true },
   address: { type: String, required: true, },
   password: { type: String, required: true },
   role: { type: String, enum: ['user', 'admin', 'jury', 'manager'], default: 'user' },
   cv : { type: String, required: function(){ return this.role=='user'} },
+
+  username: { type: String, required: false, trim: true },
+
 
   //title: { type: String, enum: ["Candidate", "Assistant Professor", "Associate Professor", "Professor"], required: false, },
   createdAt : { type : Date, default : Date.now },

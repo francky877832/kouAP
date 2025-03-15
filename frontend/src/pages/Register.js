@@ -2,9 +2,14 @@ import React, { useContext, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Register = () => {
     const { signUpUser } = useContext(UserContext)
+    const location = useLocation()
+    const navigate = useNavigate()
+
+  const { tcID, name, surname, birthYear } = location.state || {};
   const [formData, setFormData] = useState({
     email: "",
     phoneNumber: "",
@@ -54,6 +59,10 @@ const Register = () => {
 
     setIsLoading(true)
     const data = new FormData();
+    data.append("tcID", formData.tcID);
+    data.append("name", formData.name);
+    data.append("surname", formData.surname);
+    data.append("birthYear", formData.birthYear);
     data.append("email", formData.email);
     data.append("phoneNumber", formData.phoneNumber);
     data.append("address", formData.address);

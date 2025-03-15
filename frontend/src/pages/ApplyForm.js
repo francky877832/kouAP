@@ -12,7 +12,7 @@ import { UserContext } from '../context/UserContext';
 import { ManagerContext } from '../context/ManagerContext';
 
 const ApplyForm = () => {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(13);
   const steps = 13 // 0 - 11 + 1 
 
   const { userForms, isUserFormsLoading } = useContext(UserContext)
@@ -119,44 +119,7 @@ const handleDataFunctions = [
     }
   });
 
-  /* 
-    (el => [el.letter, el.fields.map(el2 => el2.name )])
-  )
-    step1 : {
-      fullName: '',
-      idNumber: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
-    },
-    A : 
-    {
-      author: '',
-      articleTitle: '',
-      journalName: '',
-      volume: '',
-      pages: '',
-      year: '',
-      authorName:'',
-
-      cases : {},
-      participants  : {},
   
-    },
-    B : {
-      author : '',
-      title : '',
-      conferenceName : '',
-      location : '',
-      numberPage : '',
-      date : '',
-      cases : {},
-      participants  : {},
-    },
-
-*/
-
-
 
 useEffect(() => {
   
@@ -269,7 +232,7 @@ useEffect(() => {
 */
 
   return (
-    <div className="container mt-5">
+    <div className="container-lg mt-5">
       <h2 className="text-center mb-4">Application Form</h2>
       
       <div className="progress mb-4">
@@ -288,7 +251,7 @@ useEffect(() => {
           })
         }
   
-        {step === steps && <ReviewForm formData={formData} />}
+        {step === steps && <ReviewForm formData={formData} userForms={userForms} />}
         
         <div className="mt-4 d-flex justify-content-between">
           {step > 0 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}
