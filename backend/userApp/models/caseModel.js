@@ -13,8 +13,9 @@ const CaseSchema = new mongoose.Schema({
     message: { type: String, required: true, unique: true },
     participants : [
         {
-            title: { type: String, enum:['AD','LO1', 'LO2', 'ED','KYD', 'BY', 'IY', 'SY', 'EY', 'FIVE_PLUS', 'NONE_OF_THEM'], required: true },
+            title: { type: String, enum:["AD", "LO1", "LO2", "ED", "KYD", "BY1", "BY2", "BY3", "IY", "SY1", "SY2", "EY", "FIVE_PLUS", "NONE_OF_THEM"], required: true },
             coef: { type: Number, required: true },
+            coef2: { type: Number, required: true, default:1 },
         }
     ],
     createdAt : { type : Date, default : Date.now },

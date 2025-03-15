@@ -15,11 +15,11 @@ const CaseCoef = () => {
   
    
 
-  const participantTitles = ["AD", "LO1", "LO2", "ED", "KYD", "BY", "IY", "SY", "EY", "FIVE_PLUS", "NONE_OF_THEM"];
+  const participantTitles = ["AD", "LO1", "LO2", "ED", "KYD", "BY1", "BY2", "BY3", "IY", "SY1", "SY2", "EY", "FIVE_PLUS", "NONE_OF_THEM"];
 
   const [show, setShow] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState({ number: "", coef: "", message: "", participants: [] });
+  const [form, setForm] = useState({ number: "", coef: "", factor:"", message: "", participants: [] });
   const [selectedId, setSelectedId] = useState(null);
   const [formType, setFormType] = useState("coef");
 
@@ -31,7 +31,7 @@ const CaseCoef = () => {
       setForm(item);
     } else {
       setEditMode(false);
-      setForm({ number: "", coef: "", message: "", participants: [] });
+      setForm({ number: "", coef: "", coef2:"", factor:"", message: "", participants: [] });
     }
     setShow(true);
   };
@@ -50,7 +50,7 @@ const CaseCoef = () => {
   };
 
   const addParticipant = () => {
-    setForm({ ...form, participants: [...form.participants, { title: "AD", coef: 0 }] });
+    setForm({ ...form, participants: [...form.participants, { title: "AD", coef: 0, coef2:0}] });
   };
 
   const removeParticipant = async (index) => {
@@ -105,8 +105,9 @@ const CaseCoef = () => {
       <Table striped bordered hover className="mt-3">
         <thead>
           <tr>
-            <th>Numéro</th>
+            <th>Num. Personnes</th>
             <th>Coef</th>
+            <th>Factor</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -115,6 +116,7 @@ const CaseCoef = () => {
             <tr key={item._id}>
               <td>{item.number}</td>
               <td>{item.coef}</td>
+              <td>{item.factor}</td>
               <td>
                 <Button variant="warning" onClick={() => handleShow("coef", item)}>Modifier</Button>
                 <Button variant="danger" onClick={() => handleDelete(item._id, "coef")} className="ms-2">Supprimer</Button>
@@ -160,11 +162,13 @@ const CaseCoef = () => {
               <Form.Label>Numéro</Form.Label>
               <Form.Control type="number" name="number" value={form.number} onChange={handleChange} required />
             </Form.Group>
+            <br/>
             {formType === "coef" ? (
-              <Form.Group>
-                <Form.Label>Coef</Form.Label>
-                <Form.Control type="number" name="coef" value={form.coef} onChange={handleChange} required />
-              </Form.Group>
+              <Form.Group className="d-flex align-items-center jus">
+                <Form.Control type="number" name="coef" placeholder="coef" value={form.coef} onChange={handleChange} required className="ms-2" />
+              
+                <Form.Control type="number" name="factor" placeholder="factor" value={form.factor} onChange={handleChange} required className="ms-2" />
+            </Form.Group>
             ) : (
               <>
                 <Form.Group>
@@ -177,7 +181,8 @@ const CaseCoef = () => {
                     <Form.Select value={p.title} onChange={(e) => handleParticipantChange(index, "title", e.target.value)}>
                       {participantTitles.map(title => <option key={title} value={title}>{title}</option>)}
                     </Form.Select>
-                    <Form.Control type="number" value={p.coef} onChange={(e) => handleParticipantChange(index, "coef", e.target.value)} className="ms-2" />
+                    <Form.Control type="number" placeholder="coef1" value={p.coef} onChange={(e) => handleParticipantChange(index, "coef", e.target.value)} className="ms-2" />
+                    <Form.Control type="number" placeholder="coef2" value={p.coef2} onChange={(e) => handleParticipantChange(index, "coef2", e.target.value)} className="ms-2" />
                     <Button variant="danger" onClick={() => removeParticipant(index)} className="ms-2">X</Button>
                   </div>
                 ))}
