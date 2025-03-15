@@ -111,7 +111,12 @@ const FormManager = () => {
 
     
     const updatedFields = currentForm.fields.map((field) => {
+      
         if (field.name === fieldName) {
+            if(field.type=="radio" || field.type=="checkbox")
+            {
+               return { ...field, [name]: value.split(";") };
+            }
             return { ...field, [name]: value };
         }
         return field;
@@ -234,7 +239,7 @@ const FormManager = () => {
                       <Form.Control
                         type="text"
                         name="options"
-                        value={field.options.join('; ')}
+                        value={field.options.join(';')}
                         onChange={(e) => handleFieldChange(e, field.name)}
                         placeholder="Options séparées par ;"
                       />
