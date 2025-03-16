@@ -94,6 +94,132 @@ const ReviewForm = ({ formData }) => {
     }
      
   }
+
+  const printTitle = (letter, index) => {
+    const title = letter+ " - "+userForms[index].activity.label
+    let extraText = "", title2="", colSpan="", rowSpan="";
+    //extraText A, C D E F H K L
+      switch(letter)
+      {
+        case 'A':
+            extraText = "Başvurulan bilim alanı ile ilgili tam araştırma ve derleme makaleleri"
+            title2 = "Yazar/Yazarlar, Makale adı, Dergi adı, Cilt No., Sayfa, Yıl"
+          break;
+        case 'B':
+            title2="Yazar/Yazarlar, Bildiri Adı, Konferansın Adı, Yapıldığı Yer,Sayfa Sayıları ve Tarih"
+          break;
+        case 'C':
+          extraText="Yabancı dildeki kitapların puanları 1.5 ile çarpıldıktan sonra hesaplama kullanılır"
+          title2="Yazar/Yazarlar, Kitap Adı, Yayınevi, Baskı sayısı yayımlandığıYer, Yıl"
+          break;
+        case 'D' :
+          extraText = 'Atıf yapan eserlerin belgelenmesi kaydıyla, bu yönetmeliğin Temel İlkeler bölümündeki atıflara ilişkin açıklamalar dikkate alınır'
+          title2 = "Atıfın Yapıldığı Eser, Atıf Sayısı"
+          break;
+        case 'E':
+          extraText="Son üç yılda verdiği dersler, Azami 50 puan, doktora unvanından sonra"
+          title2 = "Dersin Adı, Programın Adı, Dönemi, Yılı"
+          break;
+        case 'F':
+          title2="Öğrenci adı, Tezin Adı, Enstitüsü, Yılı"
+          break;
+        case 'G':
+          title2="Patent Adı, Yılı"
+          break;
+        case 'H':
+            extraText="Tamamlanmış veya devam ediyor olmak koşuluyla, projenin en az dokuz ay süreli olduğu ve hakem\
+değerlendirilmesinden geçtiği belgelenir ve projenin bütçesi, kabul edildiği yıldaki en son açıklanan memur taban aylık katsayısının en az 4000 katı olmalıdır."
+            title2="Projenin Adı, Proje Numarası, Projenin YürütüldüğüKurumun Adı, Yılı"  
+          break;
+        case 'I':
+            title2="Derginin Adı, Sayısı, Yılı"  
+          break;
+        case 'J':
+            title2="Ödülün Veren Kurul/Kurumun Adı, Yılı"  
+          break;
+        case 'K':
+          extraText="(İdari görevlerde vekaleten de olsa en az 6 ay görev yapmış olmak, aynı anda birden fazla idari görevi olanlar için en yüksek puan dikkate alınır\
+ve normal süresi dolup yeniden atamalar ayrıca puanlanır. Bu kısımda en fazla 50 puan dikkate alınır"
+          title2="Görev Birimi, Yılı "
+          break;
+        case 'L':
+            extraText="Konservatuvar dahil"
+            title2="Faaliyet Adı, Yılı"
+          break;
+          default : extraText=""; break;
+      }
+      return(
+          <>
+            <tr>
+                <td colSpan="4"><b>{title}</b> <i>{!!extraText ? "("+extraText+")" : extraText}</i></td>
+            </tr>
+
+            <tr>
+                  <th style={{width:"20%",}}>{}</th>
+                  <th>{title2}</th>
+                  {
+                    "E F H I J K L".split(" ").includes(letter) ?
+                     <>
+                      <th colSpan={2}  style={{width:"5%",}}>Puan</th>
+                     </>
+                     :
+                     <>
+                      <th  style={{width:"5%",}}>Puan Hesabı</th>
+                      <th  style={{width:"5%",}}>Nihai Puan</th>
+                    </>
+                  }
+                 
+                </tr>
+
+          </>
+      )
+  }
+
+  const printLExtraLines = (number) => {
+    if(![16, 34, 46, 70, 76].includes(number)) return;
+    const title2="Faaliyet Adı, Yılı"
+    let subTitle = ""
+   // alert(number)
+    switch(number)
+    {
+      case 16 :
+        subTitle = "KONSERLER (Konser salonu hüviyetinde, önceden ilan edilmiş, programı basılmış, kurum onaylı)"
+        break;
+      case 34 :
+          subTitle = "SESLİ VE GÖRSEL ETKİNLİKLER VE SESLİ YAYINLAR Kültür Bakanlığı bandrolü, muadili basılı veya elektronik olarak \
+          (spotify, itunes, amazonmusic, deezer…vb platformlarda) ulusal veya uluslararası statüde basılmış ve erişime sunulmuş."
+          break;
+      case 46 :
+        subTitle = "ALANA İLİŞKİN MÜZİKAL ÜRETİM / MÜZİKAL YAYIN Bünyesinde Müzik Teorisi elemanlarını (armoni, kontrpuan, form, orkestrasyon vb..)\
+         teknik, süresel ve estetik yeterliklerle bulunduran yazılmışmüzikal kompozisyonlar, derlemeler ve ses yayınları"
+        break;
+      case 70 :
+        subTitle = "TÜRK MÜZİĞİ ESERLERİNE İLİŞKİN ÜRETİM / MÜZİKAL YAYIN Bünyesinde Türk Müziği Teorisi ve Yöresel elemanları \
+        (makam, yöre, form, dönem, usul, vb..) teknik ve estetik yeterliklerle bulunduran, yazılmış müzikal kompozisyonlar, derlemeler ve ses yayınları"
+        break;
+      case 76 :
+        subTitle = "SAHNE VE GÖRÜNTÜ SANATLARI (Tekrarlanan etkinliklere sadece iki kere puan verilebilir. Aday aynı eserde birden fazla alanda çalışmışsa -\
+yazar, yönetmen, oyuncu, tasarım, vb., her bir alan ayrı ayrı puanlandırılır ve ayrı ayrı iki kere yazılabilir. İkinci puanlandırmada ilk puanın üçte ikisi\
+verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 ile çarpılır.)"
+        break;
+      default: break;
+    }
+
+    return (
+      <>
+        <tr>
+          <td colSpan={4}>{subTitle}</td>
+        </tr>
+        {number==16 &&
+        <tr>
+          <th>{}</th>
+          <th>{title2}</th>    
+          <th colSpan={2}  style={{width:"5%",}}>Puan</th>
+        </tr>
+        }
+      </>
+    )
+  }
   console.log(userForms)
 
   return (
@@ -109,34 +235,31 @@ const ReviewForm = ({ formData }) => {
 
             {index < userForms.length &&
               <>
-                <tr>
-                  <th colSpan="4">{data.letter} - {userForms[index].activity.label}</th>
-                </tr>
-                <tr>
-                  <th style={{width:"20%",}}>{}</th>
-                  <th>Yazar/Yazarlar, Makale adı, Dergi adı, Cilt No., Sayfa, Yıl</th>
-                  {
-                    "E F H I J K L".split(" ").includes(data.letter) ?
-                     <>
-                      <th colSpan={2}  style={{width:"5%",}}>Puan</th>
-                     </>
-                     :
-                     <>
-                      <th  style={{width:"5%",}}>Puan Hesabı</th>
-                      <th  style={{width:"5%",}}>Nihai Puan</th>
-                    </>
-                  }
-                 
-                </tr>
-
+                {printTitle(data.letter, index)}
+                
                
                   {userForms[index].activity.activities.map((form, formIndex) => (
                     <>
                     <tr key={formIndex}>
                       <td>{form.number+")"} {form.name}</td>
-                      <td>janedoe@example.com</td>
-                      <td>25</td>
+                      <td  style={{}}>janedoe@example.com</td>
+                      {
+                        "E F H I J K L".split(" ").includes(data.letter) ?
+                          <>
+                            <td colSpan={2}  style={{width:"5%",}}>25</td>
+                          </>
+                          :
+                          <>
+                            <td  style={{width:"5%",}}>25</td>
+                            <td  style={{width:"5%",}}>55</td>
+                          </>
+                        
+                      }
+          
                     </tr>
+                    {
+                      data.letter=="L" && (printLExtraLines(form.number))
+                    }
                     { printExtraLines(formIndex, index, form, data, userForms[index].activity.activities.length)}
                    </>
                   ))
