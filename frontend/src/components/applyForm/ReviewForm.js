@@ -5,14 +5,82 @@ import { UserContext } from '../../context/UserContext';
 import Loading from '../Loading';
 import '../../styles/applyFormStyles.css'
 
-const ReviewForm = ({ formData }) => {
-  const { userForms, isUserFormsLoading } = useContext(UserContext);
+const ReviewForm = ({ formData, formsDatas }) => {
+  const { userForms, isUserFormsLoading, activities, cases, coefs} = useContext(UserContext);
   const [datas, setDatas] = useState([]);
+  const [points, setPoints] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    console.log(userForms)
+    console.log(formsDatas)
+
     const tmp = Object.keys(formData).map((f) => ({ ...formData[f], letter: f }));
     setDatas(tmp);
   }, [formData]);
+
+  const updatePoints = (letter, number, points) => {
+    setPoints((prev) => {
+      return {...prev, [letter]:{...prev[letter], [number] : points} }
+    })
+  }
+  const computesPoints = async () => {
+    console.log("formsDatas")
+    let letter="", number=0, normalPoint=0, activityPoints=0;
+    for(let i=0;i<formsDatas.length;i++) 
+    {
+      let act = formsDatas[i]
+      if(act.length<=0) continue;
+      
+      letter = String.fromCharCode(65+i)
+      const activity = activities.find(a => a.letter==letter)
+
+      for(let j=0;j<act.length;j++) 
+      {
+        number = act[j].number // {formulaire, number}
+        normalPoint = (activity.activities.find(a => a.number==number)).points //A.activities[0] => {name number point}
+       
+        //Let's find cases
+        const case_arr = Object.keys(act[j].cases)
+        if(case_arr.length>0 && !case_arr.includes('no_case'))
+        { //console.log(Object.keys(act[j].cases))
+          const caseId = Object.keys(act[j].cases)[0]
+          const case_ = cases.find(c => c._id==caseId)
+          const {coef, coef2} = case_.participants.find(p => p.title==(Object.keys(act[j].participants)[0]))
+          activityPoints = normalPoint*coef*coef2
+          //alert(activityPoints)
+        }
+        else
+        {
+          const numWriter = parseInt(act[j].numWriter)
+          const {coef, factor} = coefs.find(c => c.number==numWriter)
+          activityPoints = normalPoint*(coef/factor)
+        }
+        updatePoints(letter, number, activityPoints) //letter et activityNymber
+      }
+            
+
+    }
+  }
+  useEffect(() => {
+    const compute = async () =>
+    {
+      setIsLoading(true)
+      await computesPoints()
+      setIsLoading(false)
+    }
+    compute()
+  }, [])
+
+
+  const getActivityPoints = (letter, number) => {
+    if (!points || typeof points !== "object") return 0; 
+    if (!points[letter]) return 0; 
+    if (typeof points[letter][number] === "undefined") return 0;
+  
+    return points[letter][number];
+  };
+  
 
   const handleGeneratePDF = () => {
     const element = document.getElementById("table-to-pdf");
@@ -205,6 +273,15 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       default: break;
     }
 
+    const printActivity = (form, letter) => {
+
+    }
+
+    if(isLoading)
+    {
+      return <Loading/>
+    }
+
     return (
       <>
         <tr>
@@ -220,7 +297,6 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       </>
     )
   }
-  console.log(userForms)
 
   return (
     <div className="container-lg">
@@ -242,16 +318,16 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
                     <>
                     <tr key={formIndex}>
                       <td>{form.number+")"} {form.name}</td>
-                      <td  style={{}}>janedoe@example.com</td>
+                      <td  style={{}}>printActivity(data.letter, form)</td>
                       {
                         "E F H I J K L".split(" ").includes(data.letter) ?
                           <>
-                            <td colSpan={2}  style={{width:"5%",}}>25</td>
+                            <td colSpan={2}  style={{width:"5%",}}>{getActivityPoints(data.letter, form.number)}</td>
                           </>
                           :
                           <>
-                            <td  style={{width:"5%",}}>25</td>
-                            <td  style={{width:"5%",}}>55</td>
+                            <td  style={{width:"5%",}}>{getActivityPoints(data.letter, form.number)}</td>
+                            <td  style={{width:"5%",}}>{getActivityPoints(data.letter, form.number)}</td>
                           </>
                         
                       }

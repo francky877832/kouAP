@@ -32,7 +32,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
       year: formData['year'] || '',
     };
 */  
-    const articleData = {...formData}
+    const articleData = {...formData, number:selectedCategory, letter:userForms.activity.letter.trim()}
     handleData(articleData);
     setSelectedCategory('');
     handleChange({ target: { name: 'author', value: '' } },  userForms.activity.letter.trim(), true);
@@ -55,6 +55,22 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
           </label>
         </div>
       ));
+    } else if (field.type=="select" && field.options) {
+      return (
+        <select
+        name={field.name}
+        value={formData[field.name]}
+        onChange={(e) => handleChange(e, userForms.activity.letter.trim())}
+        className="form-select"
+      >
+        <option value="">-- Sélectionnez --</option>
+        {field.options.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      )
     } else if (field.type === 'textarea') {
       return (
         <textarea
@@ -101,7 +117,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
         >
           <option value="">Sélectionner une catégorie</option>
           {userForms.activity.activities.map((activity) => (
-            <option key={activity._id} value={activity._id}>
+            <option key={activity._id} value={activity.number}>
               {activity.number+"- "+activity.name}
             </option>
           ))}
@@ -126,6 +142,7 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
     
       
           <>
+          <div>
               <h4>Choose a situation</h4>
               {cases.map((item, index) => (
                 <div key={index} className="form-check">
@@ -142,6 +159,18 @@ const A = ({ formData, userForms, handleChange, handleData, data}) => {
                   </label>
                 </div>
               ))}
+                <input
+                    className="form-check-input"
+                    type="radio"
+                    name="messages"
+                    value="no_case"
+                    checked={formCases.cases["no_case"]}
+                    onChange={(e) => {setSelectedMessage("no_case");handleChange(e, userForms.activity.letter.trim(), false, 'cases')}}
+                  />
+                  <label className="form-check-label">
+                    No Case
+                  </label>
+          </div>
 
               {/* Affichage des participants uniquement si un message est sélectionné */}
               {selectedMessage && (

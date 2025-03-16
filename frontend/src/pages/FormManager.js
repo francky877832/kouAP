@@ -85,7 +85,7 @@ const FormManager = () => {
   // Ajouter un champ au formulaire
   const addField = () => {
     const updatedForm = { ...currentForm };
-    const field = { ...newField, options: newField.type === 'radio' || newField.type === 'checkbox' ? newField.options.split(';').map(opt => opt.trim()) : [] };
+    const field = { ...newField, options:  ['radio', 'checkbox', 'select'].includes(newField.type) ? newField.options.split(';').map(opt => opt.trim()) : [] };
     updatedForm.fields.push(field);
     setCurrentForm(updatedForm);
     setNewField({ name: '', label: '', type: 'text', options: '' });
@@ -113,7 +113,7 @@ const FormManager = () => {
     const updatedFields = currentForm.fields.map((field) => {
       
         if (field.name === fieldName) {
-            if(field.type=="radio" || field.type=="checkbox")
+            if(['radio', 'checkbox', 'select'].includes(field.type))
             {
                return { ...field, [name]: value.split(";") };
             }
@@ -230,12 +230,13 @@ const FormManager = () => {
                       <option value="number">Number</option>
                       <option value="radio">Radio</option>
                       <option value="checkbox">Checkbox</option>
+                      <option value="select">Select</option>
                       <option value="file">File</option>
                       <option value="date">Date</option>
                       <option value="Year">Year</option>
                     </Form.Control>
                     {/* Si c'est un champ radio ou checkbox, afficher les options */}
-                    {(field.type === 'radio' || field.type === 'checkbox') && (
+                    {(['radio','checkbox', 'select'].includes(field.type)) && (
                       <Form.Control
                         type="text"
                         name="options"
@@ -288,6 +289,7 @@ const FormManager = () => {
                   <option value="number">Number</option>
                   <option value="radio">Radio</option>
                   <option value="checkbox">Checkbox</option>
+                  <option value="select">Select</option>
                   <option value="file">File</option>
                   <option value="date">Date</option>
                   <option value="year">Year</option>
@@ -295,7 +297,7 @@ const FormManager = () => {
               </Form.Group>
 
               {/* Affichage des options si le type est radio ou checkbox */}
-              {(newField.type === 'radio' || newField.type === 'checkbox') && (
+              {['radio', 'checkbox', 'select'].includes(newField.type) && (
                 <Form.Group controlId="newFieldOptions">
                   <Form.Label>Options (separated by ;)</Form.Label>
                   <Form.Control
