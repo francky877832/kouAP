@@ -273,15 +273,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       default: break;
     }
 
-    const printActivity = (form, letter) => {
-
-    }
-
-    if(isLoading)
-    {
-      return <Loading/>
-    }
-
+  
     return (
       <>
         <tr>
@@ -296,6 +288,31 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
         }
       </>
     )
+  }
+
+
+  const printActivityDetails = (letter, activity) => {
+    const index = 65-letter.trim().charCodeAt(0);
+    let subActivities_arr = []
+    if(!formsDatas[index])  return "/";
+    const formInfos = formsDatas[index].find(f => f.number==activity.number)
+    if(!formInfos) return "/"
+    
+    return Object.keys(formInfos).map( f => {
+        return (
+          ['string', 'number'].includes(typeof(formInfos[f])) ?
+          <>
+              <span>{formInfos[f]}</span>
+          </>
+          :
+          <></>
+        )
+      })
+  }
+
+  if(isLoading)
+  {
+    return <Loading/>
   }
 
   return (
@@ -314,11 +331,13 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
                 {printTitle(data.letter, index)}
                 
                
-                  {userForms[index].activity.activities.map((form, formIndex) => (
+                  {userForms[index].activity.activities.map((form, formIndex) => ( //form=(sub)activity
                     <>
                     <tr key={formIndex}>
                       <td>{form.number+")"} {form.name}</td>
-                      <td  style={{}}>printActivity(data.letter, form)</td>
+                      <td>
+                        {(printActivityDetails(data.letter, form))}
+                      </td>
                       {
                         "E F H I J K L".split(" ").includes(data.letter) ?
                           <>
