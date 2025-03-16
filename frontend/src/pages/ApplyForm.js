@@ -10,6 +10,7 @@ import  Loading  from '../components/Loading'
 
 import { UserContext } from '../context/UserContext';
 import { ManagerContext } from '../context/ManagerContext';
+import { useLocation } from 'react-router-dom';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
@@ -18,7 +19,7 @@ const ApplyForm = () => {
   const { userForms, isUserFormsLoading } = useContext(UserContext)
   //console.log(userForms)
 
-
+  const location = useLocation()
 
    const {addCase, fetchCoefs, updateCoef, updateCase, deleteCase, deleteCoef,  } = useContext(ManagerContext)
     const {cases, coefs, isCoefsLoading, isCasesLoading, setIsCasesLoading, setIsCoefsLoading} = useContext(UserContext)
@@ -165,7 +166,8 @@ useEffect(() => {
       }));
       return;
     }
-    console.log(formData)
+    //console.log(formData)
+
 
     if(choice) //choice == cases, participants...
     {
@@ -184,6 +186,19 @@ useEffect(() => {
     }
 
 
+ /*   //
+    if(name=="authorName")
+    {  
+      setFormData({
+        ...formData,
+        [stepName]: {
+          ...formData[stepName],
+          [name]: value,
+        },
+      });
+      return;
+    }
+*/
     setFormData({
       ...formData,
       [stepName]: {

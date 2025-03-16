@@ -22,9 +22,20 @@
   
 
 
-  tr, td, th {
-    border : 1px solid #000;
-    justify-content: "center";
-    align-items: "center";
+  #table-to-pdf {
+    border-collapse: collapse;
+    width: 100%;
   }
+  
+  #table-to-pdf th, #table-to-pdf td {
+    border: 1px solid black; /* Ajoute une bordure visible */
+    padding: 8px;
+    text-align: left;
+    background-color: white; /* Corrige le fond */
+  }
+  
+  #table-to-pdf * {
+    color: black !important; /* Force le texte à être visible */
+  }
+
   

@@ -4,6 +4,7 @@ import html2pdf from 'html2pdf.js';
 import { UserContext } from '../../context/UserContext';
 import Loading from '../Loading';
 import '../../styles/applyFormStyles.css'
+import { round } from '../../utils/utilsFunctions';
 
 const ReviewForm = ({ formData, formsDatas }) => {
   const { userForms, isUserFormsLoading, activities, cases, coefs} = useContext(UserContext);
@@ -12,8 +13,8 @@ const ReviewForm = ({ formData, formsDatas }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    console.log(userForms)
-    console.log(formsDatas)
+    //console.log(userForms)
+    //console.log(formsDatas)
 
     const tmp = Object.keys(formData).map((f) => ({ ...formData[f], letter: f }));
     setDatas(tmp);
@@ -56,7 +57,7 @@ const ReviewForm = ({ formData, formsDatas }) => {
           const {coef, factor} = coefs.find(c => c.number==numWriter)
           activityPoints = normalPoint*(coef/factor)
         }
-        updatePoints(letter, number, activityPoints) //letter et activityNymber
+        updatePoints(letter, number, round(activityPoints)) //letter et activityNymber
       }
             
 
@@ -82,28 +83,24 @@ const ReviewForm = ({ formData, formsDatas }) => {
   };
   
 
-  const handleGeneratePDF = () => {
-    const element = document.getElementById("table-to-pdf");
-
-    html2pdf()
-      .from(element)
-      .set({
-        margin: 10,
-        filename: 'tableau_formulaire.pdf',
-        html2canvas: { scale: 2 }, // Améliorer la qualité des images
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Format A4 et orientation portrait
-      })
-      .save();
-  };
-
-  if (isUserFormsLoading) {
-    return <Loading />;
-  }
 
   
   const printExtraLines = (formIndex, index, form, data, numActivities) => {
     //if(data.letter=="L") alert(data.letter)
     //if(formIndex < numActivities-1) return;
+    //const letter = String.fromCharCode(65+i)
+    let points_tmp = [], points_=0
+    if(points[data.letter])
+    {
+      //console.log(Object.keys(points[data.letter])['4'])
+       points_tmp = Object.keys(points[data.letter]);
+       points_ = points_tmp.reduce((acc, p) =>{
+        //console.log(points_tmp[p])
+          return acc + points[data.letter][p]
+      }, 0)
+    }
+    
+
     if(formIndex < numActivities-1) return;
     
     switch(data.letter)
@@ -119,46 +116,43 @@ const ReviewForm = ({ formData, formsDatas }) => {
                       </td>
 
                       <td>Asgari Koşula Dahil Toplam Puanı</td>
-                      <td colSpan="2"> </td>
+                      <td colSpan="2">{points_}</td>
                   </tr>
 
                   <tr> 
                       <td rowSpan="2">Toplam Puanı </td>
-                      <td colSpan="2"></td>
+                      <td colSpan="2">{points_}</td>
                   </tr>
                   <tr></tr>
                 </>
               )
-      break;
-      case "B":case"C":case "D":case"E":case "G":case"I":case"J":case"K":case"L":
-        return (
+      case "B":case"C":case "D":case"E":case "G":case"I":case"J":case"K":case"L": //['B','C','D','E','G','I','J','K','L'].includes(data.letter) : //
+      //alert("ok")  
+      return (
                   <tr>
                       <td >Bölüm {data.letter}</td>
                       <td>Toplam Puanı</td>
-                      <td colSpan="2"></td>
+                      <td colSpan="2">{points_}</td>
                     </tr>
               )
-      break;
       case "F":case"H":
         return (
           <>
             <tr>
                 <td rowSpan="4">Bölüm {data.letter} </td>
                 <td rowSpan="2">Asgari Koşula Dahil Toplam Puanı</td>
-                <td rowSpan="2" colSpan="2"> </td>
+                <td rowSpan="2" colSpan="2">{points_}</td>
             </tr>
 
             <tr></tr>
             <tr> 
                 <td rowSpan="2">Toplam Puanı </td>
-                <td rowSpan="2" colSpan="2"></td>
+                <td rowSpan="2" colSpan="2">{points_}</td>
             </tr>
             <tr></tr>
           </>
         )
-          break;
-      default : <></>
-          break;
+      default : return <></>;
     }
      
   }
@@ -290,6 +284,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
     )
   }
 
+  //console.log(formsDatas)
 
   const printActivityDetails = (letter, activity) => {
     const index = 65-letter.trim().charCodeAt(0);
@@ -297,12 +292,22 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
     if(!formsDatas[index])  return "/";
     const formInfos = formsDatas[index].find(f => f.number==activity.number)
     if(!formInfos) return "/"
-    
+    const prohibitedFields = ['proof', 'numWriter', 'mainAuthor']
+    const allowedFields = (userForms[index].fields.map(f => f.name)).filter(g => !prohibitedFields.includes(g))
     return Object.keys(formInfos).map( f => {
         return (
-          ['string', 'number'].includes(typeof(formInfos[f])) ?
+          allowedFields.includes(f) && ['string', 'number'].includes(typeof(formInfos[f])) ?
           <>
-              <span>{formInfos[f]}</span>
+              {formInfos["mainAuthor"].toLowerCase()=="yes" ?
+                <i>
+                  <span>{formInfos[f]}, </span>
+                </i>
+                :
+                <>
+                  <span>{formInfos[f]}, </span>
+                </>
+              }
+              
           </>
           :
           <></>
@@ -310,15 +315,39 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       })
   }
 
-  if(isLoading)
-  {
-    return <Loading/>
+  const handleGeneratePDF = () => {
+    const element = document.getElementById("table-to-pdf");
+  
+    if (!element) {
+      console.error("Élément #table-to-pdf introuvable !");
+      return;
+    }
+  
+    html2pdf()
+      .from(element)
+      .set({
+        margin: 10,
+        filename: "tableau_formulaire.pdf",
+        html2canvas: { 
+          scale: 2, // 3 peut parfois être trop lourd, essaye avec 2
+          useCORS: true,
+          allowTaint: true
+        },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      })
+      .save();
+  };
+  
+  
+  if (isUserFormsLoading || isLoading) {
+    return <Loading />;
   }
 
+
   return (
-    <div className="container-lg">
+    <div className="container">
       <div id="table-to-pdf">
-        <h2 className="my-4 text-center">Formulaire de données</h2>
+        <h2 className="my-4 text-center">Application Resume</h2>
         <table className="table table-bordered table-striped">
           
           <tbody>
@@ -370,7 +399,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       {/* Bouton pour générer le PDF */}
       <div className="text-center mt-4">
         <button onClick={handleGeneratePDF} className="btn btn-primary">
-          Télécharger le PDF
+          Download PDF
         </button>
       </div>
     </div>

@@ -13,4 +13,15 @@ export const formatDate = (dateString) => {
 export const capitalize = (text) => {
     // Met la première lettre en majuscule et le reste en minuscules
     return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+
+export const round = (number) => {
+    const decimalPart = number % 1;
+  
+    if (decimalPart < 0.5) {
+      return Math.floor(number); 
+    } else {
+      return Math.ceil(number);
+    }
   };
