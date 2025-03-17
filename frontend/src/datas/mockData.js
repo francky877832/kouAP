@@ -75,7 +75,7 @@ export const mockAnnouncements = [
           id: "101",
           candidateName: "John Doe",
           juryName: "Dr. Smith",
-          status: "Accepted",
+          status: "processing",
           reportUrl: "/fake-report1.pdf",
           summary: "The candidate has demonstrated great technical skills and a strong understanding of web development."
         },

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { mockAnnouncements, mockApplications, mockJuries } from '../datas/mockData';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../styles/adminPanelStyles.css'
 
 import { mockCandidates } from '../datas/mockData'; 
 import { UserContext } from '../context/UserContext';
 import InlineLoading from '../components/InlineLoading';
 import { AdminContext } from '../context/AdminContext';
-import { capitalize } from '../utils/utilsFunctions';
 
-const AdminPanel = () => {
-  const navigate = useNavigate()
+const AllAdminAnnouncements = () => {
   const [applications, setApplications] = useState(mockApplications);
   const [jurors, setJurors] = useState(mockJuries);
   const [selectedJuries, setSelectedJuries] = useState({});
@@ -67,26 +65,6 @@ const AdminPanel = () => {
     setSelectedCandidate(selectedCandidate === candidateId ? null : candidateId);
   };
 
-  const viewMoreAnnouncements = () => {
-    let data = []
-    switch(activeTab)
-    {
-      case 'ongoing' :
-        data = ongoingAnnouncements
-        break;
-      case 'past' : 
-      data = pastAnnouncements
-      break;
-      case 'upcoming' :
-        data = upcomingAnnouncements
-        break;
-      default : 
-        data = ongoingAnnouncements
-        break;
-    }
-    navigate('/all-announcements', {state:{announcements:data}})
-  }
-
   return (
     <div className="container admin-dashboard mt-4">
       <h2 className="text-center mb-4">Tableau de bord Admin</h2>
@@ -129,7 +107,7 @@ const AdminPanel = () => {
           {/* Liste des annonces (affichage en fonction du bouton actif) */}
           <div className="list-group">
             {activeTab === 'ongoing' &&
-              [...ongoingAnnouncements.slice(0,5)].map((announcement) => (
+              ongoingAnnouncements.map((announcement) => (
                 <Link
                   key={announcement._id}
                   to={`/view-announcement`}
@@ -142,7 +120,7 @@ const AdminPanel = () => {
               ))}
 
             {activeTab === 'past' &&
-              [...pastAnnouncements.slice(0,5)].map((announcement) => (
+              pastAnnouncements.map((announcement) => (
                 <Link
                   key={announcement._id}
                   to={`/view-announcement`}
@@ -155,7 +133,7 @@ const AdminPanel = () => {
               ))}
 
             {activeTab === 'upcoming' &&
-              [...upcomingAnnouncements.slice(0,5)].map((announcement) => (
+              upcomingAnnouncements.map((announcement) => (
                 <Link
                   key={announcement._id}
                   to={`/view-announcement`}
@@ -169,12 +147,9 @@ const AdminPanel = () => {
 
               {/* Bouton "View All My Announcements" */}
       <div className="text-center mt-4">
-          <button
-              className="btn btn-primary"
-              onClick={() => viewMoreAnnouncements()}
-            >
-              More {capitalize(activeTab)} Announcements
-            </button>
+        <Link to="/admin/all-announcements" className="btn btn-primary">
+          View All My Announcements
+        </Link>
       </div>
 
           </div>
@@ -201,20 +176,6 @@ const AdminPanel = () => {
             </li>
           ))}
         </ul>
-
-        <div className="text-center mt-4">
-      
-            <Link
-                  to={`view-candidates`}
-                  className="list-group-item list-group-item-action"
-                  state={{ applications }}
-                >
-                  <button className="btn btn-primary">
-                    All Candidatures
-                  </button>
-                </Link>
-      </div>
-
       </div>
 
       {/* Evaluations des Jurys */}
@@ -225,9 +186,8 @@ const AdminPanel = () => {
             <div key={candidate._id} className="candidate-item">
               <button
                 className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${
-                  status[candidate._id]?.toLocaleLowerCase() === "accepted" ? "bg-success text-white" :
-                  status[candidate._id]?.toLocaleLowerCase() === "rejected" ? "bg-danger text-white" :
-                  status[candidate._id]?.toLocaleLowerCase() === "processing" ? "bg-warning text-white" : ""
+                  status[candidate._id] === "Accepted" ? "bg-success text-white" :
+                  status[candidate._id] === "Rejected" ? "bg-danger text-white" : ""
                 }`}
                 onClick={() => toggleJuryList(candidate._id)}
               >
@@ -243,9 +203,8 @@ const AdminPanel = () => {
                       key={jury.id}
                       to={`/jury-evaluation-details`}
                       className={`list-group-item list-group-item-action ms-3 jury-item ${
-                        jury.status.toLocaleLowerCase() === "accepted" ? "jury-accepted" : 
-                        jury.status.toLocaleLowerCase()=== "rejected" ? "jury-rejected" : 
-                        jury.status.toLocaleLowerCase() === "processing" ? "jury-processing" : ""
+                        jury.status === "Accepted" ? "jury-accepted" : 
+                        jury.status === "Rejected" ? "jury-rejected" : ""
                       }`}
                       state={{ evaluation:jury }} 
                     >
@@ -273,19 +232,6 @@ const AdminPanel = () => {
             </div>
           ))}
         </div>
-
-        <div className="text-center mt-4">
-            <Link
-                  to={`view-evaluations`}
-                  className="list-group-item list-group-item-action"
-                  state={{ evaluations : mockCandidates }}
-                >
-                  <button className="btn btn-primary">
-                    All Evaluationss
-                  </button>
-                </Link>
-      </div>
-
       </div>
 
       
@@ -293,4 +239,4 @@ const AdminPanel = () => {
   );
 };
 
-export default AdminPanel;
+export default AllAdminAnnouncements;

@@ -22,6 +22,9 @@ import MinPoints from "./pages/MinPoints";
 import CaseCoef from "./pages/CaseCoef";
 import FormManager from "./pages/FormManager";
 
+import AllCandidates from "./pages/AllCandidates";
+import AllEvaluations from "./pages/AllEvaluations";
+
 
 const App = () => {
   return (
@@ -38,7 +41,13 @@ const App = () => {
         <Route path="/apply" element={<MultiStepForm />} />
         <Route path="/jury-panel" element={<JuryPanel />} />
         <Route path="/application-details" element={<CandidateDetails />} />
+
         <Route path="/admin-panel" element={<AdminPanel />} />
+        <Route path="admin-panel/view-candidates" element={<AllCandidates />} />
+        <Route path="admin-panel/view-evaluations" element={<AllEvaluations />} />
+        
+
+
         <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
         <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
 

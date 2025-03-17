@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Loading from '../components/Loading';
 import NotFound from '../components/NotFound';
 import { AdminContext } from '../context/AdminContext';
@@ -10,6 +10,8 @@ import { titles } from '../datas/schoolDepartments';
 import { UserContext } from '../context/UserContext';
 
 const AllAnnouncements = () => {
+  const location = useLocation();
+  const dataReceived = location?.state?.announcements
   const { user } = useContext(UserContext)
   const [announcements, setAnnouncements] = useState([]);
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -31,7 +33,15 @@ const AllAnnouncements = () => {
       setTotalPages(data.totalPages);
       setIsLoading(false);
     };
-    getAnnouncements();
+    if(dataReceived)
+    {
+      setAnnouncements(dataReceived);
+       setIsLoading(false);
+    }
+    else
+    {
+      getAnnouncements();
+    }
   }, [currentPage, page]);
 
   // Fonction pour gérer la navigation vers une annonce spécifique
