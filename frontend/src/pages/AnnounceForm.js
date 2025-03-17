@@ -187,7 +187,7 @@ const AnnouncementForm = () => {
             </select>
           </div>
 
-          {/* Department */}
+          {/* Department 
           <div className="mb-3">
             <label className="form-label">Department</label>
             <select
@@ -206,6 +206,7 @@ const AnnouncementForm = () => {
                 ))}
             </select>
           </div>
+        */}
 
         {/* required doc */}
 

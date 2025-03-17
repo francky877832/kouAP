@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation, Link } from "react-router-dom";  // Import de useLocation pour récupérer l'état
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -6,12 +6,14 @@ import "../styles/viewAnnouncement.css";
 import Loading from "../components/Loading";
 import NotFound from "../components/NotFound";
 import { formatDate } from "../utils/utilsFunctions";
+import { UserContext } from "../context/UserContext";
 
 const ViewAnnouncement = ({ match }) => {
 
   const location = useLocation();
-  const { announcement, user } = location.state || {}; 
+  const { announcement, } = location.state || {}; 
   const [isLoading, setIsLoading] = useState(false)
+  const { user } = useContext(UserContext)
 
   if (!announcement) {
     return <NotFound/>;
@@ -26,8 +28,7 @@ const ViewAnnouncement = ({ match }) => {
           <p className="text-center text-muted">Posted on <b>{formatDate(announcement.createdAt)}</b></p>
           <p className="text-center text-muted">Available From <b>{formatDate(announcement.startingDate)}</b> to <b>{formatDate(announcement.deadline)}</b></p>
           <p className="text-center text-muted">
-                    Faculty : <b>{announcement.department.faculty.name}</b> - 
-                    Department : <b>{announcement.department.name}</b>
+                    Faculty : <b>{announcement.faculty.name}</b> - 
           </p>
           <hr />
 

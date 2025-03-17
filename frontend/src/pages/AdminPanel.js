@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Modal, Button, Form } from "react-bootstrap";
+
 import { mockAnnouncements, mockApplications, mockJuries } from '../datas/mockData';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/adminPanelStyles.css'
@@ -18,6 +20,19 @@ const AdminPanel = () => {
   const [isApplicationsLoading, setIsApplicationsLoading] = useState(true)
 
   const {fetchAnnouncementsByUser, announcements, isAnnouncementsLoading} = useContext(AdminContext)
+
+//
+  const [show, setShow] = useState(false);
+  const [jurorsCount, setJurorsCount] = useState(3);
+  const [error, setError] = useState("");
+
+  const handleClose = () => {
+    setShow(false);
+    setError("");
+  };
+  const handleShow = () => setShow(true);
+
+
 
   useEffect(() => {
     setApplications(mockApplications);
@@ -41,6 +56,7 @@ const AdminPanel = () => {
   };
 
   const handleDecision = (candidateId, decision) => {
+    alert("f")
     setStatus({ ...status, [candidateId]: decision });
   };
 
@@ -65,6 +81,15 @@ const AdminPanel = () => {
 
   const toggleJuryList = (candidateId) => {
     setSelectedCandidate(selectedCandidate === candidateId ? null : candidateId);
+  };
+
+  const handleConfirm = (applicationId) => {
+    if (jurorsCount < 3 || jurorsCount > 7) {
+      setError("Le nombre de jurés doit être entre 3 et 7.");
+      return;
+    }
+    handleAssignJuries(applicationId, jurorsCount);
+    handleClose();
   };
 
   const viewMoreAnnouncements = () => {
@@ -156,7 +181,7 @@ const AdminPanel = () => {
 
             {activeTab === 'upcoming' &&
               [...upcomingAnnouncements.slice(0,5)].map((announcement) => (
-                <Link
+                <Link 
                   key={announcement._id}
                   to={`/view-announcement`}
                   className="list-group-item list-group-item-action"
@@ -188,16 +213,43 @@ const AdminPanel = () => {
             <li key={application._id} className="list-group-item">
               <div>
                 <strong>{application.candidateName}</strong> - {application.position}
-              </div>
-
+            </div>
+ {
               <div className="jurors-selection mt-3">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => handleAssignJuries(application._id)}
-                >
-                  Assign 5 Jurors
-                </button>
+               <Button variant="primary" onClick={handleShow}>
+                  Assign Jurors
+                </Button>
+
+                <Modal show={show} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Assigner des Jurés</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form>
+                      <Form.Group>
+                        <Form.Label>Nombre de jurés (entre 3 et 7)</Form.Label>
+                        <Form.Control
+                          type="number"
+                          value={jurorsCount}
+                          onChange={(e) => setJurorsCount(Number(e.target.value))}
+                          min="3"
+                          max="7"
+                        />
+                        {error && <p className="text-danger mt-2">{error}</p>}
+                      </Form.Group>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Annuler
+                    </Button>
+                    <Button variant="primary" onClick={() => handleConfirm(application._id)}>
+                      Confirmer
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
               </div>
+       }
             </li>
           ))}
         </ul>
@@ -207,7 +259,7 @@ const AdminPanel = () => {
             <Link
                   to={`view-candidates`}
                   className="list-group-item list-group-item-action"
-                  state={{ applications }}
+                  state={{ applications}}
                 >
                   <button className="btn btn-primary">
                     All Candidatures
@@ -239,6 +291,12 @@ const AdminPanel = () => {
               {selectedCandidate === candidate._id && (
                 <div className="jury-list mt-2">
                   {candidate.juries.map((jury) => (
+                    jury.status.toLocaleLowerCase() === "processing" ?
+                      <span className="list-group-item ms-3 jury-item jury-processing">
+                        {jury.juryName}
+                      </span>
+                    :
+                    
                     <Link
                       key={jury.id}
                       to={`/jury-evaluation-details`}
@@ -246,8 +304,10 @@ const AdminPanel = () => {
                         jury.status.toLocaleLowerCase() === "accepted" ? "jury-accepted" : 
                         jury.status.toLocaleLowerCase()=== "rejected" ? "jury-rejected" : 
                         jury.status.toLocaleLowerCase() === "processing" ? "jury-processing" : ""
+                        
                       }`}
                       state={{ evaluation:jury }} 
+                      disabled
                     >
                       {jury.juryName}
                     </Link>

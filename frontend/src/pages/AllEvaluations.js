@@ -4,15 +4,14 @@ import { Link } from 'react-router-dom';
 import '../styles/adminPanelStyles.css';
 
 const AllEvaluations = () => {
-  const { state } = useLocation(); // Récupère les évaluations passées via "state"
-  const evaluations = state?.evaluations || []; // Si aucune évaluation n'est passée, un tableau vide est utilisé
+  const { state } = useLocation();
+  const evaluations = state?.evaluations || []; 
 
-  // État pour suivre le candidat sélectionné
   const [selectedCandidate, setSelectedCandidate] = useState(null);
 
-  // Fonction pour gérer la sélection du candidat
+
   const handleCandidateClick = (candidateId) => {
-    setSelectedCandidate((prev) => (prev === candidateId ? null : candidateId)); // Si le même candidat est cliqué à nouveau, il est désélectionné
+    setSelectedCandidate((prev) => (prev === candidateId ? null : candidateId)); 
   };
 
 const handleDecision = (candidateId, decision) => {
@@ -47,6 +46,11 @@ const handleDecision = (candidateId, decision) => {
               {selectedCandidate === candidate._id && candidate.juries.length > 0 && (
                 <div className="jury-list mt-2">
                   {candidate.juries.map((jury) => (
+                    jury.status.toLocaleLowerCase() === "processing" ?
+                    <span className="list-group-item ms-3 jury-item jury-processing">
+                      {jury.juryName}
+                    </span>
+                      :
                     <Link
                       key={jury.id}
                       to={`/jury-evaluation-details`}
