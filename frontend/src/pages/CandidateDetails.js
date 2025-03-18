@@ -4,13 +4,14 @@ import '../styles/candidateDetailsStyles.css'
 import { JuryContext } from '../context/JuryContext';
 import { UserContext } from '../context/UserContext';
 import InlineLoading from '../components/InlineLoading';
+import Loading from '../components/Loading';
 
 
 
 const CandidateDetails = () => {
   const { state } = useLocation(); // Récupère les données du candidat passées avec 'navigate'
   const navigate = useNavigate()
-  const candidate = state?.candidate;
+  const candidate = state?.candidate; //==application
   const [juryEvaluation, setJuryEvaluation] = useState(null);
   const [validationStatus, setValidationStatus] = useState('');
   const [comment, setComment] = useState('');
@@ -24,35 +25,46 @@ const CandidateDetails = () => {
 
   
   useEffect(() => {
+    console.log(candidate)
     const getEvaluation = async () => {
         //if (!applicationId || !juryId) return; // Vérifie que les IDs sont valides
         setIsLoading(true);
+        //console.log(candidate)
         const data = await fetchJuryEvaluation(candidate._id, user._id);
-        if(data.length > 0)
+        console.log(data)
+        
+        if(['accepted', 'rejected'].includes(candidate.status))
         {
           setHasSubmittedReport(true)
-          setJuryEvaluation(data[0]);
-
+          if(data && data?.length > 0)
+          {
+              setJuryEvaluation(data[0]);
+          }
         }
-        console.log(data)
+        //console.log(data)
         setIsLoading(false);
     };
-
-    getEvaluation();
-}, [candidate, user]); 
+    if(isLoading)
+    {
+      getEvaluation();
+    }
+}, [candidate, user, isLoading]); 
 
 
   const handleValidationSubmit = async (e) => {
     e.preventDefault();
-    
+
+    setIsLoading(true)
     const result = await submitEvaluation(validationStatus, comment, reportFile, candidate, user);
         
         if (result) {
-            console.log('Évaluation soumise avec succès:', result);
-            // Traite la réponse du backend ou redirige l'utilisateur
+            alert('Evaluation submitted with success:');
+            setShowForm(false)
+        }else
+        {
+          alert('Error while submittion evaluatio:');
         }
-    
-    // Tu peux maintenant envoyer ces données (y compris le fichier) au backend pour traitement
+    setIsLoading(false)
   };
 
   const handleFileChange = (e) => {
@@ -72,10 +84,13 @@ const CandidateDetails = () => {
   }
 
   const handleViewReport = () => {
-    navigate('/jury-evaluation-details', { state: { evaluation : juryEvaluation } });
+    navigate('/jury/evaluation-details', { state: { evaluation : juryEvaluation } });
   }
 
- 
+ if(isLoading)
+ {
+  return <Loading/>
+ }
 
   return (
     <div className="container">
@@ -139,8 +154,8 @@ const CandidateDetails = () => {
       <div>
             {/* Boutons d'action */}
         <div className="d-flex justify-content-between mb-3">
-          <button className={hasSubmittedReport ? "btn btn-primary" : "btn btn-secondary"} onClick={handleViewReport} disabled={!hasSubmittedReport}>View Report</button>
-          <button className={hasSubmittedReport ? "btn btn-secondary" : "btn btn-primary"} onClick={handleOpenForm} disabled={hasSubmittedReport} >
+          <button className={hasSubmittedReport ? "btn btn-primary" : "btn btn-secondary"} onClick={handleViewReport} disabled={hasSubmittedReport?false:true}>View Report</button>
+          <button className={hasSubmittedReport ? "btn btn-secondary" : "btn btn-primary"} onClick={handleOpenForm} disabled={hasSubmittedReport?true:false} >
               {!showForm ? "Add Report" : "Close Form" }
           </button>
         </div>
@@ -201,6 +216,7 @@ const CandidateDetails = () => {
         <div className="form-group text-center">
           <button type="submit" className="btn btn-primary">Submit Evaluation</button>
         </div>
+        
       </form>
     }
          </div>

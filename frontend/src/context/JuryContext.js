@@ -79,12 +79,15 @@ export const JuryProvider = ({ children }) => {
                     "Content-Type": "application/json",
                 },
             });
-    
-            if (!response.ok) throw new Error("Erreur lors de la récupération de l'évaluation");
-    
+            
             const data = await response.json();
+
+            if (!response.ok) throw new Error( data.error || "Erreur lors de la récupération de l'évaluation");
+    
+           // console.log(data.data)
             return data.data;
         } catch (err) {
+            //console.log("Error while", error)
             return null;
         }
     };

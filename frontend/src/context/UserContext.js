@@ -4,7 +4,8 @@ import { server } from "../remote/server";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState({_id:"67c4712f12d662f6eeb9d7fd", username:"Francky", title:"Profesor", role:"admin"});
+  // 67c4712f12d662f6eeb9d7fd
+    const [user, setUser] = useState({_id:"67d8f4f2c2b55c3c4f8b3191", username:"Francky", title:"Profesor", role:"jury"});
     
      const [facultyDepartments, setFacultyDepartments] = useState({});
      const [faculties, setFaculties] = useState({});

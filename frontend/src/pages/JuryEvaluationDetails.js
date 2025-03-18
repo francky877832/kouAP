@@ -5,7 +5,7 @@ import { capitalize } from "../utils/utilsFunctions";
 const JuryEvaluationDetails = () => {
   const location = useLocation();
   const { evaluation } = location.state || {};
-console.log(evaluation)
+//console.log(evaluation)
   if (!evaluation) {
     return <p className="text-center text-danger">No evaluation data available</p>;
   }
@@ -16,9 +16,9 @@ console.log(evaluation)
 
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">{evaluation.juryName}</h5>
+          <h5 className="card-title">{evaluation.jury.name }</h5>
           <p className="card-text">
-            <strong>Candidate:</strong> {evaluation.candateName}
+            <strong>Candidate:</strong> {evaluation.user.name}
           </p>
 
           <p className="card-text">
@@ -28,7 +28,7 @@ console.log(evaluation)
                 evaluation.status.toLowerCase() === "approved" ? "bg-success" : "bg-danger"
               }`}
             >
-              {capitalize(evaluation.status)}
+              {capitalize(evaluation.application.status)}
             </span>
           </p>
 

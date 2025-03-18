@@ -172,8 +172,8 @@ exports.getApplicationById = async (req, res) => {
   try {
     const { id } = req.params;
     const application = await Application.findById(id)
-      .populate('user', 'name email')
-      .populate('jurys', 'name email');
+      .populate('user')
+      .populate('jurys');
 
     if (!application) {
       return res.status(404).json({ message: "Application non trouvée" });

@@ -65,6 +65,7 @@ exports.createEvaluation = async (req, res, next) => {
 
 exports.getJuryEvaluation = async (req, res) => {
   try {
+    //console.log("ok")
       const { applicationId, juryId } = req.query;
 
       // Recherche de l'évaluation contenant cette application et ce jury spécifique
@@ -75,26 +76,37 @@ exports.getJuryEvaluation = async (req, res) => {
         },
         //{"jurys.$":1}
       )
-      .select("status")
+      .populate({
+        path: "application",
+        populate: {
+          path: "jurys",
+        },
+      })
+        .populate("user")
+        .populate("jurys.jury")
+        .lean()
+
+        /*
       .select({ "jurys": { $elemMatch: { jury: juryId } } }) // Utilise $elemMatch pour filtrer
       .populate({ path: "application", model: Application }) // Charge l'application
       //.populate({ path: "application.user", model: User, select: "name email" }) // Charge l'utilisateur de l'application
       .populate({ path: "jurys.jury", model: User, select: "" }) // Charge le jury spécifique
-      .populate({ path: "user", model: User, select: "" }) // Charge l'évaluateur principal
+      .populate({ path: "user", model: User, select: "" }) // Charge l'évaluateur principal*/
       
       if (!evaluation) {
-          return res.status(404).json({ message: "Aucune évaluation trouvée pour ce jury et cette application." });
+          return res.status(404).json({ error: "Aucune évaluation trouvée pour ce jury et cette application." });
       }
 
       //console.log([{...evaluation, jurys:evaluation.jurys[0]} ])
       //console.log(evaluation[0].jurys.length)
       // Extraction du seul élément du tableau "jurys"
       //const juryEvaluation = evaluation[0].jurys[0];
-
-      res.status(200).json({message:"success", data:[evaluation,] });
+      const jury = evaluation.jurys.find(j => j.jury._id==juryId)
+      //console.log({...evaluation, jury:jury, })
+      res.status(200).json({message:"success", data:[{...evaluation, jury:jury, }] });
   } catch (error) {
       console.error("Erreur lors de la récupération de l'évaluation du jury :", error);
-      res.status(500).json({ message: "Erreur serveur" });
+      res.status(500).json({ error: "Erreur serveur" });
   }
 };
 

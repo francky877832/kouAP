@@ -41,16 +41,19 @@ const App = () => {
         <Route path="/view-announcement" element={<ViewAnnouncement />} />
         <Route path="/all-announcements" element={<AllAnnouncements />} />
         <Route path="/apply" element={<MultiStepForm />} />
+
+
         <Route path="/jury-panel" element={<JuryPanel />} />
-        <Route path="/application-details" element={<CandidateDetails />} />
+
+      
 
         <Route path="/admin-panel" element={<AdminPanel />} />
         <Route path="admin-panel/view-applications" element={<ApplicaitonsView />} />
         <Route path="admin-panel/view-evaluations" element={<EvaluationsView />} />
         
 
-
-        <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
+        <Route path="/application-details" element={<CandidateDetails />} />
+        <Route path="/jury/evaluation-details" element={<JuryEvaluationDetails />} />
         <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
 
 {/* tablo 1 */}
