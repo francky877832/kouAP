@@ -13,7 +13,9 @@ const EvaluationsView = ({
   limit1, limit2,
 }) => {
 
-   
+    const { state } = useLocation();
+    const evaluations = state?.evaluations || evaluation_;
+
      const [error, setError] = useState("");
      const { user } = useContext(UserContext)
      const { assignApplicaitonJurys } = useContext(AdminContext)
@@ -23,12 +25,12 @@ const EvaluationsView = ({
      const [selectedJuries, setSelectedJuries] = useState({});
     const [selectedCandidate, setSelectedCandidate] = useState(null);
      
-     
+     const startIndex = limit1 || 0
+     const endIndex = limit2 || evaluations.length
    
     
 
-  const { state } = useLocation();
-  const evaluations = state?.evaluations || evaluation_;
+
 
   if(isLoading)
   {
@@ -49,14 +51,14 @@ const EvaluationsView = ({
     //setStatus({ ...status, [candidateId]: decision });
   };
 
-console.log(evaluations)//
+//console.log(evaluations)//
   return (
     <div className="candidates-section container d-flex flex-column">
     <h3 className="mb-3">Candidate Evaluations</h3>
     <div className="list-group">
         {(isLoading||isEvaluationsLoading) && <InlineLoading />}
 
-      {evaluations?.slice(limit1, limit2).map((evaluation) => (
+      {evaluations?.slice(startIndex, endIndex).map((evaluation) => (
         <div key={evaluation._id} className="candidate-item">
           <button
             className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${
@@ -101,6 +103,7 @@ console.log(evaluations)//
 
               {/* Boutons Accepter / Refuser */}
         {
+            !['accepted', 'rejected'].includes(evaluation.application.status?.toLocaleLowerCase()) &&
               <div className="mt-3 d-flex gap-2">
                 <button
                   className="btn btn-success"

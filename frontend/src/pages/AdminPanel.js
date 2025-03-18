@@ -233,16 +233,28 @@ const AdminPanel = () => {
 
       <div className="text-center mt-4">
          {evaluations.length > 0 &&
-         
+         <div className='contianer d-flex'>
             <Link
               to={`view-evaluations`}
               className="list-group-item list-group-item-action"
-              state={{ evaluations : evaluations }}
+              state={{ evaluations : evaluations.filter(ev => !['accepted', 'rejected'].includes(ev.application.status)) }}
             >
               <button className="btn btn-primary">
-                All Evaluationss
+                More Ongoing Evaluationss
               </button>
             </Link>
+
+
+            <Link
+              to={`view-evaluations`}
+              className="list-group-item list-group-item-action"
+              state={{ evaluations : evaluations.filter(ev => ['accepted', 'rejected'].includes(ev.application.status)) }}
+            >
+              <button className="btn btn-primary">
+                Passed Evaluationss
+              </button>
+            </Link>
+        </div>
         }
       </div>
     

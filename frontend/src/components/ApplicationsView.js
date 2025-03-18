@@ -53,6 +53,8 @@ const ApplicaitonsView = ({
   const { state } = useLocation();
   const applications = state?.applications || applications_;
 
+  const startIndex = limit1 || 0
+  const endIndex = limit2 || applications.length
   if(isLoading)
   {
     return <Loading/>
@@ -64,7 +66,7 @@ const ApplicaitonsView = ({
       <ul className="list-group w-100" >
         {(isLoading||isApplicationsLoading) && <InlineLoading />}
 
-        {applications.slice(limit1, limit2).map((application) => (
+        {applications.slice(startIndex, endIndex).map((application) => (
           <li key={application._id} className="list-group-item ">
             <div>
               <strong>{application.user.name}</strong>
