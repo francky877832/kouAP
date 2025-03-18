@@ -94,9 +94,14 @@
     background-color: #f8d7da !important; /* Rouge clair */
     border-left: 5px solid #dc3545; /* Bordure rouge */
   }
-  .jury-processing {
-    background-color: #fff3b0 !important;
+
+  .jury-pending {
+    background-color:  #fff3b0 !important;
     border-left: 5px solid rgb(255, 255, 0) ;
+  }
+  .application-processing {
+    background-color:  #a4a2fc !important;
+    border-left: 5px solid  #4542f8
   }
   .btn-success, .btn-danger {
     width: 120px;

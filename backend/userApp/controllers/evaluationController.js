@@ -6,12 +6,14 @@ const User = require("../models/userModel");
 exports.createEvaluation = async (req, res, next) => {
   try {
        //console.log(req.body)
-       const { applicationId } = req.params
+
+       //1- This part is proccessed by an ADMIN  and called from applicaiton controller
+       const { applicationId,} = req.params
     const newEvaluation = await Evaluation.find({application : applicationId});
  
      if (newEvaluation.length===0) 
      {
-      const { userId } = req.params
+      const { userId, jurys} = req.params
          const newEv = new Evaluation({
              user:userId,
              application : applicationId,
@@ -24,6 +26,7 @@ exports.createEvaluation = async (req, res, next) => {
      }
 
 
+     //This part is proccesed by a JURY
      const { user, application, decision, summary, report, jury } = req.body;
      const file = req.file; // Multer renvoie les fichiers sous forme d'un objet
      //console.log(decision)
@@ -135,9 +138,13 @@ exports.getAdminEvaluations = async (req, res) => {
     .populate({
       path: "application",
       match: { admin: adminId }, // Filtrer les applications gérées par cet admin
+      populate: {
+        path: "jurys",
+      },
     })
       .populate("user")
-      .populate("jurys.jury");
+      .populate("jurys.jury")
+      
       const filteredEvaluations = evaluations.filter(evaluation => evaluation.application);
 
     res.status(200).json({message:"success", data:filteredEvaluations});

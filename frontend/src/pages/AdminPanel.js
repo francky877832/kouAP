@@ -110,7 +110,7 @@ const AdminPanel = () => {
 
   return (
     <div className="container admin-dashboard mt-4">
-      <h2 className="text-center mb-4">Tableau de bord Admin</h2>
+      <h2 className="text-center mb-4">Admin Panel</h2>
 
           {/* Liste des annonces */}
           <div className="announcements-section">

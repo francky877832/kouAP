@@ -97,12 +97,13 @@ exports.assignJuriesToApplication = async (req, res) => {
     }
 
     //  Mettre à jour l'application avec les jurys sélectionnés
+    const selectedJurorsId = selectedJurorsId;
     application.jurys = selectedJurors.map(jury => jury._id);
     application.status = 'processing';
     application.admin = adminId;
     await application.save();
 
-    await evaluationController.createEvaluation({...req, params:{applicationId, userId}}, res)
+    await evaluationController.createEvaluation({...req, params:{applicationId, userId, jurys:selectedJurorsId}}, res)
 
 
   } catch (error) {

@@ -49,7 +49,7 @@ const EvaluationsView = ({
     //setStatus({ ...status, [candidateId]: decision });
   };
 
-//console.log(evaluations)
+console.log(evaluations)//
   return (
     <div className="candidates-section container d-flex flex-column">
     <h3 className="mb-3">Candidate Evaluations</h3>
@@ -67,33 +67,37 @@ const EvaluationsView = ({
             onClick={() => toggleJuryList(evaluation._id)}
           >
             <span>{evaluation.user?.name}</span>
-            <span className="badge bg-primary">{evaluation.jurys?.length} Juries</span>
+            <span className="badge bg-primary">{evaluation.application.jurys?.length} Juries</span>
         </button>
 
           {/* Dropdown pour afficher les jurys */}
           {selectedCandidate === evaluation._id && (
             <div className="jury-list mt-2">
-              {evaluation.jurys?.length>0 && evaluation.jurys?.map((jury) => (
-                jury.decision?.toLocaleLowerCase() === "pending" ?
-                  <span key={jury.jury?._id} className="list-group-item ms-3 jury-item jury-processing">
-                    {jury.jury?.name} www
+              {(evaluation.jurys?.length===0 ? evaluation.application.jurys : [...evaluation.jurys, 
+              ...evaluation.application.jurys.filter(j=> !evaluation.jurys.map(j2=>j2._id).includes(j._id) )])
+              ?.map((jury, index) => {
+                return (
+                    !evaluation.jurys.map(j=>j._id).includes(jury._id) ?//jury?.decision?.toLocaleLowerCase() === "pending" ?
+                  <span key={jury._id} className="list-group-item ms-3 jury-item application-processing">
+                    {jury?.name}
                   </span>
                 :
                 
                 <Link
-                  key={jury.id}
+                  key={jury.jury.id}
                   to={`/jury-evaluation-details`}
                   className={`list-group-item list-group-item-action ms-3 jury-item ${
-                    jury.decision?.toLocaleLowerCase() === "accepted" ? "jury-accepted" : 
-                    jury.decision?.toLocaleLowerCase()=== "rejected" ? "jury-rejected" : 
-                    jury.decision?.toLocaleLowerCase() === "processing" ? "jury-processing" : ""
+                    jury?.decision?.toLocaleLowerCase() === "accepted" ? "jury-accepted" : 
+                    jury?.decision?.toLocaleLowerCase()=== "rejected" ? "jury-rejected" : 
+                    jury?.decision?.toLocaleLowerCase() === "pending" ? "jury-pending" : ""
                     
                   }`}
                   state={{ evaluation:jury }} 
                 >
                   {jury?.jury?.name}
                 </Link>
-              ))}
+              )}
+              )}
 
               {/* Boutons Accepter / Refuser */}
         {
