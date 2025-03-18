@@ -26,6 +26,7 @@ import ApplicaitonsView from "./components/ApplicationsView";
 import AllCandidates from "./pages/AllCandidates";
 import AllEvaluations from "./pages/AllEvaluations";
 import EvaluationsView from "./components/EvaluationsView";
+import Notifications from "./pages/Notifications";
 
 
 const App = () => {
@@ -37,6 +38,9 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/callback" element={<CallbackLogin />} />
+
+        <Route path="/system/notifications" element={<Notifications />} />
+
         <Route path="/admin/add-announcement" element={<AnnounceForm />} />
         <Route path="/view-announcement" element={<ViewAnnouncement />} />
         <Route path="/all-announcements" element={<AllAnnouncements />} />

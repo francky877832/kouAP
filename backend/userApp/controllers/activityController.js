@@ -1,5 +1,6 @@
 
 const Activity = require('../models/activityModel');
+const Notification = require('../models/notificationModel');
 
 const mongoose = require('../../shared/db').mongoose;
 
@@ -90,6 +91,37 @@ exports.getAllActivities = async (req, res) => {
     try {
        // console.log("okok")
         const activities = await Activity.find();
+
+
+
+/*
+              const sampleNotification = {
+                user: '60f91b0f1a5b9d001c8e4c35',  // ID d'un utilisateur existant dans la base de données
+                notifications: [{
+                  _id: new mongoose.Types.ObjectId(),
+                  source: 'app',  // La source de la notification
+                  model: 'products',  // Le modèle associé à la notification (exemple : produits)
+                  title: 'New Product Available',
+                  message: 'A new product has been added to your favourite list.',
+                  type: 'on_new_like',  // Le type d'événement, ex: "like"
+                  action: 'view_product',  // L'action à effectuer après avoir cliqué sur la notification
+                  read: 0,  // Notification non lue
+                  createdAt: new Date(),  // Date de création de la notification
+                  updatedAt: new Date(),  // Date de mise à jour
+                }],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              };
+          
+              // Crée une nouvelle notification dans la base de données
+              const newNotification = new Notification(sampleNotification);
+          
+              // Sauvegarde la notification dans la base de données
+              await newNotification.save();
+      */
+
+
+
         res.status(200).json({message:"success", data:activities});
     } catch (error) {
         console.log(error)

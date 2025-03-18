@@ -7,20 +7,23 @@ import { UserProvider } from "../src/context/UserContext";
 import { AdminProvider } from './context/AdminContext';
 import { JuryProvider } from './context/JuryContext';
 import { ManagerProvider } from './context/ManagerContext';
+import { NotificationsProvider } from './context/NotificationsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
   <React.StrictMode>
-    <UserProvider>
-      <AdminProvider>
-      <JuryProvider>
-        <ManagerProvider>
-            <App />
-        </ManagerProvider>
-        </JuryProvider>
-      </AdminProvider>
-    </UserProvider>
+    <NotificationsProvider>
+      <UserProvider>
+        <AdminProvider>
+        <JuryProvider>
+          <ManagerProvider>
+              <App />
+          </ManagerProvider>
+          </JuryProvider>
+        </AdminProvider>
+      </UserProvider>
+    </NotificationsProvider>
   </React.StrictMode>
 );
 
