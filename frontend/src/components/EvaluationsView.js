@@ -49,7 +49,7 @@ const EvaluationsView = ({
     //setStatus({ ...status, [candidateId]: decision });
   };
 
-console.log(evaluations)
+//console.log(evaluations)
   return (
     <div className="candidates-section container d-flex flex-column">
     <h3 className="mb-3">Candidate Evaluations</h3>
@@ -62,7 +62,7 @@ console.log(evaluations)
             className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${
               evaluation.application.status?.toLocaleLowerCase() === "accepted" ? "bg-success text-white" :
               evaluation.application.status?.toLocaleLowerCase() === "rejected" ? "bg-danger text-white" :
-              evaluation.application.status?.toLocaleLowerCase() === "processing" ? "bg-warning text-white" : ""
+              evaluation.application.status?.toLocaleLowerCase() === "processing" ? "bg-warnin text-black" : ""
             }`}
             onClick={() => toggleJuryList(evaluation._id)}
           >

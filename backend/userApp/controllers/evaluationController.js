@@ -13,13 +13,14 @@ exports.createEvaluation = async (req, res, next) => {
      {
       const { userId } = req.params
          const newEv = new Evaluation({
-             user,
+             user:userId,
              application : applicationId,
              status : 'pending',
              jurys : [],
          })
          newEv.save()
-         return res.status(201).json({ message: "success", newEv });
+         
+      return res.status(201).json({ message: "Jurés assignés avec succès.", data:newEv });
      }
 
 

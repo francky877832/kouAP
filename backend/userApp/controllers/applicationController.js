@@ -105,7 +105,6 @@ exports.assignJuriesToApplication = async (req, res) => {
     await evaluationController.createEvaluation({...req, params:{applicationId, userId}}, res)
 
 
-    return res.status(200).json({ message: "Jurés assignés avec succès.", data:application });
   } catch (error) {
     console.error("Erreur lors de l'assignation des jurés:", error);
     return res.status(500).json({ error: "Erreur interne du serveur." });

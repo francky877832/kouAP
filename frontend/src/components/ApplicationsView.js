@@ -37,7 +37,8 @@ const ApplicaitonsView = ({
         setIsLoading(true)
             const data = await assignApplicaitonJurys(application, juryCounts, admin)
          //useEffect va rechager automatiquement et refermer le loading
-        state?.applications ? setIsLoading(false) : setIsApplicationsLoading(true)
+         setIsLoading(false) 
+         setIsApplicationsLoading(true)
       if(data)
       {
         alert(`${juryCounts} jurys ont été assignés à la candidature de ${application.user.name}`);
@@ -107,7 +108,7 @@ const ApplicaitonsView = ({
             </div>
           </li>
         ))}
-        {applications.length ===0 && <div>There's not applicaitonsyet to display.</div>}
+        {applications.length ===0 && <div>There's not applicaitons yet to display.</div>}
       </ul>
     </div>
   );
