@@ -116,7 +116,7 @@ export const mockAnnouncements = [
     {
       _id: "2",
       name: "Jane Smith",
-      juries: [
+      jurys: [
         {
           id: "201",
           candidateName: "Jane Smith",
@@ -162,7 +162,7 @@ export const mockAnnouncements = [
     {
       _id: "3",
       name: "Alice Johnson",
-      juries: [
+      jurys: [
         {
           id: "301",
           candidateName: "Alice Johnson",

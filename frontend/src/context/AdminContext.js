@@ -61,6 +61,110 @@ export const AdminProvider = ({ children }) => {
       }
       
   };
+
+
+  
+
+const fetchApplications = async () => {
+  // console.log("okk")
+   try {
+       //setIsLoading(true)
+       const response = await fetch(`${server}/api/datas/applications/get/all`, {  
+           method: "GET",
+           headers: {
+               "Content-Type": "application/json",
+       },})
+
+       const data = await response.json();
+       if (!response.ok)  {
+           throw new Error(data?.message || "Erreur lors du chargement des applicaitons");
+       }
+
+     //console.log(data.data)
+     return data?.data
+   } catch (error) {
+      alert(error)
+       console.log(error);
+   } finally {
+       //setIsLoading(false)
+   }
+}
+
+  
+const updateApplicationStatus = async (updatedApp) => {
+  try {
+
+    const response = await fetch(`${server}/api/datas/applications/update/decision${updatedApp._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedApp),
+    });
+
+const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to update application');
+    }
+    return data.data
+    //setIsActivitiesLoading(true)
+  } catch (error) {
+    alert(error)
+    console.error('Error updating application:', error);
+    return null
+  }
+};
+
+const assignApplicaitonJurys = async (updatedApp, jurorsCount, admin) => {
+  try {
+
+    const response = await fetch(`${server}/api/datas/applications/jury/assign`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({applicationId : updatedApp._id, userId:updatedApp.user._id, jurorsCount:jurorsCount, adminId:admin._id}),
+    });
+
+const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to update application');
+    }
+    return data.data
+    //setIsActivitiesLoading(true)
+  } catch (error) {
+    alert(error)
+    console.error('Error updating application:', error);
+    return null
+  }
+};
+
+
+const fetchAdminEvaluations = async (user) => {
+  // console.log("okk")
+   try {
+       //setIsLoading(true)
+       const response = await fetch(`${server}/api/datas/evaluations/get/admin/${user._id}`, {  
+           method: "GET",
+           headers: {
+               "Content-Type": "application/json",
+       },})
+
+       const data = await response.json();
+       if (!response.ok)  {
+           throw new Error(data?.message || "Erreur lors du chargement des applicaitons");
+       }
+
+     //console.log(data.data)
+     return data?.data
+   } catch (error) {
+      alert(error)
+       console.log(error);
+   } finally {
+       //setIsLoading(false)
+   }
+}
+
     
 
   useEffect(() => {
@@ -84,8 +188,10 @@ export const AdminProvider = ({ children }) => {
 
 
     const stateVars = {user, isAnnouncementsLoading, announcements}
-    const stateFunctions = {setIsAnnouncementsLoading, setAnnouncements}
-    const utilFunctions = {fetchAnnouncementsByUser, fetchAnnouncements}
+    const stateFunctions = {setIsAnnouncementsLoading, setAnnouncements,}
+    const utilFunctions = {fetchAnnouncementsByUser, fetchAnnouncements,  fetchApplications, updateApplicationStatus, assignApplicaitonJurys,
+      fetchAdminEvaluations
+    }
 
 
   return (

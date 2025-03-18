@@ -3,15 +3,30 @@ const Application = require("../models/applicationModel");
 const User = require("../models/userModel");
 
 // Créer une nouvelle évaluation avec des jurys et des documents
-exports.createEvaluation = async (req, res) => {
+exports.createEvaluation = async (req, res, next) => {
   try {
-   
-    const { user, application, decision, summary, report, jury } = req.body;
-    const { applicationId } = req.params
-    console.log(req.body)
+       //console.log(req.body)
+       const { applicationId } = req.params
+    const newEvaluation = await Evaluation.find({application : applicationId});
+ 
+     if (newEvaluation.length===0) 
+     {
+      const { userId } = req.params
+         const newEv = new Evaluation({
+             user,
+             application : applicationId,
+             status : 'pending',
+             jurys : [],
+         })
+         newEv.save()
+         return res.status(201).json({ message: "success", newEv });
+     }
 
-    const file = req.file; // Multer renvoie les fichiers sous forme d'un objet
-    //console.log(decision)
+
+     const { user, application, decision, summary, report, jury } = req.body;
+     const file = req.file; // Multer renvoie les fichiers sous forme d'un objet
+     //console.log(decision)
+
     // Vérifier si l'utilisateur et l'application existent
     const userExists = await User.findById(user);
     const juryExists = await User.findById(jury);
@@ -27,28 +42,13 @@ exports.createEvaluation = async (req, res) => {
         jury: jury,
     }
     //console.log(applicationId)
-   const newEvaluation = await Evaluation.find({application : applicationId});
-   //console.log(newEvaluation)
-
-    if (newEvaluation.length===0) 
-    {
-        //console.log("Var")
-        const newEv = new Evaluation({
-            user,
-            application : applicationId,
-            status : 'pending',
-            jurys : [newJurys,],
-        })
-        newEv.save()
-        return res.status(201).json({ message: "success", newEv });
-    }
-    else
-    {
+  
+   
         //console.log("newEvaluation")
         newEvaluation[0].jurys.push(newJurys );
         await newEvaluation[0].save();
         res.status(201).json({ message: "Évaluation soumise avec succès", newEvaluation });
-    }
+    
     
   } catch (error) {
     console.error("Erreur lors de la soumission de l'évaluation:", error);
@@ -126,11 +126,20 @@ exports.updateEvaluation = async (req, res) => {
 };
 
 // Obtenir toutes les évaluations
-exports.getAllEvaluations = async (req, res) => {
+exports.getAdminEvaluations = async (req, res) => {
+  //console.log("req.body")
   try {
+    const { adminId } = req.params
     const evaluations = await Evaluation.find()
-      .populate("user application jurys.jury");
-    res.json(evaluations);
+    .populate({
+      path: "application",
+      match: { admin: adminId }, // Filtrer les applications gérées par cet admin
+    })
+      .populate("user")
+      .populate("jurys.jury");
+      const filteredEvaluations = evaluations.filter(evaluation => evaluation.application);
+
+    res.status(200).json({message:"success", data:filteredEvaluations});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -1,9 +1,28 @@
 const mongoose = require('../../shared/db').mongoose;
 const Application = require('../models/applicationModel');
 const User = require('../models/userModel');
+const evaluationController = require('../controllers/evaluationController')
 
+//  5. Récupérer les applications assignées à un jury
+exports.getApplications = async (req, res, next) => {
 
-// ✅ 5. Récupérer les applications assignées à un jury
+  //console.log("req.body")
+    try {
+  
+      const applications = await Application.find({status:"pending"})
+        .populate('user')
+        .populate('jurys')
+        //.maxTimeMS(30000);
+        //console.log(applications)
+  
+      res.status(200).json({message:"succes", data:applications});
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la récupération des applications" });
+    }
+  };
+
+//  5. Récupérer les applications assignées à un jury
 exports.getJuryApplications = async (req, res, next) => {
 
   //console.log(req.params)
@@ -27,7 +46,7 @@ exports.getJuryApplications = async (req, res, next) => {
 
 exports.assignJuriesToApplication = async (req, res) => {
   try {
-    const { applicationId, jurorsCount } = req.body;
+    const { applicationId, jurorsCount, adminId, userId} = req.body;
 
     const application = await Application.findById(applicationId);
     if (!application) {
@@ -79,18 +98,23 @@ exports.assignJuriesToApplication = async (req, res) => {
 
     //  Mettre à jour l'application avec les jurys sélectionnés
     application.jurys = selectedJurors.map(jury => jury._id);
+    application.status = 'processing';
+    application.admin = adminId;
     await application.save();
 
-    return res.status(200).json({ message: "Jurés assignés avec succès.", application });
+    await evaluationController.createEvaluation({...req, params:{applicationId, userId}}, res)
+
+
+    return res.status(200).json({ message: "Jurés assignés avec succès.", data:application });
   } catch (error) {
     console.error("Erreur lors de l'assignation des jurés:", error);
-    return res.status(500).json({ message: "Erreur interne du serveur." });
+    return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
 
 
 
-const updateApplicationStatus = async (req, res) => {
+exports.updateApplicationStatus = async (req, res) => {
   try {
     const { applicationId } = req.params; // ID de l'application
     const { status } = req.body; // "approved" ou "rejected"

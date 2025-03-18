@@ -22,8 +22,10 @@ import MinPoints from "./pages/MinPoints";
 import CaseCoef from "./pages/CaseCoef";
 import FormManager from "./pages/FormManager";
 
+import ApplicaitonsView from "./components/ApplicationsView";
 import AllCandidates from "./pages/AllCandidates";
 import AllEvaluations from "./pages/AllEvaluations";
+import EvaluationsView from "./components/EvaluationsView";
 
 
 const App = () => {
@@ -43,8 +45,8 @@ const App = () => {
         <Route path="/application-details" element={<CandidateDetails />} />
 
         <Route path="/admin-panel" element={<AdminPanel />} />
-        <Route path="admin-panel/view-candidates" element={<AllCandidates />} />
-        <Route path="admin-panel/view-evaluations" element={<AllEvaluations />} />
+        <Route path="admin-panel/view-applications" element={<ApplicaitonsView />} />
+        <Route path="admin-panel/view-evaluations" element={<EvaluationsView />} />
         
 
 

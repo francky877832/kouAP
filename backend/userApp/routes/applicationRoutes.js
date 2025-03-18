@@ -4,6 +4,11 @@ const applicationController = require("../controllers/applicationController");
 
 //router.post("/create", applicationController.createAnnouncement);
 router.get("/jury/:juryId", applicationController.getJuryApplications);
+
+router.get("/get/all", applicationController.getApplications);
+router.put("/jury/assign", applicationController.assignJuriesToApplication);
+router.put("/update/decision", applicationController.updateApplicationStatus);
+//router.get("/jury/:juryId", applicationController.getJuryApplications);
 //router.get("/:id", announcementController.getAnnouncementById);
 //router.get("/user/:userId", announcementController.getAnnouncementsPostedBy);
 

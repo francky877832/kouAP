@@ -9,13 +9,13 @@ const db = mongoose.connection.useDb("kouap");
 const evaluationSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: User, required: true }, // Évaluateur principal
   application: { type: Schema.Types.ObjectId, ref: Application, required: true }, // Application évaluée
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending', required:true },
   jurys: [
     {
-        decision: { type: String, enum: ['approved', 'rejected'], default: 'pending' },
+        decision: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
         summary: { type: String },
         report: { type: String },
-        jury: { type: Schema.Types.ObjectId, ref: User, required: true } // Membre du jury
+        jury: { type: Schema.Types.ObjectId, ref: User, required: false } // Membre du jury
     }
   ],
   createdAt : { type : Date, default : Date.now },

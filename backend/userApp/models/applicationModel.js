@@ -15,10 +15,12 @@ const applicationSchema = new Schema({
   submittedOn: { type: Date, default: Date.now }, // Date de soumission
   status: { 
       type: String, 
-      enum: ['pending', 'approved', 'rejected'], 
+      enum: ['pending', 'processing', 'approved', 'rejected'], 
       default: 'pending' 
   }, // Statut de l'application
   jurys: [{ type: Schema.Types.ObjectId, ref: User }], // Liste des jurés associés
+  admin: { type: Schema.Types.ObjectId, ref: User, required: function(){return this.status!='pending' } }, 
+
   createdAt : { type : Date, default : Date.now },
     updatedAt : { type : Date, default : Date.now }
 });

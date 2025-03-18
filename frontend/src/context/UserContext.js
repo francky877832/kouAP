@@ -280,12 +280,14 @@ const fetchUserForms= async () => {
 
      //console.log(data.data)
      return data?.data
-   } catch (err) {
-       console.log(err);
+   } catch (error) {
+    alert(error)
+       console.log(error);
    } finally {
        //setIsLoading(false)
    }
 };
+
 
 
 
