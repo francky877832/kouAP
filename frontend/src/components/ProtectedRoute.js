@@ -1,14 +1,26 @@
-import React, { useContext } from 'react';
-import { Navigate , Route } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 
-const ProtectedRoute = ({ element: Component, role, ...rest }) => {
-  //const user = JSON.parse(localStorage.getItem('user')); // Récupérer l'utilisateur connecté depuis localStorage (ou contexte global)
-  const user = useContext(UserContext)
+const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
+  const { user } = useContext(UserContext);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  useEffect(() => {
+    if (user) {
+      setIsAuthenticated(true); 
+    } else {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (storedUser) {
+        setIsAuthenticated(true); 
+      } else {
+        setIsAuthenticated(false); 
+      }
+    }
+  }, [user]);
 
-  // Vérifiez si l'utilisateur est connecté et si son rôle est "manager"
-  if (!user || user.role != role) {
-    return <Navigate  to="/access-denied" replace />;
+  if (!isAuthenticated || !roles?.includes(user?.role)) {
+    return <Navigate to="/access-denied" replace />;
   }
 
   return <Component {...rest} />;

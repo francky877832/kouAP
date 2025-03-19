@@ -4,6 +4,7 @@ import { JuryContext } from '../context/JuryContext';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
 import { capitalize, formatDate } from '../utils/utilsFunctions';
+import NotificationIcon from '../components/NotificationIcon';
 
 const JuryPanel = () => {
   const [applications, setApplications] = useState([]);
@@ -56,6 +57,12 @@ const JuryPanel = () => {
 
   return (
     <div className="container mt-5">
+      {/* Notification Icon added at the top-left */}
+      <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
+        <NotificationIcon />
+      </div>
+
+
       <h2 className="text-center mb-4">Jury Panel</h2>
       <h4 className="text-center mb-4">Select an application to review:</h4>
       

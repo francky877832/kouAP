@@ -5,7 +5,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   // 67c4712f12d662f6eeb9d7fd
-    const [user, setUser] = useState({_id:"67d8f4f2c2b55c3c4f8b3191", username:"Francky", title:"Profesor", role:"jury"});
+    const [user, setUser] = useState({_id:"67d8f4f2c2b55c3c4f8b3191", username:"Francky", title:"Profesor", role:"dev"});
     
      const [facultyDepartments, setFacultyDepartments] = useState({});
      const [faculties, setFaculties] = useState({});
@@ -59,7 +59,7 @@ export const UserProvider = ({ children }) => {
     
     const signUpUser = async (newUser) => {
       try {
-        
+        console.log(newUser)
         const response = await fetch(`${server}/api/users/signUp`, {
           method: 'POST',
           headers: {
@@ -82,6 +82,48 @@ export const UserProvider = ({ children }) => {
         return null
       }
     }
+
+
+    const loginUser = async (email, password) => {
+      try {
+        const response = await fetch("https://your-api.com/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        });
+    
+        if (!response.ok) {
+          throw new Error("Invalid credentials");
+        }
+    
+        const data = await response.json();
+        
+        // Stocker le token et l'utilisateur
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user)); // Stocke en JSON
+    
+        return data; // Retourne les données
+      } catch (error) {
+        console.error("Login failed:", error.message);
+        return null;
+      }
+    };
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
      const fetchCases = async () => {

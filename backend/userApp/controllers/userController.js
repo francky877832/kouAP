@@ -10,7 +10,12 @@ const xml2js = require('xml2js');
 const dotenv = require("dotenv");
 
 const JWT_SECRET = 'WINKEL_RANDOM_TOKEN_SECRET'
-const generateToken = (userId) => {
+const 
+
+
+
+
+generateToken = (userId) => {
     const token = jwt.sign({ userId : userId }, JWT_SECRET, { expiresIn: '7d' });
     return token;
 };
@@ -109,7 +114,7 @@ exports.controlUser = async (req, res, next) => {
 
 
 exports.signupUser = async (req, res, next) => {
-    //console.log(req.body)
+    console.log(req.body)
     try {
       let user;
       user = await User.findOne({ email: req.body.email })
@@ -136,7 +141,8 @@ exports.signupUser = async (req, res, next) => {
     }
   };
   
-    exports.loginUser =  (req, res, next) => {
+  
+exports.loginUser =  (req, res, next) => {
       //console.log("LOGIN")
       let validePassword=false;
       
@@ -173,6 +179,8 @@ exports.signupUser = async (req, res, next) => {
           })
           .catch(error => res.status(500).json({ error }));
    };
+
+
 
   
 

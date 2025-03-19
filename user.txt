@@ -1,0 +1,25 @@
+const fetchUserProfile = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Utilisateur non authentifié");
+    }
+
+    const response = await fetch("http://localhost:5000/profile", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Accès au profil échoué");
+    }
+
+    const data = await response.json();
+    console.log("Profil utilisateur:", data);
+  } catch (error) {
+    console.error("Erreur lors de la récupération du profil:", error.message);
+  }
+};

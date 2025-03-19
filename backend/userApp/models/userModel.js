@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true, trim: true },
   address: { type: String, required: true, },
   password: { type: String, required: true },
-  role: { type: String, enum: ['user', 'admin', 'jury', 'manager'], default: 'user' },
+  role: { type: String, enum: ['user', 'admin', 'jury', 'manager', 'dev'], default: 'user' },
   cv : { type: String, required: function(){ return this.role=='user'} },
 
   username: { type: String, required: false, trim: true },

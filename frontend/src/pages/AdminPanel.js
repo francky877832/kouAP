@@ -12,6 +12,7 @@ import { AdminContext } from '../context/AdminContext';
 import { capitalize, formatDate } from '../utils/utilsFunctions';
 import ApplicaitonsView from '../components/ApplicationsView';
 import EvaluationsView from '../components/EvaluationsView';
+import NotificationIcon from '../components/NotificationIcon';
 
 const AdminPanel = () => {
   const limit1 = 0, limit2=3
@@ -110,6 +111,10 @@ const AdminPanel = () => {
 
   return (
     <div className="container admin-dashboard mt-4">
+      <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
+        <NotificationIcon />
+      </div>
+
       <h2 className="text-center mb-4">Admin Panel</h2>
 
           {/* Liste des annonces */}
