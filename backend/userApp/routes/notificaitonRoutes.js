@@ -8,8 +8,9 @@ const notificaitonCtrl = require('../controllers/notificationController');
 router.get('/get/:user', notificaitonCtrl.getUserNotifications);
 router.get('/count/:user', notificaitonCtrl.countAllUnreadNotifications);
 //router.post('/add', notificaitonCtrl.addUserNotification);
-router.put('/read/:user/:id', notificaitonCtrl.updateUserNotificationRead);
-router.put('/update/:user', notificaitonCtrl.updateUserNotifications);
+router.put('/update/read', notificaitonCtrl.updateUserNotificationRead);
+router.put('/update/:userId', notificaitonCtrl.updateUserNotifications);
+router.delete('/delete', notificaitonCtrl.deleteNotification);
 
 
 module.exports = router;

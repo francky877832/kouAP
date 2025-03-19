@@ -56,18 +56,38 @@ export const NotificationsProvider = ({ children }) => {
     }
   };
 
-  const updateNotificationsRead = async ({ user, id }) => {
+  const updateNotificationsRead = async (user, notification) => {
     try {
-      const response = await fetch(`${server}/api/datas/notifications/read/${user}/${id}`, {
+      const response = await fetch(`${server}/api/datas/notifications/update/read`, {
         method: 'PUT',
-        body: JSON.stringify({}),
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userId:user._id, notificationId:notification._id}),
+
       });
-      if (!response.ok) throw new Error('Erreur lors de la requête');
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Erreur lors de la requête');
       return true;
     } catch (error) {
       console.log(error);
       alert('Erreur', 'Une erreur est survenue! ' + error);
+      return false;
+    }
+  };
+
+  const updateNotification = async (user, newNotification) => {
+    try {
+      const response = await fetch(`${server}/api/datas/notifications/update/${user._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({notificationId:newNotification._id, newNotification:{...newNotification, read:1}}),
+
+      });
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Erreur lors de la requête');
+      return true;
+    } catch (error) {
+      console.log(error);
+      //alert('Erreur', 'Une erreur est survenue! ' + error);
       return false;
     }
   };
@@ -83,6 +103,24 @@ export const NotificationsProvider = ({ children }) => {
     }
   };
 
+  const deleteNotification = async (user, notification) => {
+    try {
+      const response = await fetch(`${server}/api/datas/notifications/delete`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userId:user._id, notificationId:notification._id,}),
+
+      });
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Erreur lors de la requête');
+      return true;
+    } catch (error) {
+      console.log(error);
+      //alert('Erreur', 'Une erreur est survenue! ' + error);
+      return false;
+    }
+  };
+
 
 
 
@@ -92,7 +130,9 @@ export const NotificationsProvider = ({ children }) => {
 
   const stateVars = { }
     const stateFunctions = { }
-    const utilFunctions = {sendNotifications, fetchNotifications, updateNotificationsRead, getProductFromNotifications }
+    const utilFunctions = {sendNotifications, fetchNotifications, updateNotificationsRead, updateNotification, getProductFromNotifications,
+      deleteNotification,
+     }
 
   return (
     <NotificationsContext.Provider value={{ ...stateVars, ...stateFunctions, ...utilFunctions }}>

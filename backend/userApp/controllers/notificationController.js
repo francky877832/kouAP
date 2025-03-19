@@ -142,7 +142,8 @@ exports.getNotificationById = async (req, res) => {
 // Mettre à jour une notification spécifique en la marquant comme lue
 exports.updateUserNotificationRead = async (req, res) => {
     try {
-      const { userId, notificationId } = req.params;
+      console.log(req.body)
+      const { userId, notificationId } = req.body;
   
       // Trouver la notification pour cet utilisateur
       const notification = await Notification.findOne({
@@ -178,35 +179,44 @@ exports.updateUserNotificationRead = async (req, res) => {
 
   
   // Mettre à jour toutes les notifications de l'utilisateur comme lues
-exports.updateUserNotifications = async (req, res) => {
+  exports.updateUserNotifications = async (req, res) => {
     try {
-      const { userId } = req.params;
-  
-      // Trouver les notifications pour cet utilisateur
-      const notification = await Notification.findOne({ user: userId });
-  
-      if (!notification) {
-        return res.status(404).json({ message: 'Aucune notification trouvée pour cet utilisateur' });
-      }
-  
-      // Mettre à jour toutes les notifications de l'utilisateur comme lues
-      notification.notifications.forEach((notif) => {
-        notif.read = 1;
-        notif.updatedAt = new Date();
-      });
-  
-      // Sauvegarder les modifications
-      await notification.save();
-  
-      return res.status(200).json({
-        message: 'Toutes les notifications mises à jour comme lues avec succès',
-        notifications: notification.notifications,
-      });
+      //console.log( req.body)
+        const { userId } = req.params;
+        const { notificationId, newNotification } = req.body;
+
+        // Trouver le document Notification correspondant à l'utilisateur
+        const notificationDoc = await Notification.findOne({ user: userId });
+
+        if (!notificationDoc) {
+            return res.status(404).json({ message: "Aucune notification trouvée pour cet utilisateur" });
+        }
+
+        // Trouver l'index de la notification à mettre à jour
+        const index = notificationDoc.notifications.findIndex(notif => notif._id.toString() === notificationId);
+        if (index === -1) {
+            return res.status(404).json({ message: "Notification non trouvée" });
+        }
+
+        // Mettre à jour la notification dans le tableau
+        notificationDoc.notifications[index] = {
+            ...notificationDoc.notifications[index],  // Conserver les anciennes valeurs
+            ...newNotification,  // Remplacer par les nouvelles valeurs
+            updatedAt: new Date(), // Mettre à jour la date de modification
+        };
+
+        // Sauvegarder les modifications
+        await notificationDoc.save();
+
+        return res.status(200).json({
+            message: "Notification mise à jour avec succès",
+            data: notificationDoc.notifications[index],
+        });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Erreur lors de la mise à jour des notifications', error: error.message });
+        console.error(error);
+        return res.status(500).json({ message: "Erreur lors de la mise à jour de la notification", error: error.message });
     }
-  };
+};
 
   
 // Mettre à jour une notification
@@ -233,18 +243,41 @@ exports.updateNotification = async (req, res) => {
   }
 };
 
-// Supprimer une notification
 exports.deleteNotification = async (req, res) => {
   try {
-    const notification = await Notification.findById(req.params.notificationId);
-    if (!notification) {
-      return res.status(404).json({ message: 'Notification non trouvée' });
+    //console.log(req.body)
+    const { userId, notificationId } = req.body;
+
+    // Vérifier si les paramètres nécessaires sont fournis
+    if (!userId || !notificationId) {
+      return res.status(400).json({ message: "userId et notificationId sont requis" });
     }
 
-    await notification.remove();
-    return res.status(200).json({ message: 'Notification supprimée avec succès' });
+    // Trouver le document Notification de l'utilisateur
+    const notificationDoc = await Notification.findOne({ user: userId });
+
+    if (!notificationDoc) {
+      return res.status(404).json({ message: "Aucune notification trouvée pour cet utilisateur" });
+    }
+
+    const newNotifications = notificationDoc.notifications.filter(notif => notif._id.toString() !== notificationId);
+
+    if (newNotifications.length === notificationDoc.notifications.length) {
+      return res.status(404).json({ message: "Notification non trouvée" });
+    }
+
+    notificationDoc.notifications = newNotifications;
+    notificationDoc.updatedAt = new Date();
+    await notificationDoc.save();
+
+    return res.status(200).json({ 
+      message: "Notification supprimée avec succès", 
+      data: notificationDoc.notifications 
+    });
+
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Erreur lors de la suppression de la notification', error: error.message });
+    return res.status(500).json({ message: "Erreur lors de la suppression de la notification", error: error.message });
   }
 };
+

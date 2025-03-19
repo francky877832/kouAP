@@ -7,7 +7,7 @@ import { NotificationsContext } from "../context/NotificationsContext";
 import { formatDate } from "../utils/utilsFunctions";
 
 const Notifications = () => {
-  const { fetchNotifications } = useContext(NotificationsContext);
+  const { fetchNotifications, updateNotificationsRead, updateNotification, deleteNotification} = useContext(NotificationsContext);
   const { user } = useContext(UserContext);
 
   const [notifications, setNotifications] = useState([]);
@@ -39,20 +39,34 @@ const Notifications = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentNotification, setCurrentNotification] = useState(null);
 
-  const markAsRead = (id) => {
-    setNotifications(
-      notifications.map((notif) =>
-        notif._id === id ? { ...notif, read: 1 } : notif
-      )
-    );
+  const markAsRead = async (notif) => {
+    const data = await updateNotification(user, notif)
+    if(!data)
+    {
+      alert("Error while updating the message status!")
+      return;
+    }
 
     setIsNotificationsLoading(true) //relancer useEffect
     setShowModal(false); // Close the modal after marking as read
   };
 
-  const deleteNotification = (id) => {
-    setNotifications(notifications.filter((notif) => notif._id !== id));
+const deleteUserNotification = async (notif) => {
+  console.log(notif)
+    const isConfirmed = window.confirm("Voulez-vous vraiment supprimer cette notification ?");
+    
+    if (!isConfirmed) return;
+  
+    const data = await deleteNotification(user, notif);
+    
+    if (!data) {
+      alert("Erreur lors de la suppression de la notification !");
+      return;
+    }
+  
+    setIsNotificationsLoading(true); // Relancer useEffect
   };
+  
 
   const showNotificationDetails = (notif) => {
     setCurrentNotification(notif);
@@ -93,8 +107,8 @@ const Notifications = () => {
           </thead>
           <tbody>
             {notifications?.map((notif) => (
-
-              <tr key={notif._id}>
+            
+              <tr key={notif._id} style={notif.read==0 ? {fontWeight:"bold", color:"red", } : {}}>
                 <td>{notif.source}</td>
                 <td>{notif.title}</td>
                 <td>
@@ -109,7 +123,7 @@ const Notifications = () => {
                     <Badge bg="success">Read</Badge>
                   )}
                 </td>
-                <td>
+                <td className="d-flex">
                   {notif.read === 0 && (
                     <Button
                       variant="primary"
@@ -117,16 +131,16 @@ const Notifications = () => {
                       onClick={() => showNotificationDetails(notif)}
                       className="me-2"
                     >
-                      <FaEye /> Read
+                      <FaEye />
                     </Button>
                   )}
                   {notifications.length > 20 && (
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => deleteNotification(notif._id)}
+                      onClick={() => deleteUserNotification(notif)}
                     >
-                      <FaTrashAlt /> Delete
+                      <FaTrashAlt />
                     </Button>
                   )}
                 </td>
@@ -160,16 +174,15 @@ const Notifications = () => {
         </Modal.Header>
         <Modal.Body>
           <p><strong>Source:</strong> {currentNotification?.source}</p>
-          <p><strong>Model:</strong> {currentNotification?.model}</p>
+          <p><strong>Title:</strong> {currentNotification?.title}</p>
           <p><strong>Message:</strong> {currentNotification?.message}</p>
-          <p><strong>Type:</strong> {currentNotification?.type}</p>
           <p><strong>Created At:</strong> {new Date(currentNotification?.createdAt).toLocaleString()}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Close
           </Button>
-          <Button variant="primary" onClick={() => markAsRead(currentNotification._id)}>
+          <Button variant="primary" onClick={() => markAsRead(currentNotification)}>
             Mark as Read
           </Button>
         </Modal.Footer>

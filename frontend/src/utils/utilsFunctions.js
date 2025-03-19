@@ -6,7 +6,8 @@ export const formatDate = (dateString) => {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    return `${day}/${month}/${year} - ${hours}H${minutes}`;
+    //return `${day}/${month}/${year} - ${hours}H${minutes}`;
+    return new Date(dateString).toLocaleString()
 };
 
 
