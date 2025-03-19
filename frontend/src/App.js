@@ -56,16 +56,16 @@ const App = () => {
     */}
 
       {/* Route protégée pour l'admin */}
-      <Route path="/admin/add-announcement" element={ <ProtectedRoute role="admin" element={<AnnounceForm />} />} />
-      <Route path="/admin-panel" element={ <ProtectedRoute role="admin" element={<AdminPanel />} />} />
-      <Route path="admin-panel/view-applications" element={ <ProtectedRoute role="admin" element={<ApplicationsView />} /> } />
-      <Route path="admin-panel/view-evaluations" element={ <ProtectedRoute role="admin" element={<EvaluationsView />} /> } />
+      <Route path="/admin/add-announcement" element={ <ProtectedRoute role={["admim", "dev"]} element={<AnnounceForm />} />} />
+      <Route path="/admin-panel" element={ <ProtectedRoute role={["admim", "dev"]} element={<AdminPanel />} />} />
+      <Route path="admin-panel/view-applications" element={ <ProtectedRoute role={["admim", "dev"]} element={<ApplicationsView />} /> } />
+      <Route path="admin-panel/view-evaluations" element={ <ProtectedRoute role={["admim", "dev"]} element={<EvaluationsView />} /> } />
         
 
 {/*Jury protected */}
-      <Route  path="/application-details" element={<ProtectedRoute element={CandidateDetails} role="jury" />} />
-      <Route path="/jury/evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} role="jury" />}  />
-      <Route path="//jury-panel" element={<ProtectedRoute element={JuryPanel} role="jury" />}  />
+      <Route  path="/application-details" element={<ProtectedRoute element={CandidateDetails} role={["jury", "dev"]} />} />
+      <Route path="/jury/evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} role={["jury", "dev"]} />}  />
+      <Route path="//jury-panel" element={<ProtectedRoute element={JuryPanel} role={["jury", "dev"]} />}  />
    
 
     
@@ -73,10 +73,10 @@ const App = () => {
 
 
 {/* tablo 1 */}
-      <Route path="/manager/panel" element={<ProtectedRoute element={ManagerPanel} role="manager" />}  />
-      <Route path="/manager/edit-criteria" element={<ProtectedRoute element={EditCriterias} role="manager" />}/>
-      <Route path="/manager-form/edit-form" element={<ProtectedRoute element={FormManager} role="manager" />}  />
-      <Route path="/case-coef/view" element={<ProtectedRoute element={CaseCoef} role="manager" />}  />
+      <Route path="/manager/panel" element={<ProtectedRoute element={ManagerPanel} role={["manager", "dev"]}/>}  />
+      <Route path="/manager/edit-criteria" element={<ProtectedRoute element={EditCriterias} role={["manager", "dev"]} />}/>
+      <Route path="/manager-form/edit-form" element={<ProtectedRoute element={FormManager} role={["manager", "dev"]} />}  />
+      <Route path="/case-coef/view" element={<ProtectedRoute element={CaseCoef} role={["manager", "dev"]} />}  />
 
 {/* tablo 3 */}
         <Route path="/activities/view" element={<Activities />} />
