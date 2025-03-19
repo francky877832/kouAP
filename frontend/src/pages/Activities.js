@@ -90,7 +90,9 @@ const Activities = () => {
             <th style={{ width: '10%' }}>Number</th>
             <th style={{ width: '70%' }}>Activity</th>
             <th style={{ width: '10%' }}>Points</th>
-            <th style={{ width: '10%' }}>Actions</th> {/* Petite largeur pour la colonne d'actions */}
+            {user.role=="manager" &&
+              <th style={{ width: '10%' }}>Actions</th> /* Petite largeur pour la colonne d'actions */
+            }
           </tr>
         </thead>
         <tbody>
@@ -124,6 +126,7 @@ const Activities = () => {
                       <>{activity.letter} - {activity.label}</>
                     )}
                   </td>
+                  {user.role=="manager" &&
                   <td className="text-center actions d-flex justify-content-center">
                     {editIndex === index ? (
                       <>
@@ -145,6 +148,7 @@ const Activities = () => {
                       </>
                     )}
                   </td>
+            }
                 </tr>
                 {activity.activities.map((act, i) => (
                   <tr key={i} className="text-center">
@@ -172,6 +176,7 @@ const Activities = () => {
                         act.name
                       )}
                     </td>
+            
                     <td>
                       {editIndex === index ? (
                         <Form.Control
@@ -184,7 +189,10 @@ const Activities = () => {
                         act.points
                       )}
                     </td>
-                    <td></td>
+
+                    {user.role=="manager" &&
+                      <td></td>
+                    }
                   </tr>
                 ))}
               </React.Fragment>

@@ -5,6 +5,7 @@ import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
 import { NotificationsContext } from "../context/NotificationsContext";
 import { formatDate } from "../utils/utilsFunctions";
+import NotificationIcon from "../components/NotificationIcon";
 
 const Notifications = () => {
   const { fetchNotifications, updateNotificationsRead, updateNotification, deleteNotification} = useContext(NotificationsContext);

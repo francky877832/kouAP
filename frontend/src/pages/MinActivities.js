@@ -8,7 +8,7 @@ import { ManagerContext } from "../context/ManagerContext";
 
 
 const MinActivities = () => {
-  const { minActivities, facultyDepartments, facultyGroups, isFacultyLoading, isMinActivitiesLoading, setIsMinActivitiesLoading } = useContext(UserContext);
+  const { user, minActivities, facultyDepartments, facultyGroups, isFacultyLoading, isMinActivitiesLoading, setIsMinActivitiesLoading } = useContext(UserContext);
   const { updateMinActivity, updateMinPoint, deleteMinActivity, deleteMinPoint, } = useContext(ManagerContext)
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -118,11 +118,13 @@ const MinActivities = () => {
                 </div>
               </Card.Text>
             </Card.Body>
+          { user.role=="manager" &&
             <div className="d-flex justify-content-center">
               <Button variant="danger" onClick={() => handleDeleteActivity(index)} className="m-2">
                 Delete
               </Button>
             </div>
+        }
           </Card>
 
         ))
@@ -262,7 +264,9 @@ const MinActivities = () => {
           {!isEditing ? (
             <>
               <Button variant="secondary" onClick={handleModalClose}>Close</Button>
-              <Button variant="primary" onClick={() => setIsEditing(true)}>Modify</Button>
+              {user.role=="manager" &&
+                <Button variant="primary" onClick={() => setIsEditing(true)}>Modify</Button>
+              }
             </>
           ) : (
             <>

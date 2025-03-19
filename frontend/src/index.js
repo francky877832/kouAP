@@ -13,8 +13,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
   <React.StrictMode>
-    <NotificationsProvider>
       <UserProvider>
+      <NotificationsProvider>
+
         <AdminProvider>
         <JuryProvider>
           <ManagerProvider>
@@ -22,8 +23,9 @@ root.render(
           </ManagerProvider>
           </JuryProvider>
         </AdminProvider>
+        </NotificationsProvider>
+
       </UserProvider>
-    </NotificationsProvider>
   </React.StrictMode>
 );
 

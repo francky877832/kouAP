@@ -8,7 +8,7 @@ import { ManagerContext } from "../context/ManagerContext";
 
 
 const MinPoints = () => {
-  const { minPoints, facultyDepartments, facultyGroups, isFacultyLoading, isMinPointsLoading, setIsMinPointsLoading } = useContext(UserContext);
+  const { user, minPoints, facultyDepartments, facultyGroups, isFacultyLoading, isMinPointsLoading, setIsMinPointsLoading } = useContext(UserContext);
   const { updateMinPoint, deleteMinPoint, } = useContext(ManagerContext)
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -114,11 +114,13 @@ const MinPoints = () => {
                 </div>
               </Card.Text>
             </Card.Body>
-            <div className="d-flex justify-content-center">
-              <Button variant="danger" onClick={() => handleDeletePoint(index)} className="m-2">
-                Delete
-              </Button>
+            {user.role=="manager" &&
+              <div className="d-flex justify-content-center">
+                <Button variant="danger" onClick={() => handleDeletePoint(index)} className="m-2">
+                  Delete
+                </Button>  
             </div>
+          }
           </Card>
 
         ))
@@ -265,7 +267,9 @@ const MinPoints = () => {
           {!isEditing ? (
             <>
               <Button variant="secondary" onClick={handleModalClose}>Close</Button>
-              <Button variant="primary" onClick={() => setIsEditing(true)}>Modify</Button>
+              {user.role=="manager" &&
+                <Button variant="primary" onClick={() => setIsEditing(true)}>Modify</Button>
+              }
             </>
           ) : (
             <>

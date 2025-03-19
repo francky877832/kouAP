@@ -95,33 +95,25 @@ exports.getUserNotifications = async (req, res) => {
   
 
 
-exports.countAllUnreadNotifications = async (req, res, next) => {
+  exports.countUserUnreadNotifications = async (req, res) => {
     try {
-      const { user } = req.params; 
+      const { userId } = req.params;
   
-      const unreadNotifications = await Notification.aggregate([
-        { $match: { user: new mongoose.Types.ObjectId(user) } }, 
-        { $unwind: "$notifications" }, 
-        { $match: { "notifications.read": 0 } }, 
-        { $count: "unreadCount" }, 
-        {
-          $addFields: {
-            unreadCount: { $ifNull: ["$unreadCount", 0] } 
-          }
-        }
-      ]);
+      const notification = await Notification.findOne({ user: userId });
   
-      const notifCount = unreadNotifications.length > 0 ? unreadNotifications[0].unreadCount : 0;
+      if (!notification) {
+        return res.status(404).json({ message: "Aucune notification trouvée pour cet utilisateur" });
+      }
   
-      const total = notifCount; 
+      const unreadCount = notification.notifications.filter(notif => notif.read === 0).length;
   
-      return res.status(200).json({ message: "success", data: total });
-      
+      return res.status(200).json({ message:"success", data:unreadCount });
     } catch (error) {
-      console.error("Erreur lors du comptage des notifications non lues :", error);
-      return res.status(400).json({ error });
+      console.error(error);
+      return res.status(500).json({ message: "Erreur lors du comptage des notifications non lues", error: error.message });
     }
   };
+  
   
   
 // Récupérer une notification spécifique par son ID

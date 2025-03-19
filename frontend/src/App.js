@@ -22,11 +22,14 @@ import MinPoints from "./pages/MinPoints";
 import CaseCoef from "./pages/CaseCoef";
 import FormManager from "./pages/FormManager";
 
-import ApplicaitonsView from "./components/ApplicationsView";
+import ApplicationsView from "./components/ApplicationsView";
 import AllCandidates from "./pages/AllCandidates";
 import AllEvaluations from "./pages/AllEvaluations";
 import EvaluationsView from "./components/EvaluationsView";
 import Notifications from "./pages/Notifications";
+import ManagerPanel from "./pages/ManagerPanel";
+import NotFound from "./components/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 const App = () => {
@@ -37,42 +40,58 @@ const App = () => {
         
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/callback" element={<CallbackLogin />} />
+        {/* <Route path="/callback" element={<CallbackLogin />} /> */ }
 
         <Route path="/system/notifications" element={<Notifications />} />
-
-        <Route path="/admin/add-announcement" element={<AnnounceForm />} />
         <Route path="/view-announcement" element={<ViewAnnouncement />} />
         <Route path="/all-announcements" element={<AllAnnouncements />} />
         <Route path="/apply" element={<MultiStepForm />} />
 
 
-        <Route path="/jury-panel" element={<JuryPanel />} />
-
-      
-
+      {/*
+        <Route path="/admin/add-announcement" element={<AnnounceForm />} />
         <Route path="/admin-panel" element={<AdminPanel />} />
-        <Route path="admin-panel/view-applications" element={<ApplicaitonsView />} />
+        <Route path="admin-panel/view-applications" element={<ApplicationsView />} />
         <Route path="admin-panel/view-evaluations" element={<EvaluationsView />} />
+    */}
+
+      {/* Route protégée pour l'admin */}
+      <Route path="/admin/add-announcement" element={ <ProtectedRoute role="admin" element={<AnnounceForm />} />} />
+      <Route path="/admin-panel" element={ <ProtectedRoute role="admin" element={<AdminPanel />} />} />
+      <Route path="admin-panel/view-applications" element={ <ProtectedRoute role="admin" element={<ApplicationsView />} /> } />
+      <Route path="admin-panel/view-evaluations" element={ <ProtectedRoute role="admin" element={<EvaluationsView />} /> } />
         
 
-        <Route path="/application-details" element={<CandidateDetails />} />
-        <Route path="/jury/evaluation-details" element={<JuryEvaluationDetails />} />
-        <Route path="/jury-evaluation-details" element={<JuryEvaluationDetails />} />
+{/*Jury protected */}
+      <Route  path="/application-details" element={<ProtectedRoute element={CandidateDetails} role="jury" />} />
+      <Route path="/jury/evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} role="jury" />}  />
+      <Route path="//jury-panel" element={<ProtectedRoute element={JuryPanel} role="jury" />}  />
+   
+
+    
+
+
 
 {/* tablo 1 */}
-        <Route path="/manager/edit-criteria" element={<EditCriterias />} />
+      <Route path="/manager/panel" element={<ProtectedRoute element={ManagerPanel} role="manager" />}  />
+      <Route path="/manager/edit-criteria" element={<ProtectedRoute element={EditCriterias} role="manager" />}/>
+      <Route path="/manager-form/edit-form" element={<ProtectedRoute element={FormManager} role="manager" />}  />
+      <Route path="/case-coef/view" element={<ProtectedRoute element={CaseCoef} role="manager" />}  />
+
 {/* tablo 3 */}
         <Route path="/activities/view" element={<Activities />} />
         <Route path="/min-activities/view" element={<MinActivities />} />
         <Route path="/min-points/view" element={<MinPoints />} />
 
-        <Route path="/case-coef/view" element={<CaseCoef />} />
-        <Route path="/manager-form/edit-form" element={<FormManager />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/control-user" element={<ControlUser />} />
+
+
+        <Route path="/access-denied" element={<NotFound />} />
+
+        
 
         
       </Routes>

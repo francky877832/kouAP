@@ -6,7 +6,7 @@ const notificaitonCtrl = require('../controllers/notificationController');
 
 //Notification route
 router.get('/get/:user', notificaitonCtrl.getUserNotifications);
-router.get('/count/:user', notificaitonCtrl.countAllUnreadNotifications);
+router.get('/count/:userId', notificaitonCtrl.countUserUnreadNotifications);
 //router.post('/add', notificaitonCtrl.addUserNotification);
 router.put('/update/read', notificaitonCtrl.updateUserNotificationRead);
 router.put('/update/:userId', notificaitonCtrl.updateUserNotifications);

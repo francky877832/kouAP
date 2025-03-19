@@ -7,8 +7,9 @@ import { UserContext } from './UserContext';
 export const NotificationsContext = createContext();
 
 export const NotificationsProvider = ({ children }) => {
-
-    
+  const { user } = useContext(UserContext)
+    const [unreadNotif, setUnreadNotif] = useState(0)
+    const [isUnreadNotifLoading, setIsUnreadNotifLoading] = useState(true)
 
 
   const sendNotifications = async (user, notif) => {
@@ -122,14 +123,53 @@ export const NotificationsProvider = ({ children }) => {
   };
 
 
+  const fetchUserUnreadNotificaitons = async (user) => {
+    try {
+      const response = await fetch(`${server}/api/datas/notifications/count/${user._id}`, {
+        method: "GET", // Méthode GET pour récupérer les annonces
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      // Récupérer les données au format JSON
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
+      }
+      //console.log(data)
+      return data.data; 
+    } catch (error) {
+      console.error("Erreur:", error);
+      return 0; 
+    }
+  }
+
+  
+    useEffect(() => {
+      const fetchUserNotifCountEffect = async () => {
+        setIsUnreadNotifLoading(true)
+          const notif = await fetchUserUnreadNotificaitons(user)
+          console.log(notif)
+          setUnreadNotif(notif)
+          setIsUnreadNotifLoading(false)
+      };
+  
+      if(isUnreadNotifLoading)
+      {
+        fetchUserNotifCountEffect();
+      }
+     
+  }, [isUnreadNotifLoading]);
 
 
 
 
 
 
-  const stateVars = { }
-    const stateFunctions = { }
+
+  const stateVars = {isUnreadNotifLoading, unreadNotif }
+    const stateFunctions = { setIsUnreadNotifLoading, setUnreadNotif}
     const utilFunctions = {sendNotifications, fetchNotifications, updateNotificationsRead, updateNotification, getProductFromNotifications,
       deleteNotification,
      }

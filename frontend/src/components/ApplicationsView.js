@@ -8,7 +8,7 @@ import { UserContext } from '../context/UserContext';
 import { AdminContext } from '../context/AdminContext';
 import Loading from './Loading';
 
-const ApplicaitonsView = ({
+const ApplicationsView = ({
   isApplicationsLoading, setIsApplicationsLoading, applications_,
   limit1, limit2,
 }) => {
@@ -116,4 +116,4 @@ const ApplicaitonsView = ({
   );
 }
 
-export default ApplicaitonsView;
+export default ApplicationsView;
