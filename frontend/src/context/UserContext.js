@@ -119,7 +119,7 @@ export const UserProvider = ({ children }) => {
      const updateUser = async (updatedUser) => {
           try {
        
-            const response = await fetch(`${server}/api/users/update`, {
+            const response = await fetch(`${server}/api/users/user/update`, {
               method: 'PUT',
               headers: {
                
@@ -139,6 +139,31 @@ export const UserProvider = ({ children }) => {
             return false
         }
     };
+
+    
+    const updateUserRole = async (user) => {
+      try {
+   
+        const response = await fetch(`${server}/api/users/role/update/${user._id}`, {
+          method: 'PUT',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({role:user.role}),
+        });
+        
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error ||"Erreur lors de l'ajout du case");
+        }
+
+        return true
+    } catch (error) {
+      //alert(error)
+        console.error("Erreur:", error.message);
+        return false
+    }
+};
     
     
     
@@ -168,7 +193,7 @@ export const UserProvider = ({ children }) => {
 
     const fetchUsers= async (page, limit) => {
       try {
-        const response = await fetch(`${server}/api/datas/users/get/all?page=${page}&limit=${limit}`, {
+        const response = await fetch(`${server}/api/users/get/all?page=${page}&limit=${limit}`, {
           method: "GET", // Méthode GET pour récupérer les annonces
           headers: {
             "Content-Type": "application/json",
@@ -179,7 +204,7 @@ export const UserProvider = ({ children }) => {
         if (!response.ok) {
           throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
         }
-        //console.log(data)
+        //console.log("data")
         return data.data; // Retourner les annonces récupérées
       } catch (error) {
         console.error("Erreur:", error.message);
@@ -570,7 +595,7 @@ const fetchUserForms= async () => {
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
           fetchCases, fetchCoefs, fetchFacultyGroups, 
 
-          controlUser, signUpUser, loginUser, updateUser, fetchUserApplications, fetchUsers, createUserApplication,
+          controlUser, signUpUser, loginUser, updateUser, fetchUserApplications, fetchUsers, createUserApplication, updateUserRole,
         }
 
   return (

@@ -197,15 +197,28 @@ exports.loginUser = async  (req, res, next) => {
 
 exports.updateUser = async (req, res) => {
     try {
-      const { name, surname, tcID, birthDate, username, email, phoneNumber, address, password } = req.body;
+      //const { name, surname, tcID, birthDate, username, email, phoneNumber, address, password } = req.body;
+      const updatedUser = req.body
       const cv = req.file
+      console.log(req.file)
+      let password;
+      if(updatedUser.password)
+      {
+        password = await bcrypt.hash(updatedUser.password, 10);
+      }
+      if(cv)
+      {
+        updatedUser.cv = cv.path
+      }
+
+      updatedUser.password = password
   
-      const user = await User.findById({tcID:tcID}); 
+      const user = await User.findOneAndUpdate({tcID:updatedUser.tcID}, {...updatedUser}, { new: true, runValidators: true }); 
   
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
-  
+  /*
       user.name = name || user.name;
       user.surname = surname || user.surname;
       user.tcID = tcID || user.tcID;
@@ -216,17 +229,47 @@ exports.updateUser = async (req, res) => {
       user.address = address || user.address;
       user.password = password || user.password; 
       user.cv = file.path
-
-
-      await user.save();
-  
+      await user.save();*/  
       res.status(200).json({message: 'Profile updated successfully', data:user,});
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   };
-  
+
+ 
+
+exports.updateUserRole = async (req, res) => {
+  try {
+    //console.log(req.body)
+    const { userId } = req.params; 
+    const { role } = req.body; 
+
+    if (!userId) {
+      return res.status(400).json({ error: "L'ID de l'utilisateur est requis." });
+    }
+
+    if (!role) {
+      return res.status(400).json({ error: "Le rôle est requis." });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "Utilisateur non trouvé." });
+    }
+
+    res.status(200).json({ message: "Rôle mis à jour avec succès", data: updatedUser });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du rôle :", error);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+};
+
 
 
 

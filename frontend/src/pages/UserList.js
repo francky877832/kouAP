@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Modal, Button, Table, Form } from "react-bootstrap";
 import { UserContext } from "../context/UserContext";
+import Loading from "../components/Loading";
 
 const sampleData = [
   { _id: "1", name: "John Doe", email: "john.doe@email.com", phoneNumber: "1234567890", address: "New York", role: "user", cv: "cv-john.pdf" },
@@ -11,7 +12,7 @@ const sampleData = [
 
 const UserList = () => {
 
-  const { fetchUsers } = useContext(UserContext)
+  const { fetchUsers, updateUser, updateUserRole, } = useContext(UserContext)
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -22,20 +23,21 @@ const UserList = () => {
   const [users, setUsers] = useState([])
   const [totalPages, setTotalPages] = useState(0)
 
-  const limit = 3;
+  const limit = 20;
 
   useEffect(() => {
     const getUsers = async () => {
       setIsLoading(true)
-      //const data = await fetchUsers(currentPage, limit)
-      const users_ = sampleData.slice(indexOfFirstUser, indexOfLastUser);
-      const totalPages = Math.ceil(sampleData.length / limit);
-      //const {users_, totalPages} = data
-      setUsers(users_)
+      //const users_ = sampleData.slice(indexOfFirstUser, indexOfLastUser);
+      //const totalPages = Math.ceil(sampleData.length / limit);
+      const data = await fetchUsers(currentPage, limit)
+      const {users, totalPages} = data 
+      setUsers(users)
       setTotalPages(totalPages)
       setIsLoading(false)
     }
 
+    
     if(isLoading)
     {
       getUsers()
@@ -54,17 +56,51 @@ const UserList = () => {
     setShowModal(true);
   };
 
-  const handleUpdateRole = () => {
+  const handleUpdateRole = async () => {
     if (!selectedUser) return;
+    if(selectedUser.role == editRole) 
+    {
+      alert("No changes have been recorded.");
+      return;
+    }
 
-    console.log(`Updating role of ${selectedUser.name} to: ${editRole}`);
+    //console.log(`Updating role of ${selectedUser.name} to: ${editRole}`);
 
     // Simulating database update
     selectedUser.role = editRole;
+    //console.log(selectedUser)
+
+    const res = await updateUserRole(selectedUser)
+    if(res)
+    {
+        alert("User updated with success.")
+    }
+    else
+    {
+      alert("An erro while updating user")
+    }
 
     // Close modal
     setShowModal(false);
+    setIsLoading(true)
   };
+
+
+  const handlePrevPage = () => {
+    setCurrentPage(prev => prev-1)
+    setIsLoading(true)
+}
+
+const handleNextPage = () => {
+  setCurrentPage(prev => prev+1)
+  setIsLoading(true)
+}
+
+
+  if(isLoading)
+  {
+    return <Loading/>
+  }
 
   return (
     <div className="container mt-4">
@@ -81,7 +117,7 @@ const UserList = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users?.map((user) => (
             <tr key={user._id}>
               <td>{user.name}</td>
               <td>{user.email}</td>
@@ -102,7 +138,7 @@ const UserList = () => {
         <Button
           variant="secondary"
           disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
+          onClick={() => handlePrevPage()}
         >
           ← Previous
         </Button>
@@ -112,7 +148,7 @@ const UserList = () => {
         <Button
           variant="secondary"
           disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
+          onClick={() => handleNextPage()}
         >
           Next →
         </Button>

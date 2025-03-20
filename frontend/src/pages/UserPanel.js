@@ -41,7 +41,7 @@ const UserPanel = () => {
     setUpdatedUser({
       name: 'John',
       surname: 'Doe',
-      tcID: '1234567890',
+      tcID: '9939674078',
       birthDate: '1990-01-01',
       username: 'johndoe',
       email: 'johndoe@example.com',
@@ -65,7 +65,11 @@ const UserPanel = () => {
     formData.append('email', updatedUser.email);
     formData.append('phoneNumber', updatedUser.phoneNumber);
     formData.append('address', updatedUser.address);
-    formData.append('password', updatedUser.password);
+    if(updatedUser.password)
+    {
+      formData.append('password', updatedUser.password);
+    }
+    
   
     if (updatedUser.cv) {
       formData.append('cv', updatedUser.cv);
@@ -94,7 +98,7 @@ const UserPanel = () => {
 
   if(isLoading)
   {
-    <Loading/>
+    return <Loading/>
   }
 
   return (
@@ -142,7 +146,7 @@ const UserPanel = () => {
               name="tcID"
               value={updatedUser.tcID}
               onChange={handleInputChange}
-              disabled={!isEditing}
+              disabled={true}
             />
           </Form.Group>
 

@@ -8,12 +8,13 @@ const userCtrl = require('../controllers/userController');
 
 
 //User Route
-router.get("/users/get/all", userCtrl.getUsers);
+router.get("/get/all", userCtrl.getUsers);
 
 router.post("/control", userCtrl.controlUser);
 router.post("/signUp", cvUpload.single("cv"), userCtrl.signupUser);
 router.post("/login", userCtrl.loginUser);
-router.put("/update", cvUpload.single("cv"), userCtrl.updateUser);
+router.put("/user/update", cvUpload.single("cv"), userCtrl.updateUser);
+router.put("/role/update/:userId", userCtrl.updateUserRole);
 
 
 
