@@ -187,6 +187,31 @@ export const UserProvider = ({ children }) => {
       }
     }
 
+
+    const createUserApplication = async (newApplication) => {
+      try {
+        console.log(newApplication)
+        const response = await fetch(`${server}/api/datas/applications/apply`, {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newApplication),
+          });
+          
+          const data = await response.json();
+          if (!response.ok) {
+              throw new Error(data.error ||"Erreur lors de l'ajout du case");
+          }
+  
+          
+      } catch (error) {
+        alert(error)
+          console.error("Erreur:", error.message);
+      }
+  };
+  
+
     
 
 
@@ -545,7 +570,7 @@ const fetchUserForms= async () => {
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
           fetchCases, fetchCoefs, fetchFacultyGroups, 
 
-          controlUser, signUpUser, loginUser, updateUser, fetchUserApplications, fetchUsers,
+          controlUser, signUpUser, loginUser, updateUser, fetchUserApplications, fetchUsers, createUserApplication,
         }
 
   return (

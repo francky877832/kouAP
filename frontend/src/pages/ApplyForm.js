@@ -17,7 +17,8 @@ const ApplyForm = () => {
   const [step, setStep] = useState(1);
   const steps = 3//13 // 0 - 11 + 1 
 
-  const { user, userForms, isUserFormsLoading } = useContext(UserContext)
+  const [isLoading, setIsLoading] = useState(false)
+  const { user, userForms, isUserFormsLoading, createUserApplication} = useContext(UserContext)
   //console.log(userForms)
 
   const location = useLocation()
@@ -227,6 +228,7 @@ useEffect(() => {
   const handleSumbmitApplication = async (e) => 
   {
     e.preventDefault();
+    setIsLoading(true)
     const tmp = handleDataFunctions.map(d=>d.data)
     //console.log(tmp)
     let shapedData = {};
@@ -319,6 +321,21 @@ useEffect(() => {
       formDataToSend.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
+
+      /*
+      const res = await createUserApplication(formDataToSend)
+      if(res)
+      {
+        alert("Applciaiton was created successfully")
+      }
+      else
+      {
+        alert("An error occurs while creation the application")
+      }
+      */
+
+    setIsLoading(false)
+
   }
 
   return (
