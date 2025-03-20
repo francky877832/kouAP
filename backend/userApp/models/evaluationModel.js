@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
 const User = require('../models/userModel')
 const Application = require('../models/applicationModel')
 const db = mongoose.connection.useDb("kouap");

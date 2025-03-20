@@ -1,8 +1,8 @@
-const mongoose = require('../../shared/db').mongoose;
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const User = require('./userModel');
-const Announcement = require('./announcementModel');
+const Announcement = require("./announcementModel");
 
 //modele pour les notificaitons
 //
@@ -14,7 +14,7 @@ const applicationSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: User, required: true }, // Candidat qui soumet l'application
   categories: { type: Map, of: Schema.Types.Mixed, required: true }, // Utilisation de Map pour des clés dynamiques
   submittedOn: { type: Date, default: Date.now }, // Date de soumission
-  announcement :  { type: Schema.Types.ObjectId, ref: "Announcement", required: true },
+  announcement :  { type: Schema.Types.ObjectId, ref: Announcement, required: false }, //false for test
 
   status: { 
       type: String, 
@@ -30,4 +30,4 @@ const applicationSchema = new Schema({
 });
 
 
-module.exports = mongoose.model('Application', applicationSchema);
+module.exports = db.model('Application', applicationSchema);

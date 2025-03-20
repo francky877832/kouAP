@@ -1,9 +1,13 @@
-const mongoose = require('../../shared/db').mongoose;
-const Schema = mongoose.Schema
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 const uniqueValidator = require('mongoose-unique-validator');
 const User = require('./userModel')
 //modele pour les notificaitons
 //
+
+const db = mongoose.connection.useDb("kouap");
+
 const notificationSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: User, required: true },
     //user: { type : String, required : true, unique : true },
@@ -28,6 +32,6 @@ const notificationSchema = new Schema({
 
 notificationSchema.plugin(uniqueValidator);
 
-const Notification = mongoose.models.Notification || mongoose.model('Notification', notificationSchema);
+const Notification = mongoose.models.Notification || db.model('Notification', notificationSchema);
 
 module.exports = Notification;

@@ -3,8 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 
 const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
-  const { user } = useContext(UserContext);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
   
   useEffect(() => {
     if (user) {

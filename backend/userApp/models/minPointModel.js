@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
 const User = require('../models/userModel')
 const Faculty = require('../models/facultyModel')
 const Activity = require('../models/activityModel')
@@ -30,4 +31,4 @@ const MinPointSchema = new mongoose.Schema({
     updatedAt : { type : Date, default : Date.now }
   });
 
-module.exports = mongoose.model("MinPoint", MinPointSchema);
+module.exports = db.model("MinPoint", MinPointSchema);

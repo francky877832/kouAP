@@ -17,17 +17,20 @@ exports.getApplications = async (req, res, next) => {
       console.error(error);
       res.status(500).json({ message: "Erreur lors de la récupération des applications" });
     }
+
   };
 
   exports.getUserApplications = async (req, res, next) => {
-    //console.log("req.body")
+    //console.log(req.params)
       try {
         const { userId } = req.params
     
         const applications = await Application.find({user:userId})
           .populate('user')
+          .populate('admin')
           .populate('announcement')
-    
+          .populate('jurys')
+    //console.log(applications)
         res.status(200).json({message:"succes", data:applications});
       } catch (error) {
         console.error(error);

@@ -4,8 +4,11 @@ import { server } from "../remote/server";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  // 67c4712f12d662f6eeb9d7fd
-    const [user, setUser] = useState({_id:"67d8f4f2c2b55c3c4f8b3191", username:"Francky", title:"Profesor", role:"dev"});
+  // 67c4712f12d662f6eeb9d7fd - applicant
+  //67d8f4f2c2b55c3c4f8b3191 - manager
+    const [user, setUser] = useState({_id:"67c4712f12d662f6eeb9d7fd", username:"Francky", title:"Profesor", role:"dev"});
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    
     
      const [facultyDepartments, setFacultyDepartments] = useState({});
      const [faculties, setFaculties] = useState({});
@@ -167,9 +170,9 @@ export const UserProvider = ({ children }) => {
     
     
     
-    const fetchUserApplications= async () => {
+    const fetchUserApplications= async (user) => {
       try {
-        const response = await fetch(`${server}/api/datas/applications/user/get`, {
+        const response = await fetch(`${server}/api/datas/applications/user/get/${user._id}`, {
           method: "GET", // Méthode GET pour récupérer les annonces
           headers: {
             "Content-Type": "application/json",
@@ -586,11 +589,11 @@ const fetchUserForms= async () => {
         const stateVars = {user, isUserLoading, faculties, facultyDepartments, isActivitiesLoading, activities, isMinActivitiesLoading,
            minActivities, isMinPointsLoading, minPoints, userForms, isUserFormsLoading,
            cases, coefs, isCasesLoading, isCoefsLoading, isFacultyLoading,
-           facultyGroups,
+           facultyGroups, isAuthenticated, 
           
           }
         const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading, setActivities,
-          setIsUserFormsLoading, setIsFacultyLoading, setIsMinActivitiesLoading, setIsMinPointsLoading,
+          setIsUserFormsLoading, setIsFacultyLoading, setIsMinActivitiesLoading, setIsMinPointsLoading, setIsAuthenticated
         }
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
           fetchCases, fetchCoefs, fetchFacultyGroups, 

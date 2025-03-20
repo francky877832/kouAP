@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Modal, ListGroup } from 'react-bootstrap';
 
 const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters, handleRemoveSubmittedData, handleFileChange}) => {
   const {submittedData, cases, coefs} = data
@@ -8,6 +8,14 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
   const formCoefs = formData
 
   const [selectedMessage, setSelectedMessage] = useState(null);
+
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShowDetails = (article) => {
+    setSelectedArticle(article);
+    setShowModal(true);
+  };
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
@@ -20,9 +28,13 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
     }
 
     const articleData = {...formData, number:selectedCategory, letter:userForms.activity.letter.trim()}
-    handleAddData(articleData, dataSetters);
-    setSelectedCategory('');
-    handleChange({ target: { name: 'author', value: '' } },  userForms.activity.letter.trim(), true);
+    const res = handleAddData(articleData, dataSetters);
+    if(res)
+    {
+      setSelectedCategory('');
+      handleChange({ target: { name: 'author', value: '' } },  userForms.activity.letter.trim(), true);
+    }
+   
   };
 
   const handleRemoveButtonClick = () => {
@@ -204,21 +216,60 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
 
       <div className="mt-4">
         <h5>Added Activities:</h5>
-        <ul>
-          {submittedData.map((article, index) => {
-            const infos = Object.keys(article)
-            return(
-              <li key={index} className="mb-2 d-flex justify-content-between align-items-center">
-              <div>
+        <div className="container mt-4">
+      <ul className="list-group">
+        {submittedData.map((article, index) => {
+          const infos = Object.keys(article);
+          return (
+            <li
+              key={index}
+              className="list-group-item d-flex justify-content-between align-items-center"
+            >
+              <div onClick={() => handleShowDetails(article)} style={{ cursor: "hand", color: "#007bff" }}>
                 <strong>{index}:</strong> {article[infos[0]]} - {article[infos[1]]}
               </div>
               <div className="btn btn-danger ms-3 btn-sm" onClick={handleRemoveButtonClick}>
                 Remove
               </div>
             </li>
-            )
-          })}
-        </ul>
+          );
+        })}
+      </ul>
+
+      {/* Modal d'affichage des détails */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Détails de l'activité</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedArticle && (
+            <ul>
+              {Object.entries(selectedArticle).map(([key, value]) => (
+                <li key={key}>
+                  <strong>{key}:</strong>{" "}
+                  {typeof value === "object" && value !== null ? (
+                    <ul>
+                      {Object.entries(value).map(([subKey, subValue]) => (
+                        <li key={subKey}>
+                          <strong>{subKey}:</strong> {subValue.toString()}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    value.toString()
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Fermer
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
       </div>
     </div>
   );

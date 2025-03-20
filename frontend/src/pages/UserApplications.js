@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Table, Button, Badge } from 'react-bootstrap';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
-
+import { titles } from '../datas/schoolDepartments'
 // Function to simulate fetching applications from the server
 const fetchApplications = async () => {
   // Replace with the actual API call
@@ -29,7 +29,7 @@ const fetchApplications = async () => {
 
 const UserApplications = () => {
 
-    const { fetchUserApplications } = useContext(UserContext)
+    const {user, fetchUserApplications } = useContext(UserContext)
 
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +37,8 @@ const UserApplications = () => {
   useEffect(() => {
     const loadApplications = async () => {
         setIsLoading(true)
-        const apps = await fetchApplications();
+        //const apps = await fetchApplications();
+        const apps = await fetchUserApplications(user);
         setApplications(apps);
         setIsLoading(false)
     };
@@ -83,10 +84,10 @@ const UserApplications = () => {
           </tr>
         </thead>
         <tbody>
-          {applications.map((application) => (
+          {applications?.map((application) => (
             <tr key={application._id}>
-              <td>{application.user.TCID}</td>
-              <td>{application.announcement.position}</td>
+              <td>{application.user.tcID}</td>
+              <td>{titles[application.announcement.position-1].label}</td>
               <td>{getStatusBadge(application.status)}</td>
               <td>{new Date(application.submittedOn).toLocaleDateString()}</td>
               <td>

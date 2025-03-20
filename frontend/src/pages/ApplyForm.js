@@ -30,6 +30,16 @@ const ApplyForm = () => {
 //CASE AND COEF
 
 
+const [formData, setFormData] = useState({
+  step1 : {
+  fullName: '',
+  idNumber: '',
+  email: '',
+  phoneNumber: '',
+  address: '',
+}
+});
+
 
 //CASE AND COEF END
 const [submittedD, setSubmittedD] = useState([]);
@@ -47,9 +57,29 @@ const [submittedBooks, setSubmittedBooks] = useState([]);
 
 // Fonctions pour ajouter des données
 
-const addSubmittedData = (newData, dataFunction) => {
-  dataFunction((prev) => [...prev, newData])
-}
+const addSubmittedData = (data, dataFunction) => {
+  const newData = {...data, proof:formData.proof}
+  console.log(newData);
+  
+  const hasEmptyField = Object.keys(newData).some((el) => {
+    const value = newData[el];
+
+    if (
+      (typeof value === "string" && !value.trim()) || 
+      (value instanceof File && value.size === 0) ||   
+      (value instanceof Object && !(value instanceof File) && Object.keys(value).length === 0)
+    ) {
+      alert("Le champ " + el + " est obligatoire.");
+      return true; 
+    }
+  });
+
+  if (hasEmptyField) return false;
+
+  dataFunction((prev) => [...prev, newData]);
+  return true
+};
+
 const removeSubmittedData = (newData, dataFunction) => {
   dataFunction((prev) => prev.filter(d => d._id!=newData._id))
 }
@@ -122,16 +152,6 @@ const handleDataFunctions = [
 
   
 
-  const [formData, setFormData] = useState({
-      step1 : {
-      fullName: '',
-      idNumber: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
-    }
-  });
-
 
   
 
@@ -147,9 +167,9 @@ useEffect(() => {
     const updatedFormData = { ...prev };
     for (let letter in updatedFormData) {
       if (updatedFormData[letter]) {
-        updatedFormData[letter]["cases"] = {};
-        updatedFormData[letter]["coefs"] = {};
-        updatedFormData[letter]["participants"] = {};
+        updatedFormData[letter]["cases"] = ""; //{}
+       // updatedFormData[letter]["coefs"] = "";
+        updatedFormData[letter]["participants"] = ""; //{}
       }
     }
     return updatedFormData;
@@ -232,25 +252,11 @@ useEffect(() => {
     const tmp = handleDataFunctions.map(d=>d.data)
     //console.log(tmp)
     let shapedData = {};
-    /* user: { type: Schema.Types.ObjectId, ref: User, required: true }, // Candidat qui soumet l'application
-      categories: { type: Map, of: Schema.Types.Mixed, required: true }, // Utilisation de Map pour des clés dynamiques
-      
-      announcement :  { type: Schema.Types.ObjectId, ref: "Announcement", required: true },
     
-      status: { 
-          type: String, 
-          enum: ['pending', 'processing', 'approved', 'rejected'], 
-          default: 'pending' 
-      }, // Statut de l'application
-      jurys: [{ type: Schema.Types.ObjectId, ref: User }], // Liste des jurés associés
-      admin: { type: Schema.Types.ObjectId, ref: User, required: function(){return this.status!='pending' } },
-      applicationDocument: {type:String, require:false}, 
-
-    */
 
       const data = {
         user : user._id,
-        //announcement : announcement._id,
+        announcement : "67c4627d414b10c75dfd82d0", //announcement._id,
         status : 'pending',
         jury : [],
         //admin : announcement.postedBy._id,

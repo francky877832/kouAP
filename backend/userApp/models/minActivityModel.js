@@ -25,4 +25,4 @@ const MinActivitySchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model("MinActivity", MinActivitySchema);
+module.exports = db.model("MinActivity", MinActivitySchema);

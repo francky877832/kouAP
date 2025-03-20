@@ -8,7 +8,7 @@ const { applicationsDocUpload } = require("../middlewares/multer-config");
 router.get("/jury/:juryId", applicationController.getJuryApplications);
 
 router.get("/get/all", applicationController.getApplications);
-router.get("/user/get/", applicationController.getUserApplications);
+router.get("/user/get/:userId", applicationController.getUserApplications);
 
 router.post("/apply", applicationsDocUpload.array("files", 20), applicationController.createApplication);
 
