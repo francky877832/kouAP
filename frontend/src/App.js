@@ -31,6 +31,8 @@ import ManagerPanel from "./pages/ManagerPanel";
 import NotFound from "./components/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UserList from "./pages/UserList";
+import UserPanel from "./pages/UserPanel";
+import UserApplications from "./pages/UserApplications";
 
 
 const App = () => {
@@ -49,6 +51,8 @@ const App = () => {
         <Route path="/apply" element={<MultiStepForm />} />
 
         <Route path="/users/list" element={<UserList />} />
+        <Route path="/user/panel" element={<UserPanel />} />
+        <Route path="/user/applications" element={<UserApplications />} />
 
 
 

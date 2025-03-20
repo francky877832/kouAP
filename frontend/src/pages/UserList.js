@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Modal, Button, Table, Form } from "react-bootstrap";
+import { UserContext } from "../context/UserContext";
 
 const sampleData = [
   { _id: "1", name: "John Doe", email: "john.doe@email.com", phoneNumber: "1234567890", address: "New York", role: "user", cv: "cv-john.pdf" },
@@ -9,19 +10,43 @@ const sampleData = [
 ];
 
 const UserList = () => {
+
+  const { fetchUsers } = useContext(UserContext)
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [editRole, setEditRole] = useState("");
 
+  const [users, setUsers] = useState([])
+  const [totalPages, setTotalPages] = useState(0)
+
   const limit = 3;
 
+  useEffect(() => {
+    const getUsers = async () => {
+      setIsLoading(true)
+      //const data = await fetchUsers(currentPage, limit)
+      const users_ = sampleData.slice(indexOfFirstUser, indexOfLastUser);
+      const totalPages = Math.ceil(sampleData.length / limit);
+      //const {users_, totalPages} = data
+      setUsers(users_)
+      setTotalPages(totalPages)
+      setIsLoading(false)
+    }
+
+    if(isLoading)
+    {
+      getUsers()
+    }
+
+  }, [isLoading])
   // Paginate data locally
   const indexOfLastUser = currentPage * limit;
   const indexOfFirstUser = indexOfLastUser - limit;
-  const users = sampleData.slice(indexOfFirstUser, indexOfLastUser);
 
-  const totalPages = Math.ceil(sampleData.length / limit);
+
 
   const handleShowModal = (user) => {
     setSelectedUser(user);

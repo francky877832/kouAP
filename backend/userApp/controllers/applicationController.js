@@ -3,7 +3,6 @@ const Application = require('../models/applicationModel');
 const User = require('../models/userModel');
 const evaluationController = require('../controllers/evaluationController')
 
-//  5. Récupérer les applications assignées à un jury
 exports.getApplications = async (req, res, next) => {
 
   //console.log("req.body")
@@ -12,8 +11,6 @@ exports.getApplications = async (req, res, next) => {
       const applications = await Application.find({status:"pending"})
         .populate('user')
         .populate('jurys')
-        //.maxTimeMS(30000);
-        //console.log(applications)
   
       res.status(200).json({message:"succes", data:applications});
     } catch (error) {
@@ -21,6 +18,22 @@ exports.getApplications = async (req, res, next) => {
       res.status(500).json({ message: "Erreur lors de la récupération des applications" });
     }
   };
+
+  exports.getUserApplications = async (req, res, next) => {
+    //console.log("req.body")
+      try {
+        const { userId } = req.params
+    
+        const applications = await Application.find({user:userId})
+          .populate('user')
+          .populate('announcement')
+    
+        res.status(200).json({message:"succes", data:applications});
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de la récupération des applications" });
+      }
+    };
 
 //  5. Récupérer les applications assignées à un jury
 exports.getJuryApplications = async (req, res, next) => {

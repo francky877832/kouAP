@@ -54,28 +54,27 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return;
+        if (!validateForm() || !formData.cv) return;
 
         setIsLoading(true);
         const data = new FormData();
-        /*data.append("tcID", tcID);
-        data.append("name", name);
-        data.append("surname", surname);
-        data.append("birthYear", birthYear);*/
+        data.append("tcID", "tcID");
+        data.append("name", "name");
+        data.append("surname", "surname");
+        data.append("birthYear", "12-03-2004");
+
         data.append("email", formData.email);
         data.append("phoneNumber", formData.phoneNumber);
         data.append("address", formData.address);
         data.append("password", formData.password);
         data.append("role", formData.role);
-        if (formData.cv) {
-            data.append("cv", formData.cv);
-        }
-        console.log(data)
+        data.append("cv", formData.cv);
+       // console.log(formData.email)
 
         const res = await signUpUser(data);
 
         if (res) {
-            navigate("/", { state: { user: res } });
+            //navigate("/", { state: { user: res } });
         }
 
         setIsLoading(false);

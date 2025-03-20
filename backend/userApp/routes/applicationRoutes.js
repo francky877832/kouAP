@@ -6,6 +6,8 @@ const applicationController = require("../controllers/applicationController");
 router.get("/jury/:juryId", applicationController.getJuryApplications);
 
 router.get("/get/all", applicationController.getApplications);
+router.get("/user/get/", applicationController.getUserApplications);
+
 router.put("/jury/assign", applicationController.assignJuriesToApplication);
 router.put("/update/decision", applicationController.updateApplicationStatus);
 //router.get("/jury/:juryId", applicationController.getJuryApplications);

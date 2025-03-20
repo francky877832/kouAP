@@ -116,21 +116,26 @@ exports.controlUser = async (req, res, next) => {
 exports.signupUser = async (req, res, next) => {
     console.log(req.body)
     try {
-      let user;
-      user = await User.findOne({ email: req.body.email })
+      const {email, password, birthYear} = req.body
+      const cv = req.file
+      let user, userID;
+      user = await User.findOne({ email: email })
+      userID = await User.findOne({ tcID: tcID })
       //console.log(user)
-      if(user)
+      if(user || userID)
       {
           return res.status(401).json({ error: 'auth/user-already-exists' });
       }
   
-      const hash = await bcrypt.hash(req.body.password, 10);
+      const hash = await bcrypt.hash(password, 10);
       user = new User({
         ...req.body, 
-        email: req.body.email,
+        email: email,
         password: hash,
-        username: await generateUniqueUsername(),
+        birthDate: birthYear,
+        username: await generateUniqueUsername(req.body),
         //image: 'https://www.dropbox.com/scl/fi/41yuy1221z1cklqy2y5jn/new-user.jpg?rlkey=wh4l7xh2ueg6nd3ws3rcfa2zt&st=hecgnuvg&dl=1'//DROPBOX images
+        cv : cv.path
       });
       await user.save();
   
@@ -142,123 +147,120 @@ exports.signupUser = async (req, res, next) => {
   };
   
   
-exports.loginUser =  (req, res, next) => {
+exports.loginUser = async  (req, res, next) => {
       //console.log("LOGIN")
+    try
+    {
       let validePassword=false;
+      const { tcID, password} = req.body
       
-      User.findOne({ email: req.query.email })
-          .then( async (user) => {
+      const user = await User.findOne({ tcID: tcID})
             
-            //console.log(req.query)
+           // console.log(req.body)
               if (!user) 
               {
-   
-                    return res.status(401).json({ error: 'auth/user-not-found--' });
+                    console.log('auth/user-not-found')
+                    return res.status(401).json({ error: 'auth/user-not-found' });
               }
          
-              if(!isBcryptHash(req.query.password))
+              if(!isBcryptHash(password))
               {
-                validePassword = await bcrypt.compare(req.query.password, user.password)
+                //console.log(user.password)
+                validePassword = await bcrypt.compare(password.toString(), user.password)
                 //console.log("validePassword")
               }
               else
               {
-                validePassword = req.query.password.toString() === user.password.toString()
+                validePassword = password.toString() === user.password.toString()
                 //console.log(" not validePassword")
               }
                 
               if (!validePassword) {
+                console.log('auth/incorrect-password')
                 return res.status(401).json({ error: 'auth/incorrect-password' });
               }
               else
               {
                 const token = generateToken(user._id);
-                res.status(200).json({ token:token, user : user });
+                res.status(200).json({message:"success", data:{ token:token, user : user }});
               }    
   
-          })
-          .catch(error => res.status(500).json({ error }));
+        }
+        catch(error)
+        {
+          console.log(error)
+          res.status(500).json({ error });
+        }
    };
 
 
 
+exports.updateUser = async (req, res) => {
+    try {
+      const { name, surname, tcID, birthDate, username, email, phoneNumber, address, password } = req.body;
+      const cv = req.file
+  
+      const user = await User.findById({tcID:tcID}); 
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      user.name = name || user.name;
+      user.surname = surname || user.surname;
+      user.tcID = tcID || user.tcID;
+      user.birthDate = birthDate || user.birthDate;
+      user.username = username || user.username;
+      user.email = email || user.email;
+      user.phoneNumber = phoneNumber || user.phoneNumber;
+      user.address = address || user.address;
+      user.password = password || user.password; 
+      user.cv = file.path
+
+
+      await user.save();
+  
+      res.status(200).json({message: 'Profile updated successfully', data:user,});
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  };
   
 
-exports.getAccessToken = async (req, res) => {
-    const { code } = req.query;
 
-    if (!code) {
-        return res.status(400).json({ success: false, message: "Code d'autorisation manquant" });
-    }
 
+  
+
+
+  exports.getUsers = async (req, res, next) => {
     try {
-        const response = await fetch(EDConfiguration.TokenURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-                grant_type: "authorization_code",
-                client_id: EDConfiguration.ClientId,
-                client_secret: EDConfiguration.ClientSecret,
-                code: code,
-                redirect_uri: EDConfiguration.RedirectUri,
-            }),
-        });
-
-        const data = await response.json();
-
-        if (data.access_token) {
-            return res.json({ success: true, accessToken: data.access_token });
-        } else {
-            return res.status(400).json({ success: false, message: data.error_description || "Erreur inconnue" });
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10; 
+  
+      const skip = (page - 1) * limit;
+  
+      const users = await User.find()
+        .skip(skip) 
+        .limit(limit); 
+  
+      const totalUsers = await User.countDocuments();
+  
+      const totalPages = Math.ceil(totalUsers / limit);
+  
+      res.status(200).json({
+        message: "Success",
+        data: {
+          users,
+          currentPage: page,
+          totalPages: totalPages,
+          totalUsers: totalUsers,
+          perPage: limit
         }
+      });
     } catch (error) {
-        console.error("Erreur lors de la récupération du token :", error);
-        return res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la récupération des utilisateurs" });
     }
-};
-
-/**
- * Récupère les informations personnelles de l'utilisateur avec le token.
- */
-exports.getPersonInfo = async (req, res) => {
-    const { accessToken } = req.query;
-
-    if (!accessToken) {
-        return res.status(400).json({ success: false, message: "Token d'accès manquant" });
-    }
-
-    try {
-        const response = await fetch(EDConfiguration.TokenURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({
-                accessToken: accessToken,
-                resourceId: "1",
-                kapsam: "Ad-Soyad",
-                clientId: EDConfiguration.ClientId,
-            }),
-        });
-
-        const data = await response.json();
-
-        if (data.sonucKodu === "EDV09.000") {
-            return res.json({
-                success: true,
-                person: {
-                    identity: data.kullaniciBilgileri.kimlikNo,
-                    name: data.kullaniciBilgileri.ad,
-                    surname: data.kullaniciBilgileri.soyad,
-                },
-            });
-        } else {
-            return res.status(400).json({ success: false, message: data.sonucAciklamasi });
-        }
-    } catch (error) {
-        console.error("Erreur lors de la récupération des informations :", error);
-        return res.status(500).json({ success: false, message: "Erreur interne du serveur" });
-    }
-};
+  };
+  

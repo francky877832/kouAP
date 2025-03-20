@@ -1,55 +1,70 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import '../styles/loginStyles.css'
+import "../styles/loginStyles.css";
+import { UserContext } from "../context/UserContext";
+import Loading from "../components/Loading";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+
+  const { loginUser } = useContext(UserContext);
+
+  const [tcID, setTcID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
-
-    if (!email || !password) {
-      setError("Veuillez remplir tous les champs.");
+    setIsLoading(true)
+    if (!tcID || !password) {
+      setError("Please fill in all fields.");
       return;
     }
 
-    // Logique d'authentification ici (ex: appel API)
-    console.log("Email:", email);
-    console.log("Password:", password);
-    setError(""); // Réinitialiser l'erreur après soumission
+
+    const data = {tcID, password}
+    const res = await loginUser(data);
+
+    if (res) {
+      //navigate("/", { state: { user: res } });
+    }
+
+    setIsLoading(false)
+
+    setError(""); // Reset error after submission
   };
 
-  const handleLogin = () => {
-    // Redirection vers le backend pour authentification e-Devlet
-    window.location.href = "http://localhost:5000/api/users/auth";
-  };
+
+  if(isLoading)
+  {
+    return <Loading/>
+  }
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow-lg" style={{ maxWidth: "400px", width: "100%" }}>
-        <h2 className="text-center">Se Connecter</h2>
+        <h2 className="text-center">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email
+            <label htmlFor="tcID" className="form-label">
+              TC ID
             </label>
             <input
-              type="email"
-              id="email"
+              type="text"
+              id="tcID"
               className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Entrez votre email"
+              value={tcID}
+              onChange={(e) => setTcID(e.target.value)}
+              placeholder="Enter your TC ID"
               required
             />
           </div>
           <div className="mb-3">
             <label htmlFor="password" className="form-label">
-              Mot de passe
+              Password
             </label>
             <input
               type="password"
@@ -57,17 +72,14 @@ const Login = () => {
               className="form-control"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Entrez votre mot de passe"
+              placeholder="Enter your password"
               required
             />
           </div>
           {error && <div className="alert alert-danger">{error}</div>}
           <button type="submit" className="btn btn-primary w-100">
-            Se Connecter
+            Login
           </button>
-          <Button onClick={handleLogin} variant="danger" className="w-100 mt-2">
-            Se connecter avec e-Devlet
-          </Button>
         </form>
       </div>
     </div>

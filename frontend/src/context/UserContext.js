@@ -50,7 +50,7 @@ export const UserProvider = ({ children }) => {
          }
          return data.data; 
       } catch (error) {
-        alert(error)
+        //alert(error)
         console.error(error);
       }
     }
@@ -59,11 +59,11 @@ export const UserProvider = ({ children }) => {
     
     const signUpUser = async (newUser) => {
       try {
-        console.log(newUser)
+       
         const response = await fetch(`${server}/api/users/signUp`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+           
           },
           body: newUser,
         });
@@ -73,25 +73,27 @@ export const UserProvider = ({ children }) => {
          if (!response.ok) {
            throw new Error(data.error || `Cannot sign Up: ${response.statusText}`);
          }
-         const user_ = data.data;
-         setUser(user_)
+         //const user_ = data.data;
+         //setUser(user_)
+
+        return await loginUser({tcID:newUser.get('tcID'), password:newUser.get('password')})
 
       } catch (error) {
-        alert(error)
+        //alert(error)
         console.error(error);
         return null
       }
     }
 
 
-    const loginUser = async (email, password) => {
+    const loginUser = async ({tcID, password}) => {
       try {
-        const response = await fetch("https://your-api.com/auth/login", {
+        const response = await fetch(`${server}/api/users/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ tcID, password })
         });
     
         if (!response.ok) {
@@ -99,18 +101,92 @@ export const UserProvider = ({ children }) => {
         }
     
         const data = await response.json();
-        
+        const user_ = {...data.data.user, token:data.data.token}
         // Stocker le token et l'utilisateur
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user)); // Stocke en JSON
+        localStorage.setItem("token", data.data.token);
+        localStorage.setItem("user", JSON.stringify(data.data.user)); // Stocke en JSON
+
+        setUser(user_)
     
-        return data; // Retourne les données
+        return user_; // Retourne les données
       } catch (error) {
         console.error("Login failed:", error.message);
         return null;
       }
     };
+
+
+     const updateUser = async (updatedUser) => {
+          try {
+       
+            const response = await fetch(`${server}/api/users/update`, {
+              method: 'PUT',
+              headers: {
+               
+              },
+              body: updatedUser,
+            });
+            
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error ||"Erreur lors de l'ajout du case");
+            }
     
+            return true
+        } catch (error) {
+          //alert(error)
+            console.error("Erreur:", error.message);
+            return false
+        }
+    };
+    
+    
+    
+    const fetchUserApplications= async () => {
+      try {
+        const response = await fetch(`${server}/api/datas/applications/user/get`, {
+          method: "GET", // Méthode GET pour récupérer les annonces
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+    
+        
+    
+        // Récupérer les données au format JSON
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
+        }
+        //console.log(data)
+        return data.data; // Retourner les annonces récupérées
+      } catch (error) {
+        console.error("Erreur:", error.message);
+        return []; // Retourner un tableau vide en cas d'erreur
+      }
+    }
+
+    const fetchUsers= async (page, limit) => {
+      try {
+        const response = await fetch(`${server}/api/datas/users/get/all?page=${page}&limit=${limit}`, {
+          method: "GET", // Méthode GET pour récupérer les annonces
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        // Récupérer les données au format JSON
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
+        }
+        //console.log(data)
+        return data.data; // Retourner les annonces récupérées
+      } catch (error) {
+        console.error("Erreur:", error.message);
+        return []; // Retourner un tableau vide en cas d'erreur
+      }
+    }
+
     
 
 
@@ -324,7 +400,7 @@ const fetchUserForms= async () => {
      //console.log(data.data)
      return data?.data
    } catch (error) {
-    alert(error)
+      //alert(error)
        console.log(error);
    } finally {
        //setIsLoading(false)
@@ -467,9 +543,9 @@ const fetchUserForms= async () => {
           setIsUserFormsLoading, setIsFacultyLoading, setIsMinActivitiesLoading, setIsMinPointsLoading,
         }
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
-          fetchCases, fetchCoefs, fetchFacultyGroups,
+          fetchCases, fetchCoefs, fetchFacultyGroups, 
 
-          controlUser, signUpUser, 
+          controlUser, signUpUser, loginUser, updateUser, fetchUserApplications, fetchUsers,
         }
 
   return (
