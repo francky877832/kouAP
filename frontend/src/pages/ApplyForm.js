@@ -11,15 +11,17 @@ import  Loading  from '../components/Loading'
 import { UserContext } from '../context/UserContext';
 import { ManagerContext } from '../context/ManagerContext';
 import { useLocation } from 'react-router-dom';
+import { f } from 'html2pdf.js';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
-  const steps = 2//13 // 0 - 11 + 1 
+  const steps = 3//13 // 0 - 11 + 1 
 
-  const { userForms, isUserFormsLoading } = useContext(UserContext)
+  const { user, userForms, isUserFormsLoading } = useContext(UserContext)
   //console.log(userForms)
 
   const location = useLocation()
+  const { announcement } = location.state || {};
 
    const {addCase, fetchCoefs, updateCoef, updateCase, deleteCase, deleteCoef,  } = useContext(ManagerContext)
     const {cases, coefs, isCoefsLoading, isCasesLoading, setIsCasesLoading, setIsCoefsLoading} = useContext(UserContext)
@@ -43,6 +45,14 @@ const [submittedActivities, setSubmittedActivities] = useState([]);
 const [submittedBooks, setSubmittedBooks] = useState([]);
 
 // Fonctions pour ajouter des données
+
+const addSubmittedData = (newData, dataFunction) => {
+  dataFunction((prev) => [...prev, newData])
+}
+const removeSubmittedData = (newData, dataFunction) => {
+  dataFunction((prev) => prev.filter(d => d._id!=newData._id))
+}
+/*
 const addArticle = (newArticle) => {
   console.log(submittedArticles)
   setSubmittedArticles((prevArticles) => [...prevArticles, newArticle]);
@@ -92,20 +102,20 @@ const addK = (newK) => {
 const addL = (newL) => {
   setSubmittedL((prevL) => [...prevL, newL]);
 };
-
+*/
 const handleDataFunctions = [
-  { function: addArticle, data: submittedArticles },
-  { function: addActivity, data: submittedActivities },
-  { function: addBook, data: submittedBooks },
-  { function: addD, data: submittedD },
-  { function: addE, data: submittedE },
-  { function: addF, data: submittedF },
-  { function: addG, data: submittedG },
-  { function: addH, data: submittedH },
-  { function: addI, data: submittedI },
-  { function: addJ, data: submittedJ },
-  { function: addK, data: submittedK },
-  { function: addL, data: submittedL },
+  { function: setSubmittedArticles, data: submittedArticles, },
+  { function: setSubmittedActivities, data: submittedActivities },
+  { function: setSubmittedBooks, data: submittedBooks },
+  { function: setSubmittedD, data: submittedD },
+  { function: setSubmittedE, data: submittedE },
+  { function: setSubmittedF, data: submittedF },
+  { function: setSubmittedG, data: submittedG },
+  { function: setSubmittedH, data: submittedH },
+  { function: setSubmittedI, data: submittedI },
+  { function: setSubmittedJ, data: submittedJ },
+  { function: setSubmittedK, data: submittedK },
+  { function: setSubmittedL, data: submittedL },
 ];
 
 
@@ -186,19 +196,6 @@ useEffect(() => {
     }
 
 
- /*   //
-    if(name=="authorName")
-    {  
-      setFormData({
-        ...formData,
-        [stepName]: {
-          ...formData[stepName],
-          [name]: value,
-        },
-      });
-      return;
-    }
-*/
     setFormData({
       ...formData,
       [stepName]: {
@@ -208,18 +205,8 @@ useEffect(() => {
     });
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: files[0],
-    });
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form Submitted:', formData);
-  };
+
 
   if(isUserFormsLoading || isCasesLoading || isCoefsLoading)
   {
@@ -227,25 +214,112 @@ useEffect(() => {
   }
   //console.log(userForms)
 
-  /*
-  const printForms = () => {
-      return ( <form onSubmit={handleSubmit} encType="multipart/form-data">
-        {step === 1 && <Step1 formData={formData.step1} handleChange={handleChange} />}
-        {step === 2 && <A userForms={userForms[0]} formData={formData.A} setFormData={setFormData} handleChange={handleChange} handleData={addArticle} data={{submittedData:submittedArticles, cases, coefs}} />}
-        {step === 3 && <A userForms={userForms[1]} formData={formData.B} setFormData={setFormData} handleChange={handleChange} handleData={addActivity} data={{submittedData:submittedArticles, cases, coefs}}  />}
-        {step === 4 && <A userForms={userForms[2]} formData={formData.C} setFormData={setFormData} handleChange={handleChange} handleData={addBook} data={{submittedData:submittedBooks, cases, coefs}}  />}
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    //console.log(name, files)
+    setFormData({
+      ...formData,
+      [name]: files[0],
+    });
+  };
 
-        {step === 5 && <Step5 formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} />}
-        {step === 6 && <ReviewForm formData={formData} />}
+
+  const handleSumbmitApplication = async (e) => 
+  {
+    e.preventDefault();
+    const tmp = handleDataFunctions.map(d=>d.data)
+    //console.log(tmp)
+    let shapedData = {};
+    /* user: { type: Schema.Types.ObjectId, ref: User, required: true }, // Candidat qui soumet l'application
+      categories: { type: Map, of: Schema.Types.Mixed, required: true }, // Utilisation de Map pour des clés dynamiques
+      
+      announcement :  { type: Schema.Types.ObjectId, ref: "Announcement", required: true },
+    
+      status: { 
+          type: String, 
+          enum: ['pending', 'processing', 'approved', 'rejected'], 
+          default: 'pending' 
+      }, // Statut de l'application
+      jurys: [{ type: Schema.Types.ObjectId, ref: User }], // Liste des jurés associés
+      admin: { type: Schema.Types.ObjectId, ref: User, required: function(){return this.status!='pending' } },
+      applicationDocument: {type:String, require:false}, 
+
+    */
+
+      const data = {
+        user : user._id,
+        //announcement : announcement._id,
+        status : 'pending',
+        jury : [],
+        //admin : announcement.postedBy._id,
+        categories : {},
+       }
+    
+      const formDataToSend = new FormData()
+      for(let i=0;i<tmp.length;i++)
+      {
+        const form = tmp[i]
+        let letter = String.fromCharCode(65+i)
+
+        if(form.length === 0) continue;
         
-        <div className="mt-4 d-flex justify-content-between">
-          {step > 1 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}
-          {step < steps && <button type="button" className="btn btn-primary" onClick={nextStep}>Next</button>}
-          {step === steps && <button type="submit" className="btn btn-success">Submit Application</button>}
-        </div>
-      </form>)
+       
+
+        for(let j=0;j<form.length;j++)
+        {
+          const fields = Object.keys(form[j])
+          for(let k=0;k<fields.length;k++)
+          {
+            const file = form[j][fields[k]]
+
+            //gestion des sous objects
+            if(file instanceof Object)
+            {
+              const tmp_ = Object.keys(file)
+              if(tmp_.length === 1 || tmp_.length === 0)
+                {
+                  form[j][fields[k]]= tmp_[0] //formuaire.champ
+                }else{
+                  form[j][fields[k]]= tmp_
+                }
+
+                continue;
+            }
+           
+            //gestion des fichier
+            if(file instanceof File)
+            {
+              formDataToSend.append("files", file) 
+            }
+
+          }
+
+          const letterData = !(Object.keys(shapedData).includes(letter)) ? {} : form[j]
+          if(Object.keys(letterData).length===0)
+          {
+            shapedData[letter] = []
+          }
+          shapedData[letter].push({...form[j] })
+      
+        }
+            //formDataToSend.append(letter, JSON.stringify(form)) 
+           
+      }
+      //console.log(shapedData)
+      data.categories = shapedData
+
+      Object.keys(data).forEach((key) => {
+        if (data[key] instanceof Object) {
+          formDataToSend.append(key, JSON.stringify(data[key]));
+        } else {
+          formDataToSend.append(key, data[key]);
+        }
+      });
+
+      formDataToSend.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
   }
-*/
 
   return (
     <div className="container-lg mt-5">
@@ -255,13 +329,13 @@ useEffect(() => {
         <div className={`progress-bar progress-bar-striped ${step === steps ? 'bg-success' : 'bg-info'}`} role="progressbar" style={{ width: `${(step / steps) * 100}%` }} aria-valuenow={step} aria-valuemin="0" aria-valuemax="5"></div>
       </div>
 
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
+      <form onSubmit={handleSumbmitApplication} encType="multipart/form-data">
         {step === 0 && <Step1 formData={formData.step1} handleChange={handleChange} />}
 
         {
-          [...userForms.slice(0,1)].map((form, index) => {
+          [...userForms.slice(0,2)].map((form, index) => {
             return (
-              step === index+1 && <A key={form._id} userForms={userForms[index]} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleData={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[index].data, cases, coefs}} />
+              step === index+1 && <A key={form._id} userForms={userForms[index]} handleFileChange={handleFileChange} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleAddData={addSubmittedData}  handleRemoveSubmittedData={removeSubmittedData} dataSetters={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[index].data, cases, coefs}} />
 
             )
           })
