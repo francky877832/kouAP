@@ -165,18 +165,23 @@ exports.updateApplicationStatus = async (req, res) => {
 // ✅ 1. Créer une nouvelle application
 exports.createApplication = async (req, res) => {
   try {
-    const { user, categories, submittedOn, status, jurys } = req.body;
-
+   
+    const { user, categories, submittedOn, status, jurys, announcement, admin } = req.body;
+    const categorys = JSON.parse(categories)
+    const files = req.files;
+    //console.log(categories)
+    //console.log(categorys)
     const newApplication = new Application({
       user,
-      categories,
+      categories : categorys ,
       submittedOn,
       status,
       jurys,
+      announcement, admin,
     });
 
     const savedApplication = await newApplication.save();
-    res.status(201).json(savedApplication);
+    res.status(200).json({message:"success", data:savedApplication});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erreur lors de la création de l'application" });

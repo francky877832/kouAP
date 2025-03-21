@@ -12,10 +12,12 @@ const ReviewForm = ({ formData, formsDatas }) => {
   const [points, setPoints] = useState({})
   const [isLoading, setIsLoading] = useState(true)
 
+//console.log("userForms")
+//console.log(formsDatas)
+
   useEffect(() => {
     //console.log(userForms)
     //console.log(formsDatas)
-
     const tmp = Object.keys(formData).map((f) => ({ ...formData[f], letter: f }));
     setDatas(tmp);
   }, [formData]);
@@ -26,7 +28,7 @@ const ReviewForm = ({ formData, formsDatas }) => {
     })
   }
   const computesPoints = async () => {
-    console.log("formsDatas")
+    console.log(formsDatas)
     let letter="", number=0, normalPoint=0, activityPoints=0;
     for(let i=0;i<formsDatas.length;i++) 
     {
@@ -47,7 +49,8 @@ const ReviewForm = ({ formData, formsDatas }) => {
         { //console.log(Object.keys(act[j].cases))
           const caseId = Object.keys(act[j].cases)[0]
           const case_ = cases.find(c => c._id==caseId)
-          const {coef, coef2} = case_.participants.find(p => p.title==(Object.keys(act[j].participants)[0]))
+          //error participants
+          const {coef, coef2} = case_?.participants?.find(p => p.title==(Object.keys(act[j].participants)[0]))
           activityPoints = normalPoint*coef*coef2
           //alert(activityPoints)
         }
@@ -287,18 +290,21 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
   //console.log(formsDatas)
 
   const printActivityDetails = (letter, activity) => {
-    const index = 65-letter.trim().charCodeAt(0);
+    const index = letter.trim().charCodeAt(0)-65;
     let subActivities_arr = []
-    if(!formsDatas[index])  return "/";
+    //console.log(formsDatas)
+    //console.log(index)
+    if(formsDatas[index]?.length===0)  return "/";
     const formInfos = formsDatas[index].find(f => f.number==activity.number)
     if(!formInfos) return "/"
     const prohibitedFields = ['proof', 'numWriter', 'mainAuthor']
     const allowedFields = (userForms[index].fields.map(f => f.name)).filter(g => !prohibitedFields.includes(g))
+    //console.log(activity)
     return Object.keys(formInfos).map( f => {
         return (
           allowedFields.includes(f) && ['string', 'number'].includes(typeof(formInfos[f])) ?
           <>
-              {formInfos["mainAuthor"].toLowerCase()=="yes" ?
+              {formInfos["mainAuthor"]?.toLowerCase()=="yes" ?
                 <i>
                   <span>{formInfos[f]}, </span>
                 </i>
@@ -351,7 +357,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
         <table className="table table-bordered table-striped">
           
           <tbody>
-            {[...datas.slice(1)].map((data, index) => (
+            {[...datas.slice(0)].map((data, index) => (
             
               <>
 
@@ -360,12 +366,12 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
                 {printTitle(data.letter, index)}
                 
                
-                  {userForms[index].activity.activities.map((form, formIndex) => ( //form=(sub)activity
+                  {userForms[index]?.activity?.activities?.map((form, formIndex) => ( //form=(sub)activity
                     <>
                     <tr key={formIndex}>
                       <td>{form.number+")"} {form.name}</td>
                       <td>
-                        {(printActivityDetails(data.letter, form))}
+                        {printActivityDetails(data.letter, form)}
                       </td>
                       {
                         "E F H I J K L".split(" ").includes(data.letter) ?

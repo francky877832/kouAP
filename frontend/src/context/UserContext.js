@@ -218,23 +218,20 @@ export const UserProvider = ({ children }) => {
 
     const createUserApplication = async (newApplication) => {
       try {
-        console.log(newApplication)
+        //console.log(newApplication)
         const response = await fetch(`${server}/api/datas/applications/apply`, {
               method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newApplication),
+              body: newApplication,
           });
           
           const data = await response.json();
           if (!response.ok) {
-              throw new Error(data.error ||"Erreur lors de l'ajout du case");
+              throw new Error(data.error ||"An error occured while submitting new application");
           }
-  
+          return data.data
           
       } catch (error) {
-        alert(error)
+          alert(error)
           console.error("Erreur:", error.message);
       }
   };

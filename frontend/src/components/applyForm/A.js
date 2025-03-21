@@ -92,7 +92,7 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
       );
     } else if (field.type=="file") {
       return (
-        <input type={field.type}  className="form-control mb-3" id={field.name} name={field.name} onChange={handleFileChange} />
+        <input type={field.type}  className="form-control mb-3" id={field.name} name={field.name} onChange={(e) => handleFileChange(e, userForms.activity.letter.trim(), selectedCategory) } />
       )
     }else {
       return (

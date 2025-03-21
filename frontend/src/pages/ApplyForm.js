@@ -29,15 +29,17 @@ const ApplyForm = () => {
   
 //CASE AND COEF
 
+const [formDataToSend, setFormDataToSend] = useState(new FormData());
+
 
 const [formData, setFormData] = useState({
-  step1 : {
+  /*step1 : {
   fullName: '',
   idNumber: '',
   email: '',
   phoneNumber: '',
   address: '',
-}
+}*/
 });
 
 
@@ -58,8 +60,8 @@ const [submittedBooks, setSubmittedBooks] = useState([]);
 // Fonctions pour ajouter des données
 
 const addSubmittedData = (data, dataFunction) => {
-  const newData = {...data, proof:formData.proof}
-  console.log(newData);
+  const newData = {...data, proof:formData[data.letter].proof}
+  //console.log(newData);
   
   const hasEmptyField = Object.keys(newData).some((el) => {
     const value = newData[el];
@@ -76,7 +78,8 @@ const addSubmittedData = (data, dataFunction) => {
 
   if (hasEmptyField) return false;
 
-  dataFunction((prev) => [...prev, newData]);
+  dataFunction((prev) => [...prev, {...newData}]);
+  //console.log(submittedArticles)
   return true
 };
 
@@ -157,7 +160,7 @@ const handleDataFunctions = [
 
 useEffect(() => {
   
-  setFormData( userForms.reduce((acc, item) => {
+  setFormData( userForms?.reduce((acc, item) => {
     acc[item.letter] = Object.fromEntries(item.fields.map(({ name }) => [name, ""]));
     //console.log(item)
     return acc
@@ -235,35 +238,51 @@ useEffect(() => {
   }
   //console.log(userForms)
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e, stepName, number) => {
     const { name, files } = e.target;
-    //console.log(name, files)
-    setFormData({
-      ...formData,
-      [name]: files[0],
-    });
+  
+    if (files.length > 0) {
+      const file = files[0];
+      const fileExtension = file.name.split('.').pop();
+      const newFileName = `${stepName}${number}.${fileExtension}`;
+        const renamedFile = new File([file], newFileName, { type: file.type });
+  
+      formDataToSend.append("files", renamedFile);
+      setFormDataToSend(formDataToSend); 
+  
+      setFormData({
+        ...formData,
+        [stepName]: {
+          ...formData[stepName],
+          [name]: renamedFile,
+        },
+      });
+    }
   };
-
 
   const handleSumbmitApplication = async (e) => 
   {
     e.preventDefault();
     setIsLoading(true)
-    const tmp = handleDataFunctions.map(d=>d.data)
+    //console.log(4)
+ 
+    //console.log(formDataToSend.get('files'))
+    //return
+    const tmp = handleDataFunctions.map(d=> d.data)
     //console.log(tmp)
+    //return 
     let shapedData = {};
-    
+   // console.log(tmp)
 
       const data = {
         user : user._id,
         announcement : "67c4627d414b10c75dfd82d0", //announcement._id,
         status : 'pending',
         jury : [],
-        //admin : announcement.postedBy._id,
+        admin : "67c4712f12d662f6eeb9d7fd", //announcement.postedBy._id,
         categories : {},
        }
     
-      const formDataToSend = new FormData()
       for(let i=0;i<tmp.length;i++)
       {
         const form = tmp[i]
@@ -275,11 +294,12 @@ useEffect(() => {
 
         for(let j=0;j<form.length;j++)
         {
+          
           const fields = Object.keys(form[j])
           for(let k=0;k<fields.length;k++)
           {
             const file = form[j][fields[k]]
-
+            //console.log(file)
             //gestion des sous objects
             if(file instanceof Object)
             {
@@ -293,7 +313,7 @@ useEffect(() => {
 
                 continue;
             }
-           
+          
             //gestion des fichier
             if(file instanceof File)
             {
@@ -328,7 +348,7 @@ useEffect(() => {
         console.log(`${key}: ${value}`);
       });
 
-      /*
+  
       const res = await createUserApplication(formDataToSend)
       if(res)
       {
@@ -338,7 +358,7 @@ useEffect(() => {
       {
         alert("An error occurs while creation the application")
       }
-      */
+      
 
     setIsLoading(false)
 
@@ -356,7 +376,7 @@ useEffect(() => {
         {step === 0 && <Step1 formData={formData.step1} handleChange={handleChange} />}
 
         {
-          [...userForms.slice(0,2)].map((form, index) => {
+          [...userForms.slice(0,1)].map((form, index) => {
             return (
               step === index+1 && <A key={form._id} userForms={userForms[index]} handleFileChange={handleFileChange} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleAddData={addSubmittedData}  handleRemoveSubmittedData={removeSubmittedData} dataSetters={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[index].data, cases, coefs}} />
 

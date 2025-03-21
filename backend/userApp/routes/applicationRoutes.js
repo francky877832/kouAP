@@ -4,6 +4,10 @@ const applicationController = require("../controllers/applicationController");
 
 const { applicationsDocUpload } = require("../middlewares/multer-config");
 
+
+
+//const fileNames = Array.from({ length: 14 }, (_, i) => `file${String.fromCharCode(65+i)}`);
+
 //router.post("/create", applicationController.createAnnouncement);
 router.get("/jury/:juryId", applicationController.getJuryApplications);
 
