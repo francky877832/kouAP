@@ -28,7 +28,7 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
     }
 
     const articleData = {...formData, number:selectedCategory, letter:userForms.activity.letter.trim()}
-    const res = handleAddData(articleData, dataSetters);
+    const res = handleAddData(articleData, dataSetters, submittedData);
     if(res)
     {
       setSelectedCategory('');
@@ -43,7 +43,7 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
       return;
     }
 
-    handleRemoveSubmittedData(submittedData, dataSetters);
+    handleRemoveSubmittedData(submittedData, dataSetters, submittedData);
   };
 
   // Fonction pour rendre dynamiquement les champs en fonction du type

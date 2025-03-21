@@ -50,7 +50,7 @@ const ReviewForm = ({ formData, formsDatas }) => {
           const caseId = Object.keys(act[j].cases)[0]
           const case_ = cases.find(c => c._id==caseId)
           //error participants
-          const {coef, coef2} = case_?.participants?.find(p => p.title==(Object.keys(act[j].participants)[0]))
+          const {coef, coef2} = case_.participants.find(p => p.title==(Object.keys(act[j].participants)[0]))
           activityPoints = normalPoint*coef*coef2
           //alert(activityPoints)
         }

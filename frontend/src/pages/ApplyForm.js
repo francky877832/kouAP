@@ -59,9 +59,15 @@ const [submittedBooks, setSubmittedBooks] = useState([]);
 
 // Fonctions pour ajouter des données
 
-const addSubmittedData = (data, dataFunction) => {
+const addSubmittedData = (data, dataFunction, submittedDatas) => {
   const newData = {...data, proof:formData[data.letter].proof}
   //console.log(newData);
+  const isActivityAlreadyExists = submittedDatas.some(a => a.number==newData.number)
+  if(isActivityAlreadyExists) 
+  {
+    alert("This activity has already been added. Delete it to add new one.")
+    return;
+  }
   
   const hasEmptyField = Object.keys(newData).some((el) => {
     const value = newData[el];
