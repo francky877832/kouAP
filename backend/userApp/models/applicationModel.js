@@ -30,4 +30,26 @@ const applicationSchema = new Schema({
 });
 
 
+
+const fieldsToConvert = ["cases"]; // Ajoute les champs à convertir
+
+applicationSchema.pre("save", function (next) {
+  for (const key of this.categories.keys()) {
+    this.categories.set(
+      key,
+      this.categories.get(key).map((obj) => {
+        let newObj = { ...obj };
+        for (const field of fieldsToConvert) {
+          if (newObj[field] && typeof newObj[field] === "string") {
+            newObj[field] = new mongoose.Types.ObjectId(newObj[field]);
+          }
+        }
+        return newObj;
+      })
+    );
+  }
+  next();
+});
+
+
 module.exports = db.model('Application', applicationSchema);

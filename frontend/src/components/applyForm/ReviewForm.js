@@ -5,8 +5,9 @@ import { UserContext } from '../../context/UserContext';
 import Loading from '../Loading';
 import '../../styles/applyFormStyles.css'
 import { round } from '../../utils/utilsFunctions';
+import InlineLoading from '../InlineLoading'
 
-const ReviewForm = ({ formData, formsDatas }) => {
+const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit }) => {
   const { userForms, isUserFormsLoading, activities, cases, coefs} = useContext(UserContext);
   const [datas, setDatas] = useState([]);
   const [points, setPoints] = useState({})
@@ -28,7 +29,7 @@ const ReviewForm = ({ formData, formsDatas }) => {
     })
   }
   const computesPoints = async () => {
-    console.log(formsDatas)
+    //console.log(formsDatas)
     let letter="", number=0, normalPoint=0, activityPoints=0;
     for(let i=0;i<formsDatas.length;i++) 
     {
@@ -50,7 +51,7 @@ const ReviewForm = ({ formData, formsDatas }) => {
           const caseId = Object.keys(act[j].cases)[0]
           const case_ = cases.find(c => c._id==caseId)
           //error participants
-          const {coef, coef2} = case_.participants.find(p => p.title==(Object.keys(act[j].participants)[0]))
+          const {coef, coef2} = case_?.participants?.find(p => p?.title==(Object.keys(act[j]?.participants)[0]))
           activityPoints = normalPoint*coef*coef2
           //alert(activityPoints)
         }
@@ -73,8 +74,12 @@ const ReviewForm = ({ formData, formsDatas }) => {
       await computesPoints()
       setIsLoading(false)
     }
-    compute()
-  }, [])
+    if(isLoading)
+    {
+      compute()
+
+    }
+  }, [isLoading])
 
 
   const getActivityPoints = (letter, number) => {
@@ -321,29 +326,14 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       })
   }
 
-  const handleGeneratePDF = () => {
+
+  const generatePDF = (e) => {
+    e.preventDefault();
+    setIsLoading(true)
     const element = document.getElementById("table-to-pdf");
-  
-    if (!element) {
-      console.error("Élément #table-to-pdf introuvable !");
-      return;
-    }
-  
-    html2pdf()
-      .from(element)
-      .set({
-        margin: 10,
-        filename: "tableau_formulaire.pdf",
-        html2canvas: { 
-          scale: 2, // 3 peut parfois être trop lourd, essaye avec 2
-          useCORS: true,
-          allowTaint: true
-        },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-      })
-      .save();
-  };
-  
+    handleGeneratePDF(element)
+    setIsLoading(false)
+  }
   
   if (isUserFormsLoading || isLoading) {
     return <Loading />;
@@ -404,9 +394,14 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
 
       {/* Bouton pour générer le PDF */}
       <div className="text-center mt-4">
-        <button onClick={handleGeneratePDF} className="btn btn-primary">
-          Download PDF
+        {isLoading && <InlineLoading/>}
+        {!isLoading && !canSubmit ? 
+        <button onClick={generatePDF} className="btn btn-primary">
+          Generate PDF
         </button>
+        :
+       <></>
+      }
       </div>
     </div>
   );

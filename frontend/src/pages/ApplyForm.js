@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+
 import Step1 from '../components/applyForm/Step1';
 import A from '../components/applyForm/A';
 import B from '../components/applyForm/B';
@@ -11,13 +12,15 @@ import  Loading  from '../components/Loading'
 import { UserContext } from '../context/UserContext';
 import { ManagerContext } from '../context/ManagerContext';
 import { useLocation } from 'react-router-dom';
-import { f } from 'html2pdf.js';
+import html2pdf from 'html2pdf.js';
+import InlineLoading from '../components/InlineLoading';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
   const steps = 3//13 // 0 - 11 + 1 
 
   const [isLoading, setIsLoading] = useState(false)
+  const [canSubmit, setCanSubmit] = useState(false)
   const { user, userForms, isUserFormsLoading, createUserApplication} = useContext(UserContext)
   //console.log(userForms)
 
@@ -29,7 +32,7 @@ const ApplyForm = () => {
   
 //CASE AND COEF
 
-const [formDataToSend, setFormDataToSend] = useState(new FormData());
+const [formDataImageToSend, setFormDataImageToSend] = useState(new FormData());
 
 
 const [formData, setFormData] = useState({
@@ -90,6 +93,11 @@ const addSubmittedData = (data, dataFunction, submittedDatas) => {
 };
 
 const removeSubmittedData = (newData, dataFunction) => {
+  const fileKey = `${newData.letter}${newData.number}`;
+  if (formDataImageToSend.has(fileKey)) {
+    formDataImageToSend.delete(fileKey);
+    alert('file removed')
+  }
   dataFunction((prev) => prev.filter(d => d._id!=newData._id))
 }
 /*
@@ -251,10 +259,15 @@ useEffect(() => {
       const file = files[0];
       const fileExtension = file.name.split('.').pop();
       const newFileName = `${stepName}${number}.${fileExtension}`;
-        const renamedFile = new File([file], newFileName, { type: file.type });
-  
-      formDataToSend.append("files", renamedFile);
-      setFormDataToSend(formDataToSend); 
+      const renamedFile = new File([file], newFileName, { type: file.type });
+      
+      const fileKey = `${stepName}${number}`;
+        if (formDataImageToSend.has(fileKey)) {
+          formDataImageToSend.delete(fileKey);
+        }
+
+      formDataImageToSend.append(`${stepName}${number}`, renamedFile);
+      setFormDataImageToSend(formDataImageToSend); 
   
       setFormData({
         ...formData,
@@ -266,17 +279,50 @@ useEffect(() => {
     }
   };
 
+
+const handleGeneratePDF = async (element) => {
+    setIsLoading(true)
+  if (!element) {
+    console.error("Élément #table-to-pdf introuvable !");
+    return;
+  }
+
+  const pdfBlob = await html2pdf()
+    .from(element)
+    .set({
+      margin: 10,
+      filename: "tableau_formulaire.pdf",
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    })
+    .outputPdf("blob") //.save()
+
+    if(pdfBlob)
+    {
+      formDataImageToSend.append("appPdf", pdfBlob, `${user._id}.pdf`);
+        setFormDataImageToSend(formDataImageToSend); 
+        setIsLoading(false)
+        setCanSubmit(true)
+    }
+    else
+    {
+      alert('An error occured while generating the PDF Form.')
+      return;
+    }
+}
+
   const handleSumbmitApplication = async (e) => 
   {
     e.preventDefault();
     setIsLoading(true)
-    //console.log(4)
- 
-    //console.log(formDataToSend.get('files'))
-    //return
+    
+    const formDataToSend = new FormData()
     const tmp = handleDataFunctions.map(d=> d.data)
-    //console.log(tmp)
-    //return 
+ 
     let shapedData = {};
    // console.log(tmp)
 
@@ -323,7 +369,7 @@ useEffect(() => {
             //gestion des fichier
             if(file instanceof File)
             {
-              formDataToSend.append("files", file) 
+              formDataImageToSend.append("files", file) 
             }
 
           }
@@ -336,7 +382,7 @@ useEffect(() => {
           shapedData[letter].push({...form[j] })
       
         }
-            //formDataToSend.append(letter, JSON.stringify(form)) 
+            //formDataImageToSend.append(letter, JSON.stringify(form)) 
            
       }
       //console.log(shapedData)
@@ -348,6 +394,20 @@ useEffect(() => {
         } else {
           formDataToSend.append(key, data[key]);
         }
+      });
+
+    // GROUP ALL IMAGES IN AN ARRAY
+    const allImages = [];
+      for (let [key, value] of formDataImageToSend.entries()) {
+        if (value instanceof File) {
+          allImages.push(value); 
+        } else {
+          formDataToSend.append(key, value); 
+        }
+      }
+
+      allImages.forEach((file) => {
+        formDataToSend.append("files[]", file);
       });
 
       formDataToSend.forEach((value, key) => {
@@ -370,6 +430,11 @@ useEffect(() => {
 
   }
 
+  if(isLoading)
+  {
+    //return <Loading/>
+  }
+
   return (
     <div className="container-lg mt-5">
       <h2 className="text-center mb-4">Application Form</h2>
@@ -382,7 +447,7 @@ useEffect(() => {
         {step === 0 && <Step1 formData={formData.step1} handleChange={handleChange} />}
 
         {
-          [...userForms.slice(0,1)].map((form, index) => {
+          [...userForms?.slice(0,1)].map((form, index) => {
             return (
               step === index+1 && <A key={form._id} userForms={userForms[index]} handleFileChange={handleFileChange} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleAddData={addSubmittedData}  handleRemoveSubmittedData={removeSubmittedData} dataSetters={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[index].data, cases, coefs}} />
 
@@ -390,12 +455,17 @@ useEffect(() => {
           })
         }
   
-        {step === steps && <ReviewForm formData={formData} userForms={userForms} formsDatas={handleDataFunctions.map(d=>d.data)}/>}
+        {step === steps && <ReviewForm formData={formData} userForms={userForms} formsDatas={handleDataFunctions.map(d=>d.data)} canSubmit={canSubmit} handleGeneratePDF={handleGeneratePDF} />}
         
         <div className="mt-4 d-flex justify-content-between">
           {step > 0 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}
           {step < steps && <button type="button" className="btn btn-primary" onClick={nextStep}>Next</button>}
-          {step === steps && <button type="submit" className="btn btn-success">Submit Application</button>}
+          {isLoading &&  <InlineLoading/> }
+          {canSubmit && !isLoading ?
+            step === steps && <button type="submit" className="btn btn-success">Submit Application</button>
+          :
+          <></>
+          }
         </div>
       </form>
     </div>

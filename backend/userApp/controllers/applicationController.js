@@ -168,8 +168,34 @@ exports.createApplication = async (req, res) => {
    
     const { user, categories, submittedOn, status, jurys, announcement, admin } = req.body;
     const categorys = JSON.parse(categories)
+    let newCat = {}
+    let applicationDocument = ""
     const files = req.files;
-    //console.log(categories)
+    //console.log(categorys)
+    files.forEach(f => {
+      const activity = f.originalname.split('.')[0]
+      if(activity.length===2)
+      {
+        const number = parseInt(activity.slice(1));
+        let letter = activity.slice(0, 1);
+        //console.log(activity, letter, index)
+
+        const act = categorys[letter]
+        newCat = act.map((a, index) => {
+          if(a.number == number)
+          {
+            return {...a, proof:f.path,}
+          }
+          if (!!a.cases) return { ...a, cases: new mongoose.Types.ObjectId(a.cases) };
+          return {...a}
+        })
+        categorys[letter] = newCat
+      }
+      else
+      {
+        applicationDocument = f.path
+      }
+    })
     //console.log(categorys)
     const newApplication = new Application({
       user,
@@ -178,6 +204,7 @@ exports.createApplication = async (req, res) => {
       status,
       jurys,
       announcement, admin,
+      applicationDocument,
     });
 
     const savedApplication = await newApplication.save();

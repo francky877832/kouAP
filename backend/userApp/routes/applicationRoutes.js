@@ -14,7 +14,7 @@ router.get("/jury/:juryId", applicationController.getJuryApplications);
 router.get("/get/all", applicationController.getApplications);
 router.get("/user/get/:userId", applicationController.getUserApplications);
 
-router.post("/apply", applicationsDocUpload.array("files", 20), applicationController.createApplication);
+router.post("/apply", applicationsDocUpload.array("files[]"), applicationController.createApplication);
 
 
 router.put("/jury/assign", applicationController.assignJuriesToApplication);

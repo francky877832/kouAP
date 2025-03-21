@@ -57,10 +57,10 @@ const cvStorage = multer.diskStorage({
 const applicationsStorage = multer.diskStorage({
   destination: (req, file, cb) => {
 //console.log("Multer")
-console.log(req.body)
-console.log(req.files)
-    const folderName = "applications" //req.body.user;
-    const uploadPath = path.join("userApp/assets", folderName);
+//console.log(req.body)
+//console.log(req.files)
+    const folderName = req.body.user;
+    const uploadPath = path.join("userApp/assets/applications", folderName);
 
     // Vérifier si le dossier existe, sinon le créer
     if (!fs.existsSync(uploadPath)) {
