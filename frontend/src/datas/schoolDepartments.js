@@ -13,3 +13,5 @@ export const titles = [
     { _id : 2, value: "Associate Professor", label: "Associate Professor" },
     { _id : 3, value: "Professor", label: "Professor" },
   ];
+
+  export const casedActivities = ['A', 'B', 'C', 'G']

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, ListGroup } from 'react-bootstrap';
+import { casedActivities } from '../../datas/schoolDepartments';
 
 const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters, handleRemoveSubmittedData, handleFileChange}) => {
   const {submittedData, cases, coefs} = data
@@ -148,9 +149,10 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
 
           <br/>
 
+{ casedActivities.includes(userForms.activity.letter.trim().toUpperCase()) &&
           <div>
             <h4 className="mb-3">Choose a situation</h4>
-            {cases.map((item, index) => (
+            {cases?.map((item, index) => (
               <div key={index} className="form-check mb-2">
                 <input
                   className="form-check-input"
@@ -179,6 +181,7 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
               </label>
             </div>
           </div>
+  }
 
           {/* Affichage des participants uniquement si un message est sélectionné */}
           {selectedMessage && (

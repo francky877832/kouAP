@@ -6,6 +6,7 @@ import Loading from '../Loading';
 import '../../styles/applyFormStyles.css'
 import { round } from '../../utils/utilsFunctions';
 import InlineLoading from '../InlineLoading'
+import { casedActivities } from '../../datas/schoolDepartments';
 
 const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit }) => {
   const { userForms, isUserFormsLoading, activities, cases, coefs} = useContext(UserContext);
@@ -43,6 +44,7 @@ const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit }) => {
       {
         number = act[j].number // {formulaire, number}
         normalPoint = (activity.activities.find(a => a.number==number)).points //A.activities[0] => {name number point}
+        activityPoints = normalPoint
        
         //Let's find cases
         const case_arr = Object.keys(act[j].cases)
@@ -55,11 +57,15 @@ const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit }) => {
           activityPoints = normalPoint*coef*coef2
           //alert(activityPoints)
         }
-        else
+        else if(casedActivities.includes(letter))
         {
           const numWriter = parseInt(act[j].numWriter)
           const {coef, factor} = coefs.find(c => c.number==numWriter)
           activityPoints = normalPoint*(coef/factor)
+        }
+        else
+        {
+          activityPoints = normalPoint
         }
         updatePoints(letter, number, round(activityPoints)) //letter et activityNymber
       }
@@ -347,13 +353,13 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
         <table className="table table-bordered table-striped">
           
           <tbody>
-            {[...datas.slice(0)].map((data, index) => (
+            {[...datas?.slice(0)].map((data, index) => (
             
               <>
 
-            {index < userForms.length &&
+            {index < userForms?.length &&
               <>
-                {printTitle(data.letter, index)}
+                {printTitle(data?.letter, index)}
                 
                
                   {userForms[index]?.activity?.activities?.map((form, formIndex) => ( //form=(sub)activity

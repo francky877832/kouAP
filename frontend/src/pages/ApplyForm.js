@@ -14,10 +14,11 @@ import { ManagerContext } from '../context/ManagerContext';
 import { useLocation } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import InlineLoading from '../components/InlineLoading';
+import { casedActivities } from '../datas/schoolDepartments';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
-  const steps = 3//13 // 0 - 11 + 1 
+  const steps = 13 // 0 - 11 + 1 
 
   const [isLoading, setIsLoading] = useState(false)
   const [canSubmit, setCanSubmit] = useState(false)
@@ -74,14 +75,21 @@ const addSubmittedData = (data, dataFunction, submittedDatas) => {
   
   const hasEmptyField = Object.keys(newData).some((el) => {
     const value = newData[el];
-
-    if (
-      (typeof value === "string" && !value.trim()) || 
-      (value instanceof File && value.size === 0) ||   
-      (value instanceof Object && !(value instanceof File) && Object.keys(value).length === 0)
-    ) {
-      alert("Le champ " + el + " est obligatoire.");
-      return true; 
+    if(!["cases", "participants"].includes(el) )
+    {
+      if ((typeof value === "string" && !value.trim()) || 
+        (value instanceof File && value.size === 0) ||   
+        (value instanceof Object && !(value instanceof File) && Object.keys(value).length === 0)
+      ) {
+        alert("Le champ " + el + " est obligatoire.");
+        return true; 
+      }
+    }else
+    { //console.log("oo")
+      if(casedActivities.includes(newData.letter) && Object.keys(value).length === 0){
+        alert("Le champ " + el + " est obligatoire.");
+        return true;
+      }
     }
   });
 
@@ -447,7 +455,7 @@ const handleGeneratePDF = async (element) => {
         {step === 0 && <Step1 formData={formData.step1} handleChange={handleChange} />}
 
         {
-          [...userForms?.slice(0,1)].map((form, index) => {
+          [...userForms?.slice(0)].map((form, index) => {
             return (
               step === index+1 && <A key={form._id} userForms={userForms[index]} handleFileChange={handleFileChange} formData={formData[form.activity.letter]} setFormData={setFormData} handleChange={handleChange} handleAddData={addSubmittedData}  handleRemoveSubmittedData={removeSubmittedData} dataSetters={handleDataFunctions[index].function} data={{submittedData:handleDataFunctions[index].data, cases, coefs}} />
 
