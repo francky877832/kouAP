@@ -59,19 +59,18 @@ const App = () => {
       <Routes>
         
         
+    {/* Routes accessible by all user roles */}
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
-        {/* <Route path="/callback" element={<CallbackLogin />} /> */ }
-
-        <Route path="/system/notifications" element={<Notifications />} />
-        <Route path="/view-announcement" element={<ViewAnnouncement />} />
         <Route path="/all-announcements" element={<AllAnnouncements />} />
-        <Route path="/apply" element={<MultiStepForm />} />
+        <Route path="/view-announcement" element={<ViewAnnouncement />} />
+        <Route path="/system/notifications" element={<Notifications />} />
 
-        <Route path="/users/list" element={<UserList />} />
-        <Route path="/user/panel" element={<UserPanel />} />
-        <Route path="/user/applications" element={<UserApplications />} />
 
+{/* routes accessible only by the applicant */}
+        <Route path="/user/apply" element={ <ProtectedRoute element={MultiStepForm} isAuthenticated={isAuthenticated} user={user} roles={["user", "dev"]} />} />
+        <Route path="/user/panel" element={ <ProtectedRoute element={UserPanel} isAuthenticated={isAuthenticated} user={user} roles={["user", "dev"]} />} />
+        <Route path="/user/applications" element={ <ProtectedRoute element={UserApplications} isAuthenticated={isAuthenticated} user={user} roles={["user", "dev"]} />} />
 
 
   {/* Route protégée pour l'admin */}
@@ -98,19 +97,22 @@ const App = () => {
       <Route path="/manager/edit-criteria" element={<ProtectedRoute element={EditCriterias} roles={["manager", "dev"]} />}/>
       <Route path="/manager-form/edit-form" element={<ProtectedRoute element={FormManager} roles={["manager", "dev"]} />}  />
       <Route path="/case-coef/view" element={<ProtectedRoute element={CaseCoef} roles={["manager", "dev"]} />}  />
+      <Route path="/user/list" element={ <ProtectedRoute element={UserList} roles={["manager", "dev"]} /> } />
 
-      {/* tablo 3 */}
+      {/* tablo 3, 1, 2 */}
+      {/* routes accesseible by every body as read-only but by manager as read and modify */}
         <Route path="/activities/view" element={<Activities />} />
         <Route path="/min-activities/view" element={<MinActivities />} />
         <Route path="/min-points/view" element={<MinPoints />} />
 
 
 
+{/* control, login and register */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/control-user" element={<ControlUser />} />
 
-
+{/* error not found */}
         <Route path="/access-denied" element={<NotFound />} />
         
       </Routes>

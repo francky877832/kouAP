@@ -53,7 +53,7 @@ const ViewAnnouncement = ({ match }) => {
 }
               <div className="col-lg-4">
                 <div className="d-flex flex-column align-items-start">
-                  <button className="btn btn-success btn-lg w-100" onClick={() => window.location.href = '/apply'}>
+                  <button className="btn btn-success btn-lg w-100" onClick={() => window.location.href = '/user/apply'}>
                     Apply Now
                   </button>
                 </div>
