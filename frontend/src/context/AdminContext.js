@@ -40,10 +40,11 @@ export const AdminProvider = ({ children }) => {
 
     const fetchAnnouncements = async (page, limit) => {
       try {
-        console.log("ok")
+       // console.log("ok")
         const response = await fetch(`${server}/api/datas/announcements/page?page=${page}&limit=${limit}`, {
           method: "GET",
           headers: {
+            "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json",
           },
         });

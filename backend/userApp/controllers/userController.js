@@ -7,10 +7,9 @@ const mongoose = require('mongoose');
 const fetch = require("node-fetch");
 const xml2js = require('xml2js');
 
-const dotenv = require("dotenv");
+require('dotenv').config({ path: '../../shared/.env' });
 
-const JWT_SECRET = 'WINKEL_RANDOM_TOKEN_SECRET'
-const 
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
 

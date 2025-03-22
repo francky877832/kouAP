@@ -99,20 +99,22 @@ export const UserProvider = ({ children }) => {
           body: JSON.stringify({ tcID, password })
         });
     
+        const data = await response.json();
+        
         if (!response.ok) {
-          throw new Error("Invalid credentials");
+          throw new Error(data.error || "Invalid credentials");
         }
     
-        const data = await response.json();
         const user_ = {...data.data.user, token:data.data.token}
         // Stocker le token et l'utilisateur
         localStorage.setItem("token", data.data.token);
         localStorage.setItem("user", JSON.stringify(data.data.user)); // Stocke en JSON
 
         setUser(user_)
-    
+        //console.log(user_)
         return user_; // Retourne les données
       } catch (error) {
+        alert(error)
         console.error("Login failed:", error.message);
         return null;
       }

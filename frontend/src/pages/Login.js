@@ -7,6 +7,7 @@ import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
 
 const Login = () => {
+  const navigate = useNavigate()
 
   const { loginUser } = useContext(UserContext);
 
@@ -29,7 +30,7 @@ const Login = () => {
     const res = await loginUser(data);
 
     if (res) {
-      //navigate("/", { state: { user: res } });
+      navigate("/", { state: { user: res } });
     }
 
     setIsLoading(false)

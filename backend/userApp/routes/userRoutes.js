@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { cvUpload } = require("../middlewares/multer-config");
+const { auth } = require("../middlewares/auth");
 
 
 const userCtrl = require('../controllers/userController');

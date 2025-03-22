@@ -2,24 +2,39 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 
+/*
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  const user = localStorage.getItem('user');
+
+  if (token && user) {
+      setAuthState({ token, user: JSON.parse(user) });
+  }
+}, []);
+*/
 const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
-  const { user, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
+  const { setUser, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
   
   useEffect(() => {
-    if (user) {
+
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    if (token && user) {
       setIsAuthenticated(true); 
+      setUser({...JSON.parse(user), token:token})
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (storedUser) {
-        setIsAuthenticated(true); 
-      } else {
-        setIsAuthenticated(false); 
-      }
+      setIsAuthenticated(false); 
     }
   }, [user]);
 
-  if (!isAuthenticated || !roles?.includes(user?.role)) {
+  if (isAuthenticated && !roles?.includes(user?.role)) {
     return <Navigate to="/access-denied" replace />;
+  }
+  else if(!isAuthenticated)
+  {
+    return <Navigate to="/login" replace />;
+
   }
 
   return <Component {...rest} />;

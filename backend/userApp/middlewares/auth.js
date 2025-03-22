@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'RANDOM_TOKEN_SECRET'
+require('dotenv').config({ path: '../../shared/.env' });
 
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
 module.exports = (req, res, next) => {
@@ -28,6 +29,7 @@ module.exports = (req, res, next) => {
             }
         });
    } catch(error) {
+    console.log(error)
        res.status(401).json({ error : error, message : "erreur inconue" });
    }
 };
