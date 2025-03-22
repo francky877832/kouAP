@@ -1,6 +1,9 @@
 import { createContext, useEffect, useState } from "react";
 import { server } from "../remote/server";
 
+import { redirectNonAuthenticatedUser } from "../utils/utilsFunctions";
+
+
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -127,13 +130,15 @@ export const UserProvider = ({ children }) => {
             const response = await fetch(`${server}/api/users/user/update`, {
               method: 'PUT',
               headers: {
-               
+               "Authorization": `Bearer ${user.token}`,
               },
               body: updatedUser,
             });
             
             const data = await response.json();
             if (!response.ok) {
+              redirectNonAuthenticatedUser(data);
+
                 throw new Error(data.error ||"Erreur lors de l'ajout du case");
             }
     
@@ -152,6 +157,7 @@ export const UserProvider = ({ children }) => {
         const response = await fetch(`${server}/api/users/role/update/${user._id}`, {
           method: 'PUT',
           headers: {
+            "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({role:user.role}),
@@ -159,6 +165,8 @@ export const UserProvider = ({ children }) => {
         
         const data = await response.json();
         if (!response.ok) {
+          redirectNonAuthenticatedUser(data);
+
             throw new Error(data.error ||"Erreur lors de l'ajout du case");
         }
 
@@ -177,6 +185,7 @@ export const UserProvider = ({ children }) => {
         const response = await fetch(`${server}/api/datas/applications/user/get/${user._id}`, {
           method: "GET", // Méthode GET pour récupérer les annonces
           headers: {
+            "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json",
           },
         });
@@ -186,6 +195,8 @@ export const UserProvider = ({ children }) => {
         // Récupérer les données au format JSON
         const data = await response.json();
         if (!response.ok) {
+          redirectNonAuthenticatedUser(data);
+
           throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
         }
         //console.log(data)
@@ -201,12 +212,15 @@ export const UserProvider = ({ children }) => {
         const response = await fetch(`${server}/api/users/get/all?page=${page}&limit=${limit}`, {
           method: "GET", // Méthode GET pour récupérer les annonces
           headers: {
+            "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json",
           },
         });
         // Récupérer les données au format JSON
         const data = await response.json();
         if (!response.ok) {
+          redirectNonAuthenticatedUser(data);
+
           throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
         }
         //console.log("data")
@@ -223,11 +237,16 @@ export const UserProvider = ({ children }) => {
         //console.log(newApplication)
         const response = await fetch(`${server}/api/datas/applications/apply`, {
               method: "POST",
+              header : {
+                "Authorization": `Bearer ${user.token}`,
+              },
               body: newApplication,
           });
           
           const data = await response.json();
           if (!response.ok) {
+            redirectNonAuthenticatedUser(data);
+
               throw new Error(data.error ||"An error occured while submitting new application");
           }
           return data.data
@@ -259,6 +278,7 @@ export const UserProvider = ({ children }) => {
         const response = await fetch(`${server}/api/datas/cases/case/all`, {
           method: "GET", // Méthode GET pour récupérer les annonces
           headers: {
+            "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json",
           },
         });
@@ -268,6 +288,8 @@ export const UserProvider = ({ children }) => {
         // Récupérer les données au format JSON
         const data = await response.json();
         if (!response.ok) {
+          redirectNonAuthenticatedUser(data);
+
           throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
         }
         //console.log(data)
@@ -285,11 +307,14 @@ const fetchCoefs = async () => {
     const response = await fetch(`${server}/api/datas/cases/coef/all`, {
       method: "GET", // Méthode GET pour récupérer les annonces
       headers: {
+        "Authorization": `Bearer ${user.token}`,
         "Content-Type": "application/json",
       },
     });
 
     if (!response.ok) {
+      redirectNonAuthenticatedUser(data);
+
       throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
     }
 
@@ -311,11 +336,14 @@ const fetchCoefs = async () => {
             const response = await fetch(`${server}/api/datas/faculties/get`, {
               method: "GET", // Méthode GET pour récupérer les annonces
               headers: {
+                "Authorization": `Bearer ${user.token}`,
                 "Content-Type": "application/json",
               },
             });
         
             if (!response.ok) {
+              redirectNonAuthenticatedUser(data);
+
               throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
             }
         
@@ -337,6 +365,7 @@ const fetchCoefs = async () => {
             const response = await fetch(`${server}/api/datas/faculties/get/groups`, {
               method: "GET", // Méthode GET pour récupérer les annonces
               headers: {
+                "Authorization": `Bearer ${user.token}`,
                 "Content-Type": "application/json",
               },
             });
@@ -346,6 +375,8 @@ const fetchCoefs = async () => {
             const data = await response.json();
             
             if (!response.ok) {
+              redirectNonAuthenticatedUser(data);
+
               throw new Error(data.error || `Erreur de récupération des annonces: ${response.statusText}`);
             }
             console.log(data)
@@ -364,12 +395,15 @@ const fetchCoefs = async () => {
           const response = await fetch(`${server}/api/datas/activities/activities/all`, {  
               method: "GET",
               headers: {
+                "Authorization": `Bearer ${user.token}`,
                   "Content-Type": "application/json",
           },})
 
           const data = await response.json();
           if (!response.ok)  {
-              throw new Error(data?.message || "Erreur lors du chargement des activités");
+
+            redirectNonAuthenticatedUser(data);
+            throw new Error(data?.message || "Erreur lors du chargement des activités");
           }
 
        // console.log(data.data)
@@ -390,11 +424,13 @@ const fetchCoefs = async () => {
          const response = await fetch(`${server}/api/datas/activities/minActivities/all`, {  
              method: "GET",
              headers: {
+              "Authorization": `Bearer ${user.token}`,
                  "Content-Type": "application/json",
          },})
 
          const data = await response.json();
          if (!response.ok)  {
+              redirectNonAuthenticatedUser(data);
              throw new Error(data?.message || "Erreur lors du chargement des activités");
          }
 
@@ -415,11 +451,14 @@ const fetchCoefs = async () => {
        const response = await fetch(`${server}/api/datas/activities/minPoints/all`, {  
            method: "GET",
            headers: {
+            "Authorization": `Bearer ${user.token}`,
                "Content-Type": "application/json",
        },})
 
        const data = await response.json();
        if (!response.ok)  {
+        redirectNonAuthenticatedUser(data);
+
            throw new Error(data?.message || "Erreur lors du chargement des activités");
        }
 
@@ -441,11 +480,14 @@ const fetchUserForms= async () => {
        const response = await fetch(`${server}/api/datas/forms/get/all`, {  
            method: "GET",
            headers: {
+            "Authorization": `Bearer ${user.token}`,
                "Content-Type": "application/json",
        },})
 
        const data = await response.json();
        if (!response.ok)  {
+        redirectNonAuthenticatedUser(data);
+
            throw new Error(data?.message || "Erreur lors du chargement des activités");
        }
 
@@ -475,12 +517,12 @@ const fetchUserForms= async () => {
                 setIsFacultyLoading(false)
             };
 
-            if(isFacultyLoading)
+            if(isFacultyLoading && !!user.token)
             {
               fetchFacultiesEffect();
             }
            
-        }, [facultyDepartments, isFacultyLoading]);
+        }, [user, facultyDepartments, isFacultyLoading]);
 
 
 
@@ -492,12 +534,12 @@ const fetchUserForms= async () => {
               setIsActivitiesLoading(false)
           };
 
-          if(isActivitiesLoading)
+          if(isActivitiesLoading  && !!user.token)
           {
             fetchActivitiesEffect();
           }
          
-      }, [isActivitiesLoading]);
+      }, [user, isActivitiesLoading]);
 
 
       
@@ -509,12 +551,12 @@ const fetchUserForms= async () => {
             setIsMinActivitiesLoading(false)
         };
 
-        if(isMinActivitiesLoading)
+        if(isMinActivitiesLoading && !!user.token)
         {
           fetchMinActivitiesEffect();
         }
        
-    }, [isMinActivitiesLoading]);
+    }, [user, isMinActivitiesLoading]);
 
     useEffect(() => {
       const fetchMinPointsEffect = async () => {
@@ -525,12 +567,12 @@ const fetchUserForms= async () => {
           setIsMinPointsLoading(false)
       };
 
-      if(isMinPointsLoading)
+      if(isMinPointsLoading && !!user.token)
       {
         fetchMinPointsEffect();
       }
      
-  }, [isMinPointsLoading]);
+  }, [user, isMinPointsLoading]);
 
 
   useEffect(() => {
@@ -542,12 +584,12 @@ const fetchUserForms= async () => {
         setIsUserFormsLoading(false)
     };
 
-    if(isUserFormsLoading)
+    if(isUserFormsLoading && !!user.token)
     {
       fetchUserFormsEffect();
     }
    
-}, [isUserFormsLoading]);
+}, [user, isUserFormsLoading]);
 
 
  useEffect(() => {
@@ -559,12 +601,12 @@ const fetchUserForms= async () => {
           setIsCasesLoading(false)
       };
   
-      if(isCasesLoading)
+      if(isCasesLoading && !!user.token)
       {
         fetchCasesEffect();
       }
      
-  }, [isCasesLoading]);
+  }, [user, isCasesLoading]);
 
   useEffect(() => {
     const fetchCoefsEffect = async () => {
@@ -575,12 +617,12 @@ const fetchUserForms= async () => {
         setIsCoefsLoading(false)
     };
 
-    if(isCoefsLoading)
+    if(isCoefsLoading  && !!user.token)
     {
       fetchCoefsEffect();
     }
    
-}, [isCoefsLoading]);
+}, [user, isCoefsLoading]);
 
 
 
@@ -591,7 +633,7 @@ const fetchUserForms= async () => {
            facultyGroups, isAuthenticated, 
           
           }
-        const stateFunctions = {setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading, setActivities,
+        const stateFunctions = {setUser, setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading, setActivities,
           setIsUserFormsLoading, setIsFacultyLoading, setIsMinActivitiesLoading, setIsMinPointsLoading, setIsAuthenticated
         }
         const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 

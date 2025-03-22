@@ -26,3 +26,19 @@ export const round = (number) => {
       return Math.ceil(number);
     }
   };
+
+  export const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    //setAuthState({ token: null, user: null });
+};
+
+export const redirectNonAuthenticatedUser = (data) => {
+  if (["TokenMissing", "TokenExpiredError", "TokenAnotherError", "TokenProcessingError" ].includes(data?.type)) {
+    alert(data);
+    console.log("An error occured while processing the token.");
+    localStorage.removeItem("token"); // Supprime le token
+    window.location.href = "/login"; // Redirige vers la page de connexion
+    return;
+  }
+}

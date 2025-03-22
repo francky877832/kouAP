@@ -12,26 +12,19 @@ useEffect(() => {
   }
 }, []);
 */
-const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
-  const { setUser, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
+const ProtectedRoute = ({ element: Component, roles, isAuthenticated, user, ...rest }) => {
   
-  useEffect(() => {
+
 
     const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    const storedUser = localStorage.getItem('user');
+    //alert(token)
 
-    if (token && user) {
-      setIsAuthenticated(true); 
-      setUser({...JSON.parse(user), token:token})
-    } else {
-      setIsAuthenticated(false); 
-    }
-  }, [user]);
-
-  if (isAuthenticated && !roles?.includes(user?.role)) {
+  if ((token && storedUser) && !roles?.includes(storedUser?.role)) {
     return <Navigate to="/access-denied" replace />;
   }
-  else if(!isAuthenticated)
+  
+  if(!(token && storedUser))
   {
     return <Navigate to="/login" replace />;
 

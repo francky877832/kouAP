@@ -6,7 +6,7 @@ import Loading from '../components/Loading';
 
 const UserPanel = () => {
   
-    const { updateUser } = useContext(UserContext)
+    const {user, updateUser } = useContext(UserContext)
   const [updatedUser, setUpdatedUser] = useState({
     name: '',
     surname: '',
@@ -38,19 +38,8 @@ const UserPanel = () => {
   };
 
   useEffect(() => {
-    setUpdatedUser({
-      name: 'John',
-      surname: 'Doe',
-      tcID: '9939674078',
-      birthDate: '1990-01-01',
-      username: 'johndoe',
-      email: 'johndoe@example.com',
-      phoneNumber: '+1234567890',
-      address: '123 Main Street',
-      cv: 'http://example.com/cv.pdf', // URL fictive pour le CV
-      password: '', // Initialize password field
-    });
-  }, []);
+    setUpdatedUser({ ...user});
+  }, [isLoading]);
 
   const handleUpdate = async () => {
     setIsLoading(true)

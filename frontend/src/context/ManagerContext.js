@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { server } from "../remote/server";
 import { UserContext } from "./UserContext";
+import { redirectNonAuthenticatedUser } from "../utils/utilsFunctions";
 
 export const ManagerContext = createContext();
 
@@ -25,6 +26,7 @@ export const ManagerProvider = ({ children }) => {
         const response = await fetch(`${server}/api/datas/cases/case/delete/${caseId}`, {
               method: "DELETE",
               headers: {
+                  "Authorization": `Bearer ${user.token}`,
                   "Content-Type": "application/json",
               },
           });
@@ -32,6 +34,8 @@ export const ManagerProvider = ({ children }) => {
           const data = await response.json();
 
           if (!response.ok) {
+            redirectNonAuthenticatedUser(data);
+
               throw new Error(data.error || "Erreur lors de l'ajout du case");
           }
 
@@ -46,12 +50,15 @@ export const ManagerProvider = ({ children }) => {
       const response = await fetch(`${server}/api/datas/cases/coef/delete/${coefId}`, {
             method: "DELETE",
             headers: {
+              "Authorization": `Bearer ${user.token}`,
                 "Content-Type": "application/json",
             },
         });
 
         const data = await response.json();
         if (!response.ok) {
+                      redirectNonAuthenticatedUser(data);
+          
             throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
@@ -68,10 +75,11 @@ export const ManagerProvider = ({ children }) => {
 
     const addCase = async (newCase) => {
       try {
-        console.log(newCase)
+        //console.log(newCase)
         const response = await fetch(`${server}/api/datas/cases/case/create`, {
               method: "POST",
               headers: {
+                "Authorization": `Bearer ${user.token}`,
                   "Content-Type": "application/json",
               },
               body: JSON.stringify(newCase),
@@ -80,6 +88,8 @@ export const ManagerProvider = ({ children }) => {
 
           const data = await response.json();
           if (!response.ok) {
+                        redirectNonAuthenticatedUser(data);
+            
               throw new Error(data.error || "Erreur lors de l'ajout du case");
           }
 
@@ -97,6 +107,7 @@ export const ManagerProvider = ({ children }) => {
       const response = await fetch(`${server}/api/datas/cases/case/update/${newCase._id}`, {
             method: "PUT",
             headers: {
+              "Authorization": `Bearer ${user.token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(newCase),
@@ -104,6 +115,8 @@ export const ManagerProvider = ({ children }) => {
 
         const data = await response.json();
         if (!response.ok) {
+                      redirectNonAuthenticatedUser(data);
+          
             throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
@@ -119,6 +132,7 @@ export const ManagerProvider = ({ children }) => {
       const response = await fetch(`${server}/api/datas/cases/coef/update/${newCoef._id}`, {
             method: "PUT",
             headers: {
+              "Authorization": `Bearer ${user.token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(newCoef),
@@ -126,6 +140,8 @@ export const ManagerProvider = ({ children }) => {
         
         const data = await response.json();
         if (!response.ok) {
+                      redirectNonAuthenticatedUser(data);
+          
             throw new Error(data.error ||"Erreur lors de l'ajout du case");
         }
 
@@ -145,12 +161,15 @@ export const ManagerProvider = ({ children }) => {
       const response = await fetch(`${server}/api/datas/cases/coef/create`, {
             method: "POST",
             headers: {
+              "Authorization": `Bearer ${user.token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(newCoef),
         });
           const data = await response.json();
         if (!response.ok) {
+                      redirectNonAuthenticatedUser(data);
+          
             throw new Error(data.error || "Erreur lors de l'ajout du case");
         }
 
@@ -173,6 +192,7 @@ export const ManagerProvider = ({ children }) => {
            const response = await fetch(`${server}/api/datas/activities/activity/create`, {
                 method: "POST",
                 headers: {
+                  "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(newActivity),
@@ -182,6 +202,8 @@ export const ManagerProvider = ({ children }) => {
             if (response.ok) {
                 setActivities((prev) => [...prev, data]); // Mise à jour locale
             } else {
+                          redirectNonAuthenticatedUser(data);
+              
                 throw new Error(data.error || "Erreur lors de la création de l'activité");
             }
             //console.log(data)
@@ -203,6 +225,7 @@ export const ManagerProvider = ({ children }) => {
            const response = await fetch(`${server}/api/datas/activities/minActivity/create`, {
                 method: "POST",
                 headers: {
+                  "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(newActivity),
@@ -210,6 +233,8 @@ export const ManagerProvider = ({ children }) => {
 
             const data = await response.json();
             if (response.ok) {
+              redirectNonAuthenticatedUser(data);
+
                 setActivities((prev) => [...prev, data]); // Mise à jour locale
             } else {
                 throw new Error(data.error || "Erreur lors de la création de l'activité");
@@ -233,6 +258,7 @@ export const ManagerProvider = ({ children }) => {
            const response = await fetch(`${server}/api/datas/activities/minPoint/create`, {
                 method: "POST",
                 headers: {
+                  "Authorization": `Bearer ${user.token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(newActivity),
@@ -242,6 +268,8 @@ export const ManagerProvider = ({ children }) => {
             if (response.ok) {
                 setActivities((prev) => [...prev, data]); // Mise à jour locale
             } else {
+              redirectNonAuthenticatedUser(data);
+
                 throw new Error(data.error || "Erreur lors de la création de l'activité");
             }
             //console.log(data)
@@ -263,6 +291,7 @@ export const ManagerProvider = ({ children }) => {
           const response = await fetch(`${server}/api/datas/activities/activity/update/${updatedActivity._id}`, {
             method: 'PUT',
             headers: {
+              "Authorization": `Bearer ${user.token}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedActivity),
@@ -270,6 +299,8 @@ export const ManagerProvider = ({ children }) => {
 
       const data = await response.json();
           if (!response.ok) {
+                        redirectNonAuthenticatedUser(data);
+            
             throw new Error(data.error || 'Failed to update activity');
           }
 
@@ -288,6 +319,7 @@ export const ManagerProvider = ({ children }) => {
           const response = await fetch(`${server}/api/datas/activities/minActivity/update/${updatedActivity._id}`, {
             method: 'PUT',
             headers: {
+              "Authorization": `Bearer ${user.token}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedActivity),
@@ -295,6 +327,8 @@ export const ManagerProvider = ({ children }) => {
 
       const data = await response.json();
           if (!response.ok) {
+                        redirectNonAuthenticatedUser(data);
+            
             throw new Error(data.error || 'Failed to update activity');
           }
           return data.data
@@ -312,6 +346,7 @@ export const ManagerProvider = ({ children }) => {
           const response = await fetch(`${server}/api/datas/activities/minPoint/update/${updatedActivity._id}`, {
             method: 'PUT',
             headers: {
+              "Authorization": `Bearer ${user.token}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedActivity),
@@ -319,6 +354,8 @@ export const ManagerProvider = ({ children }) => {
 
       const data = await response.json();
           if (!response.ok) {
+            redirectNonAuthenticatedUser(data);
+
             throw new Error(data.error || 'Failed to update activity');
           }
           return data.data
@@ -337,6 +374,7 @@ export const ManagerProvider = ({ children }) => {
           const response = await fetch(`${server}/api/datas/activities/activity/delete/${activityId}`, {
             method: 'DELETE',
             headers: {
+              "Authorization": `Bearer ${user.token}`,
               'Content-Type': 'application/json',
             },
           });
@@ -346,6 +384,8 @@ export const ManagerProvider = ({ children }) => {
           console.log('Activity deleted successfully:', data);
 
           if (!response.ok) {
+            redirectNonAuthenticatedUser(data);
+
             throw new Error(data.error || 'Failed to delete activity');
           }
       
@@ -369,6 +409,7 @@ export const ManagerProvider = ({ children }) => {
           const response = await fetch(`${server}/api/datas/activities/minActivity/delete/${activityId}`, {
             method: 'DELETE',
             headers: {
+              "Authorization": `Bearer ${user.token}`,
               'Content-Type': 'application/json',
             },
           });
@@ -378,6 +419,8 @@ export const ManagerProvider = ({ children }) => {
           console.log('Activity deleted successfully:', data);
 
           if (!response.ok) {
+                        redirectNonAuthenticatedUser(data);
+            
             throw new Error(data.error || 'Failed to delete activity');
           }
       
@@ -396,15 +439,18 @@ export const ManagerProvider = ({ children }) => {
           const response = await fetch(`${server}/api/datas/activities/minPoint/delete/${activityId}`, {
             method: 'DELETE',
             headers: {
+              "Authorization": `Bearer ${user.token}`,
               'Content-Type': 'application/json',
             },
           });
 
       
           const data = await response.json();
-          console.log('Activity deleted successfully:', data);
+          //console.log('Activity deleted successfully:', data);
 
           if (!response.ok) {
+                        redirectNonAuthenticatedUser(data);
+            
             throw new Error(data.error || 'Failed to delete activity');
           }
       
@@ -428,6 +474,7 @@ export const ManagerProvider = ({ children }) => {
          const response = await fetch(`${server}/api/datas/forms/create`, {
               method: "POST",
               headers: {
+                "Authorization": `Bearer ${user.token}`,
                   "Content-Type": "application/json",
               },
               body: JSON.stringify(newForm),
@@ -437,6 +484,8 @@ export const ManagerProvider = ({ children }) => {
           if (response.ok) {
               //setActivities((prev) => [...prev, data]); // Mise à jour locale
           } else {
+            redirectNonAuthenticatedUser(data);
+
               throw new Error(data.error || "Erreur lors de la création du form");
           }
           //console.log(data)
@@ -456,6 +505,7 @@ export const ManagerProvider = ({ children }) => {
       const response = await fetch(`${server}/api/datas/forms/update/${updatedForm._id}`, {
         method: 'PUT',
         headers: {
+          "Authorization": `Bearer ${user.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updatedForm),
@@ -463,6 +513,8 @@ export const ManagerProvider = ({ children }) => {
   
       const data = await response.json();
       if (!response.ok) {
+        redirectNonAuthenticatedUser(data);
+
         throw new Error(data.error || 'Failed to update activity');
       }
   
@@ -488,6 +540,7 @@ export const ManagerProvider = ({ children }) => {
       const response = await fetch(`${server}/api/datas/forms/delete/${formId}`, {
         method: 'DELETE',
         headers: {
+          "Authorization": `Bearer ${user.token}`,
           'Content-Type': 'application/json',
         },
       });
@@ -497,6 +550,8 @@ export const ManagerProvider = ({ children }) => {
       console.log('Activity deleted successfully:', data);
       
       if (!response.ok) {
+                    redirectNonAuthenticatedUser(data);
+        
         throw new Error(data.error || 'Failed to delete activity');
       }
   

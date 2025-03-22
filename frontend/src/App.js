@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -33,9 +33,27 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import UserList from "./pages/UserList";
 import UserPanel from "./pages/UserPanel";
 import UserApplications from "./pages/UserApplications";
+import { UserContext } from "./context/UserContext";
 
 
 const App = () => {
+
+    const { user, setUser, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
+  
+    useEffect(() => {
+
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    //alert(token)
+
+    if (token && storedUser) {
+      setIsAuthenticated(true); 
+      setUser({...JSON.parse(storedUser), token:token})
+    } else {
+      setIsAuthenticated(false); 
+    }
+  }, []);
+
   return (
     <Router>
       <Routes>
@@ -57,7 +75,7 @@ const App = () => {
 
 
   {/* Route protégée pour l'admin */}
-      <Route path="/admin/add-announcement" element={ <ProtectedRoute element={AnnounceForm} roles={["admin", "dev"]} />} />
+      <Route path="/admin/add-announcement" element={ <ProtectedRoute element={AnnounceForm} isAuthenticated={isAuthenticated} user={user} roles={["admin", "dev"]} />} />
       <Route path="/admin/panel" element={ <ProtectedRoute element={AdminPanel } roles={["admim", "dev"]} />} />
       <Route path="/admin-panel" element={ <ProtectedRoute element={AdminPanel} roles={["admin", "dev"]} />} />
       <Route path="admin-panel/view-applications" element={ <ProtectedRoute element={ApplicationsView} roles={["admin", "dev"]} /> } />

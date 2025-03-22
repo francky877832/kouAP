@@ -2,6 +2,8 @@ import { createContext, useState, useEffect, useCallback, useContext } from "rea
 import { server } from "../remote/server";
 import { UserContext } from "./UserContext";
 
+import { redirectNonAuthenticatedUser } from "../utils/utilsFunctions";
+
 export const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
@@ -20,11 +22,14 @@ export const AdminProvider = ({ children }) => {
         const response = await fetch(`${server}/api/datas/announcements/user/${userId}`, {
           method: "GET", // Méthode GET pour récupérer les annonces
           headers: {
+            "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json",
           },
         });
     
         if (!response.ok) {
+          redirectNonAuthenticatedUser(data);
+
           throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
         }
     
@@ -44,12 +49,13 @@ export const AdminProvider = ({ children }) => {
         const response = await fetch(`${server}/api/datas/announcements/page?page=${page}&limit=${limit}`, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${user.token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "application/json", //pas de "Authorization": `Bearer ${user.token}`,
           },
         });
     
         if (!response.ok) {
+          redirectNonAuthenticatedUser(data);
+
           throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
         }
     
@@ -73,11 +79,14 @@ const fetchApplications = async () => {
        const response = await fetch(`${server}/api/datas/applications/get/all`, {  
            method: "GET",
            headers: {
+            "Authorization": `Bearer ${user.token}`,
                "Content-Type": "application/json",
        },})
 
        const data = await response.json();
        if (!response.ok)  {
+        redirectNonAuthenticatedUser(data);
+
            throw new Error(data?.message || "Erreur lors du chargement des applicaitons");
        }
 
@@ -98,6 +107,7 @@ const updateApplicationStatus = async (updatedApp) => {
     const response = await fetch(`${server}/api/datas/applications/update/decision${updatedApp._id}`, {
       method: 'PUT',
       headers: {
+        "Authorization": `Bearer ${user.token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedApp),
@@ -105,6 +115,8 @@ const updateApplicationStatus = async (updatedApp) => {
 
 const data = await response.json();
     if (!response.ok) {
+      redirectNonAuthenticatedUser(data);
+
       throw new Error(data.error || 'Failed to update application');
     }
     return data.data
@@ -122,6 +134,7 @@ const assignApplicaitonJurys = async (updatedApp, jurorsCount, admin) => {
     const response = await fetch(`${server}/api/datas/applications/jury/assign`, {
       method: 'PUT',
       headers: {
+        "Authorization": `Bearer ${user.token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({applicationId : updatedApp._id, userId:updatedApp.user._id, jurorsCount:jurorsCount, adminId:admin._id}),
@@ -129,6 +142,8 @@ const assignApplicaitonJurys = async (updatedApp, jurorsCount, admin) => {
 
 const data = await response.json();
     if (!response.ok) {
+                  redirectNonAuthenticatedUser(data);
+      
       throw new Error(data.error || 'Failed to update application');
     }
     return data.data
@@ -148,11 +163,14 @@ const fetchAdminEvaluations = async (user) => {
        const response = await fetch(`${server}/api/datas/evaluations/get/admin/${user._id}`, {  
            method: "GET",
            headers: {
+            "Authorization": `Bearer ${user.token}`,
                "Content-Type": "application/json",
        },})
 
        const data = await response.json();
        if (!response.ok)  {
+                    redirectNonAuthenticatedUser(data);
+        
            throw new Error(data?.message || "Erreur lors du chargement des applicaitons");
        }
 
@@ -177,7 +195,7 @@ const fetchAdminEvaluations = async (user) => {
       setIsAnnouncementsLoading(false);
     };
 
-    if(isAnnouncementsLoading)
+    if(isAnnouncementsLoading && !!user.token)
     {
       fetchData();
     }

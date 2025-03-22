@@ -17,14 +17,14 @@ const notificaitonRoutes = require('./notificaitonRoutes');
 
 //router.use('/products', auth,  productRoutes);
 router.use('/announcements', announcementRoutes);
-router.use('/applications', applicationRoutes);
-router.use('/evaluations', evaluationRoutes);
-router.use('/activities', activityRoutes);
-router.use('/faculties', facultyRoutes);
-router.use('/forms', formRoutes);
-router.use('/cases', caseRoutes);
+router.use('/applications', auth, applicationRoutes);
+router.use('/evaluations', auth, evaluationRoutes);
+router.use('/activities', auth, activityRoutes);
+router.use('/faculties', auth, facultyRoutes);
+router.use('/forms', auth, formRoutes);
+router.use('/cases', auth, caseRoutes);
 
-router.use('/notifications', notificaitonRoutes);
+router.use('/notifications', auth, notificaitonRoutes);
 
 
 
