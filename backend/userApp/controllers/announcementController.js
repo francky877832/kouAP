@@ -90,6 +90,11 @@ exports.getAnnouncementsByPage = async (req, res) => {
       */
 
       const announcements = await Announcement.aggregate([
+        {
+          $match: {
+            deadline: { $gt: new Date() } 
+          }
+        },
             {
               $lookup: {
                 from: 'departments',

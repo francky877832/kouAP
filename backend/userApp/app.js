@@ -6,6 +6,13 @@ const userRoutes = require('./routes/userRoutes');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+
+const cron = require('node-cron');
+const Announcement = require("./models/announcementModel")
+const Application = require("./models/applicationModel")
+const { sendSms, createNotification } = require('./utils/twilo')
+
+
 const app = express();
 
 connectDB()
@@ -18,6 +25,51 @@ app.use((req, res, next) => {
       next();
     });
   */
+
+
+
+    const checkDeadlines = async () => {
+      try {
+          const announcements = await Announcement.find({
+              deadline: { $lt: new Date() }, 
+              status: { $ne: 'done' },
+          })
+          .populate('postedBy')
+          .exec();
+  
+          for (const announcement of announcements) {
+              const applicationsCount = await Application.countDocuments({
+                  announcement: announcement._id, 
+              });
+
+              const message =  `An announcement you posted expired. You've got ${applicationsCount} announcement(s).`
+  
+              await sendSms(announcement?.postedBy?.phoneNumber, message);
+              announcement.status = 'done';
+              await announcement.save();
+
+              //
+              const data = { user:announcement?.postedBy, source:'app', title:'Announcement Expired', message, action:'/admin/panel', read:0}
+              //console.log(req)
+              await createNotification({...data});
+
+  
+              console.log(`Annonce ${announcement._id} a expiré et ${applicationsCount} applications associées.`);
+          }
+  
+          if (announcements.length === 0) {
+              console.log('Aucune annonce expirée à traiter.');
+          }
+      } catch (error) {
+          console.error('Erreur lors de la vérification des deadlines:', error);
+      }
+  };
+  //checkDeadlines()
+  cron.schedule('0 0 * * *', checkDeadlines);
+  
+
+
+
 
 app.use(cors());
 

@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const fetch = require("node-fetch");
 const xml2js = require('xml2js');
 
+const { sendSms } = require('../utils/twilo')
+
 require('dotenv').config({ path: '../../shared/.env' });
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -150,6 +152,8 @@ exports.loginUser = async  (req, res, next) => {
       //console.log("LOGIN")
     try
     {
+      /*await sendSms("905347480703", "You just go a new applicaiton.")
+      throw new Error("ee")*/
       let validePassword=false;
       const { tcID, password} = req.body
       

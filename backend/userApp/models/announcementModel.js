@@ -15,6 +15,7 @@ const announcementSchema = new Schema({
   faculty: { type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true },
   department: { type: String, required: false },
   deadline: { type: Date, required: true },
+  status : { type : String, enum:['pending', 'done'], default:'pending'},
   startingDate: { type: Date, required: true },
   postedBy: { type: mongoose.Schema.Types.ObjectId, ref: User, required: true },
   createdAt : { type : Date, default : Date.now },
