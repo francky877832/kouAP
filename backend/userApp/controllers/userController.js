@@ -13,7 +13,7 @@ require('dotenv').config({ path: '../../shared/.env' });
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
+//AWS-3
 
 
 generateToken = (userId) => {
@@ -203,7 +203,12 @@ exports.updateUser = async (req, res) => {
       //const { name, surname, tcID, birthDate, username, email, phoneNumber, address, password } = req.body;
       const updatedUser = req.body
       const cv = req.file
-      console.log(req.file)
+  
+      //console.log(req.file)
+      //console.log(req.files)
+
+      //console.log(req.body)
+
       let password;
       if(updatedUser.password)
       {
@@ -211,7 +216,7 @@ exports.updateUser = async (req, res) => {
       }
       if(cv)
       {
-        updatedUser.cv = cv.path
+        updatedUser.cv = cv.location
       }
 
       updatedUser.password = password

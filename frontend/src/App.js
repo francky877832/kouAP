@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -38,15 +38,18 @@ import { UserContext } from "./context/UserContext";
 
 const App = () => {
 
-    const { user, setUser, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
+    const {  isAuthenticated, setIsAuthenticated  } = useContext(UserContext); //user, setUser,
+
+    const [user, setUser] = useState({})
   
     useEffect(() => {
 
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-    //alert(token)
+    //alert(storedUser)
 
     if (token && storedUser) {
+      //alert(token)
       setIsAuthenticated(true); 
       setUser({...JSON.parse(storedUser), token:token})
     } else {

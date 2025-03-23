@@ -116,7 +116,7 @@ exports.getJuryEvaluation = async (req, res) => {
 exports.updateEvaluation = async (req, res) => {
   try {
     const { status, summary, juryIndex } = req.body;
-    const file = req.file ? req.file.path : null; // Fichier reçu via Multer
+    const file = req.file ? req.file.location : null; // Fichier reçu via Multer
 
     const evaluation = await Evaluation.findById(req.params.id);
     if (!evaluation) {

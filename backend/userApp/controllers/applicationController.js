@@ -184,7 +184,7 @@ exports.createApplication = async (req, res) => {
         newCat = act.map((a, index) => {
           if(a.number == number)
           {
-            return {...a, proof:f.path,}
+            return {...a, proof:f.location,}
           }
           if (!!a.cases) return { ...a, cases: new mongoose.Types.ObjectId(a.cases) };
           return {...a}
@@ -193,7 +193,7 @@ exports.createApplication = async (req, res) => {
       }
       else
       {
-        applicationDocument = f.path
+        applicationDocument = f.location
       }
     })
     //console.log(categorys)

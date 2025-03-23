@@ -4,24 +4,15 @@ import NotificationIcon from '../components/NotificationIcon';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
 
-const UserPanel = () => {
-  
+const UserPanel = ({}) => {
+  //console.log(user)
     const {user, updateUser } = useContext(UserContext)
-  const [updatedUser, setUpdatedUser] = useState({
-    name: '',
-    surname: '',
-    tcID: '',
-    birthDate: '',
-    username: '',
-    email: '',
-    phoneNumber: '',
-    address: '',
-    cv: '',
-    password: '', // New field for password
-  });
+  const [updatedUser, setUpdatedUser] = useState({...user});
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState(null); // Gérer le fichier sélectionné
+
 
   // Function to handle form changes
   const handleInputChange = (e) => {
@@ -32,14 +23,15 @@ const UserPanel = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setFile(file);
       const fileUrl = URL.createObjectURL(file);
       setUpdatedUser({ ...updatedUser, cv: fileUrl });
     }
   };
 
   useEffect(() => {
-    setUpdatedUser({ ...user});
-  }, [isLoading]);
+    setUpdatedUser({...user});
+  }, [isLoading, user]);
 
   const handleUpdate = async () => {
     setIsLoading(true)
@@ -60,8 +52,9 @@ const UserPanel = () => {
     }
     
   
-    if (updatedUser.cv) {
-      formData.append('cv', updatedUser.cv);
+    if (file) {
+      //console.log(updatedUser)
+      formData.append('cv', file);
     }
 
     const res = await updateUser(formData)

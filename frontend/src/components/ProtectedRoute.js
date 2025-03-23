@@ -12,13 +12,23 @@ useEffect(() => {
   }
 }, []);
 */
-const ProtectedRoute = ({ element: Component, roles, isAuthenticated, user, ...rest }) => {
+const ProtectedRoute = ({ element: Component, roles, user, ...rest }) => {
   
-
+    const {setUser, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
 
     const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const storedUser = JSON.parse(localStorage.getItem('user'));
     //alert(token)
+  useEffect(() => {
+    if (token && storedUser)
+    {
+      setUser({...storedUser, token:token})
+      //alert(token)
+      console.log(user)
+    }
+
+    }, [])
+    
 
   if ((token && storedUser) && !roles?.includes(storedUser?.role)) {
     return <Navigate to="/access-denied" replace />;
@@ -30,7 +40,7 @@ const ProtectedRoute = ({ element: Component, roles, isAuthenticated, user, ...r
 
   }
 
-  return <Component {...rest} />;
+  return <Component {...rest} user={user} />;
 };
 
 export default ProtectedRoute;
