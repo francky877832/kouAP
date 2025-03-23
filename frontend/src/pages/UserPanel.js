@@ -3,10 +3,11 @@ import { Button, Form, Card } from 'react-bootstrap';
 import NotificationIcon from '../components/NotificationIcon';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
+import UserMenu from './UserMenu';
 
 const UserPanel = ({}) => {
   //console.log(user)
-    const {user, updateUser } = useContext(UserContext)
+    const {user, updateUser, isAuthenticated } = useContext(UserContext)
   const [updatedUser, setUpdatedUser] = useState({...user, password:""});
 
   const [isEditing, setIsEditing] = useState(false);
@@ -42,6 +43,7 @@ const UserPanel = ({}) => {
     formData.append('surname', updatedUser.surname);
     formData.append('tcID', updatedUser.tcID);
     formData.append('birthDate', updatedUser.birthDate);
+
     formData.append('username', updatedUser.username);
     formData.append('email', updatedUser.email);
     formData.append('phoneNumber', updatedUser.phoneNumber);
@@ -88,6 +90,8 @@ const UserPanel = ({}) => {
       <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
         <NotificationIcon />
       </div>
+
+      <UserMenu user={user} isAuthenticated={isAuthenticated} />
       <Card className="p-4">
         <Button
           variant="info"

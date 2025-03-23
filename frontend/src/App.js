@@ -34,6 +34,7 @@ import UserList from "./pages/UserList";
 import UserPanel from "./pages/UserPanel";
 import UserApplications from "./pages/UserApplications";
 import { UserContext } from "./context/UserContext";
+import Loading from "./components/Loading";
 
 
 const App = () => {
@@ -52,7 +53,7 @@ const App = () => {
           //alert(token)
 
           if (token && storedUser) {
-            alert(token)
+            //alert(token)
             setIsAuthenticated(true); 
             setUser({...JSON.parse(storedUser), token:token})
           } else {
@@ -67,6 +68,10 @@ const App = () => {
       }
 
   }, [isLoading]);
+  if(isLoading)
+  {
+    return <Loading/>
+  }
 
   return (
     <Router>
