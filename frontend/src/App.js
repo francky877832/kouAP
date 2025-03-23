@@ -38,24 +38,35 @@ import { UserContext } from "./context/UserContext";
 
 const App = () => {
 
-    const {  isAuthenticated, setIsAuthenticated  } = useContext(UserContext); //user, setUser,
+    const {user, setUser,  isAuthenticated, setIsAuthenticated  } = useContext(UserContext); //user, setUser,
 
-    const [user, setUser] = useState({})
+    //const [user, setUser] = useState({})
+    const [isLoading, setIsLoading] = useState(true)
   
     useEffect(() => {
+      const load = () => {
+        setIsLoading(true)
+          
+          const token = localStorage.getItem('token');
+          const storedUser = localStorage.getItem('user');
+          //alert(token)
 
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    //alert(storedUser)
+          if (token && storedUser) {
+            alert(token)
+            setIsAuthenticated(true); 
+            setUser({...JSON.parse(storedUser), token:token})
+          } else {
+            setIsAuthenticated(false); 
+          }
+        setIsLoading(false)
+      }
 
-    if (token && storedUser) {
-      //alert(token)
-      setIsAuthenticated(true); 
-      setUser({...JSON.parse(storedUser), token:token})
-    } else {
-      setIsAuthenticated(false); 
-    }
-  }, []);
+      if(isLoading)
+      {
+        load()
+      }
+
+  }, [isLoading]);
 
   return (
     <Router>
@@ -71,7 +82,7 @@ const App = () => {
 
 
 {/* routes accessible only by the applicant */}
-        <Route path="/user/apply" element={ <ProtectedRoute element={MultiStepForm} isAuthenticated={isAuthenticated} user={user} roles={["user", "dev"]} />} />
+        <Route path="/user/apply" element={ <ProtectedRoute element={MultiStepForm} isLoading={isLoading} isAuthenticated={isAuthenticated} user={user} roles={["user", "dev"]} />} />
         <Route path="/user/panel" element={ <ProtectedRoute element={UserPanel} isAuthenticated={isAuthenticated} user={user} roles={["user", "dev"]} />} />
         <Route path="/user/applications" element={ <ProtectedRoute element={UserApplications} isAuthenticated={isAuthenticated} user={user} roles={["user", "dev"]} />} />
 

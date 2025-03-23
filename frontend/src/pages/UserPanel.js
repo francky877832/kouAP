@@ -7,7 +7,7 @@ import Loading from '../components/Loading';
 const UserPanel = ({}) => {
   //console.log(user)
     const {user, updateUser } = useContext(UserContext)
-  const [updatedUser, setUpdatedUser] = useState({...user});
+  const [updatedUser, setUpdatedUser] = useState({...user, password:""});
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ const UserPanel = ({}) => {
   };
 
   useEffect(() => {
-    setUpdatedUser({...user});
+    setUpdatedUser({...user, password:""});
   }, [isLoading, user]);
 
   const handleUpdate = async () => {

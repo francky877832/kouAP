@@ -11,7 +11,7 @@ const userCtrl = require('../controllers/userController');
 //User Route
 router.get("/get/all", auth,  userCtrl.getUsers);
 
-router.post("/control", auth, userCtrl.controlUser);
+router.post("/control", userCtrl.controlUser);
 router.post("/signUp",  cvUpload.single("cv"), userCtrl.signupUser);
 router.post("/login", userCtrl.loginUser);
 

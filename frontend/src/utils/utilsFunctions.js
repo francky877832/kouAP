@@ -35,9 +35,9 @@ export const round = (number) => {
 
 export const redirectNonAuthenticatedUser = (data) => {
   if (["TokenMissing", "TokenExpiredError", "TokenAnotherError", "TokenProcessingError" ].includes(data?.type)) {
-    alert(data);
+    //alert(data);
     console.log("An error occured while processing the token.");
-    localStorage.removeItem("token"); // Supprime le token
+    //localStorage.removeItem("token"); // Supprime le token
     window.location.href = "/login"; // Redirige vers la page de connexion
     return;
   }

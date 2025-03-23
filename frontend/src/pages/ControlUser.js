@@ -15,6 +15,8 @@ const ControlUser = () => {
   const [error, setError] = useState("");
   const [userExists, setUserExists] = useState(null)
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const navigate = useNavigate();
 
 
@@ -27,18 +29,24 @@ const ControlUser = () => {
       return;
     }
 
+    setIsLoading(true)
+
     const result = await controlUser({name, surname, birthYear, tcID})
-    setUserExists(result)
+    //setUserExists(result)
+
+    if(!result)
+      {
+        navigate("/register", {
+          state: {tcID, name, surname, birthYear},
+        }); 
+      }
     
     setError(""); // Reset error after submission
+    setIsLoading(false)
+
   };
 
-  if(userExists)
-  {
-    navigate("/register", {
-      state: {tcID, name, surname, birthYear},
-    }); 
-  }
+
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
@@ -96,6 +104,9 @@ const ControlUser = () => {
           <button type="submit" className="btn btn-success w-100">
             Control On E-Devlet
           </button>
+          <p className="text-center mt-3">
+              Already have an account? <a href="/login">Login</a>
+          </p>
         </form>
       </div>
     </div>

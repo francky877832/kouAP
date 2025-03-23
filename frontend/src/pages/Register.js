@@ -56,12 +56,23 @@ const Register = () => {
         e.preventDefault();
         if (!validateForm() || !formData.cv) return;
 
-        setIsLoading(true);
         const data = new FormData();
-        data.append("tcID", "tcID");
-        data.append("name", "name");
-        data.append("surname", "surname");
-        data.append("birthYear", "12-03-2004");
+        if(!tcID || !name || !surname || !birthYear)
+        {
+            const isConfirmed = window.confirm("You must first verified you identity to register");
+            if(isConfirmed)
+            {
+                navigate("/control-user")
+            }
+            return;
+        }
+
+        setIsLoading(true);
+
+        data.append("tcID", tcID);
+        data.append("name", name);
+        data.append("surname", surname);
+        data.append("birthYear", birthYear);
 
         data.append("email", formData.email);
         data.append("phoneNumber", formData.phoneNumber);
@@ -74,7 +85,7 @@ const Register = () => {
         const res = await signUpUser(data);
 
         if (res) {
-            //navigate("/", { state: { user: res } });
+            navigate("/user/panel", { state: { user: res } });
         }
 
         setIsLoading(false);
@@ -178,6 +189,10 @@ const Register = () => {
                             )}
 
                             <button type="submit" className="btn btn-primary w-100">Register</button>
+                            <p className="text-center mt-3">
+                                Already have an account? <a href="/login">Login</a>
+                            </p>
+
                         </form>
                     </div>
                 </div>

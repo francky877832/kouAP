@@ -48,7 +48,7 @@ const UserApplications = () => {
         loadApplications();
     }
     
-  }, [isLoading]);
+  }, [isLoading, user]);
 
   const getStatusBadge = (status) => {
     switch (status) {

@@ -66,7 +66,13 @@ const generateSoapRequest = (tcID, name, surname, birthYear) => {
 
 exports.controlUser = async (req, res, next) => {
     const {tcID, name, surname, birthYear } = req.body
-    console.log(req.body)
+    //console.log(req.body)
+    const userID = await User.findOne({ tcID: tcID })
+      //console.log(userıd)
+      if(userID)
+      {
+          return res.status(401).json({ error: 'auth/user-already-exists' });
+      }
     const soapRequest = generateSoapRequest(tcID, name, surname, birthYear);
   
   try {
@@ -115,14 +121,14 @@ exports.controlUser = async (req, res, next) => {
 
 
 exports.signupUser = async (req, res, next) => {
-    console.log(req.body)
+    //console.log(req.body)
     try {
-      const {email, password, birthYear} = req.body
+      const {email, password, birthYear, tcID} = req.body
       const cv = req.file
       let user, userID;
       user = await User.findOne({ email: email })
       userID = await User.findOne({ tcID: tcID })
-      //console.log(user)
+      //console.log(userıd)
       if(user || userID)
       {
           return res.status(401).json({ error: 'auth/user-already-exists' });
@@ -136,7 +142,7 @@ exports.signupUser = async (req, res, next) => {
         birthDate: birthYear,
         username: await generateUniqueUsername(req.body),
         //image: 'https://www.dropbox.com/scl/fi/41yuy1221z1cklqy2y5jn/new-user.jpg?rlkey=wh4l7xh2ueg6nd3ws3rcfa2zt&st=hecgnuvg&dl=1'//DROPBOX images
-        cv : cv.path
+        cv : cv.location
       });
       await user.save();
   
@@ -150,6 +156,7 @@ exports.signupUser = async (req, res, next) => {
   
 exports.loginUser = async  (req, res, next) => {
       //console.log("LOGIN")
+      console.log(req.body)
     try
     {
       /*await sendSms("905347480703", "You just go a new applicaiton.")
@@ -166,7 +173,7 @@ exports.loginUser = async  (req, res, next) => {
                     return res.status(401).json({ error: 'auth/user-not-found' });
               }
          
-              if(!isBcryptHash(password))
+             /* if(!isBcryptHash(password))
               {
                 //console.log(user.password)
                 validePassword = await bcrypt.compare(password.toString(), user.password)
@@ -176,8 +183,10 @@ exports.loginUser = async  (req, res, next) => {
               {
                 validePassword = password.toString() === user.password.toString()
                 //console.log(" not validePassword")
-              }
-                
+              }*/
+
+              validePassword = await bcrypt.compare(password.toString(), user.password)
+
               if (!validePassword) {
                 console.log('auth/incorrect-password')
                 return res.status(401).json({ error: 'auth/incorrect-password' });

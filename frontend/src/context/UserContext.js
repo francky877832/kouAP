@@ -9,7 +9,9 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   // 67c4712f12d662f6eeb9d7fd - applicant
   //67d8f4f2c2b55c3c4f8b3191 - manager
-    const [user, setUser] = useState({_id:"67c4712f12d662f6eeb9d7fd", username:"Francky", title:"Profesor", role:"dev"});
+    const token = localStorage.getItem('token');
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const [user, setUser] = useState(token&&storedUser?storedUser:{}) //{_id:"67c4712f12d662f6eeb9d7fd", username:"Francky", title:"Profesor", role:"dev"});
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     
     
@@ -56,7 +58,7 @@ export const UserProvider = ({ children }) => {
          }
          return data.data; 
       } catch (error) {
-        //alert(error)
+        alert(error)
         console.error(error);
       }
     }
@@ -85,7 +87,7 @@ export const UserProvider = ({ children }) => {
         return await loginUser({tcID:newUser.get('tcID'), password:newUser.get('password')})
 
       } catch (error) {
-        //alert(error)
+        alert(error)
         console.error(error);
         return null
       }

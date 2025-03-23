@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
+import Loading from './Loading';
 
 /*
 useEffect(() => {
@@ -12,35 +13,43 @@ useEffect(() => {
   }
 }, []);
 */
-const ProtectedRoute = ({ element: Component, roles, user, ...rest }) => {
+const ProtectedRoute = ({ element: Component, roles, isLoading, /*isAuthenticated, user,*/ ...rest }) => {
   
-    const {setUser, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
+    const {user, setUser, isAuthenticated, setIsAuthenticated  } = useContext(UserContext);
 
-    const token = localStorage.getItem('token');
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    //alert(token)
-  useEffect(() => {
-    if (token && storedUser)
-    {
-      setUser({...storedUser, token:token})
-      //alert(token)
-      console.log(user)
-    }
+    const [token, setToken] = useState(null)
+    const [storedUser, setStoredUser] = useState(user)
+    /*useEffect(() => {
+      const token = localStorage.getItem('token');
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      setToken(token)
+      setStoredUser(storedUser)
+      alert(token)
+    }, [])*/
+  
+   
 
-    }, [])
-    
+  //if ((token && storedUser) && !roles?.includes(storedUser?.role)) {
+  if(!isLoading){
+ 
 
-  if ((token && storedUser) && !roles?.includes(storedUser?.role)) {
+  if(isAuthenticated && !roles?.includes(storedUser?.role)){
     return <Navigate to="/access-denied" replace />;
   }
-  
-  if(!(token && storedUser))
+
+  //if(!(token && storedUser)){
+  if(!isAuthenticated)
   {
     return <Navigate to="/login" replace />;
 
   }
 
-  return <Component {...rest} user={user} />;
+  return <Component {...rest} />;
+}
+else
+{
+  return <Loading/>
+}
 };
 
 export default ProtectedRoute;
