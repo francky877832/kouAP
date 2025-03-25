@@ -4,10 +4,11 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { ManagerContext } from "../context/ManagerContext";
 import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
+import UserMenu from "./UserMenu";
 
 const FormManager = () => {
     const { deleteForm, updateForm, createForm } = useContext(ManagerContext)
-    const { userForms, isUserFormsLoading, setIsUserFormsLoading, activities} = useContext(UserContext)
+    const {user, isAuthenticated, userForms, isUserFormsLoading, setIsUserFormsLoading, activities} = useContext(UserContext)
     const [isLoading, setIsLaoding] = useState(false)
     //console.log(userForms)
   const [forms, setForms] = useState([])
@@ -138,6 +139,8 @@ const FormManager = () => {
   }
   return (
     <div className="container mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2>Forms Management</h2>
 
       {/* Bouton pour ajouter un nouveau formulaire */}

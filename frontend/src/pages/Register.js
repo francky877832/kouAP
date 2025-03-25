@@ -17,7 +17,9 @@ const Register = () => {
         password: "",
         confirmPassword: "",
         role: "user",
+        location : "",
         cv: null,
+        signature: null,
     });
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -31,9 +33,10 @@ const Register = () => {
     };
 
     const handleFileChange = (e) => {
+        const {name, value} = e.target
         setFormData((prev) => ({
             ...prev,
-            cv: e.target.files[0],
+            [name] : e.target.files[0], //name and signature
         }));
     };
 
@@ -42,11 +45,15 @@ const Register = () => {
         if (!formData.email) newErrors.email = "Email is required.";
         if (!formData.phoneNumber) newErrors.phoneNumber = "Phone number is required.";
         if (!formData.address) newErrors.address = "Address is required.";
+        if (!formData.location) newErrors.location = "Location is required.";
         if (!formData.password) newErrors.password = "Password is required.";
         if (formData.password !== formData.confirmPassword)
             newErrors.confirmPassword = "Passwords do not match.";
         if (formData.role === "user" && !formData.cv) {
             newErrors.cv = "CV is required for users.";
+        }
+        if (formData.role === "user" && !formData.signature) {
+            newErrors.cv = "Signature is required for users.";
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -77,9 +84,10 @@ const Register = () => {
         data.append("email", formData.email);
         data.append("phoneNumber", formData.phoneNumber);
         data.append("address", formData.address);
-        data.append("password", formData.password);
+        data.append("location", formData.location);
         data.append("role", formData.role);
         data.append("cv", formData.cv);
+        data.append("signature", formData.signature);
        // console.log(formData.email)
 
         const res = await signUpUser(data);
@@ -174,6 +182,20 @@ const Register = () => {
                                 </select>
                             </div>
 
+                            
+                            <div className="mb-3">
+                                <label className="form-label">Location (Bulundugu Kurum):</label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    className="form-control"
+                                    value={formData.location}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                {errors.location && <div className="text-danger">{errors.location}</div>}
+                            </div>
+
                             {formData.role === "user" && (
                                 <div className="mb-3">
                                     <label className="form-label">CV:</label>
@@ -185,6 +207,20 @@ const Register = () => {
                                         onChange={handleFileChange}
                                     />
                                     {errors.cv && <div className="text-danger">{errors.cv}</div>}
+                                </div>
+                            )}
+
+                            {formData.role === "user" && (
+                                <div className="mb-3">
+                                    <label className="form-label">Signature:</label>
+                                    <input
+                                        type="file"
+                                        name="signature"
+                                        className="form-control"
+                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.svg"
+                                        onChange={handleFileChange}
+                                    />
+                                    {errors.signature && <div className="text-danger">{errors.signature}</div>}
                                 </div>
                             )}
 

@@ -5,6 +5,8 @@ import Loading from '../components/Loading';
 import { AdminContext } from '../context/AdminContext';
 import { capitalize, formatDate } from '../utils/utilsFunctions';
 import ApplicaitonsView from '../components/ApplicationsView';
+import UserMenu from './UserMenu';
+import { UserContext } from '../context/UserContext';
 
 
 
@@ -15,7 +17,8 @@ const AllCandidates = (  isApplicationsLoading, applications_,
   const applications = state?.applications || [];
     const {assignApplicaitonJurys} = useContext(AdminContext)
     const [assignButtonDisabled, setAssignButtonDisabled] = useState(false)
-    
+     const {user, isAuthenticated } = useContext(UserContext)
+
 
   
   if(isApplicationsLoading)
@@ -24,6 +27,8 @@ const AllCandidates = (  isApplicationsLoading, applications_,
   }
   return (
     <div className="applications-section container mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
         <ApplicaitonsView isApplicationsLoading={isApplicationsLoading}
                 applications_={applications}
                 limit1={limit1} limit2={limit2} jurorsCount={jurorsCount}

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { evaluationDocsUpload } = require("../middlewares/multer-config");
+const { evaluationDocsUpload } = require("../middlewares/awsMiddleware");
 
 const EvaluationController = require("../controllers/evaluationController");
 

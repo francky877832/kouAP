@@ -7,6 +7,7 @@ import { facultyDepartments } from "../datas/schoolDepartments";
 import { titles } from "../datas/schoolDepartments";
 import { server } from "../remote/server";
 import Loading from "../components/Loading";
+import UserMenu from "./UserMenu";
 
 const AnnouncementForm = () => {
   const location = useLocation();
@@ -18,7 +19,7 @@ const AnnouncementForm = () => {
  
   const [isLoading, setIsLoading] = useState(false)
 
-  const { user } = useContext(UserContext)
+  const { user, isAuthenticated } = useContext(UserContext)
   
 
   const [formData, setFormData] = useState({
@@ -132,7 +133,9 @@ const AnnouncementForm = () => {
 
   return (
     <div className="container mt-5">
+        <UserMenu user={user} isAuthenticated={isAuthenticated} />
       <div className="card shadow-lg p-4">
+
         <h2 className="text-center">{announcement ? 'Edit' : 'Add'} Announcement</h2>
         <form onSubmit={handleSubmit}>
           {/* Announcement Title */}

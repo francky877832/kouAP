@@ -123,8 +123,9 @@ exports.controlUser = async (req, res, next) => {
 exports.signupUser = async (req, res, next) => {
     //console.log(req.body)
     try {
-      const {email, password, birthYear, tcID} = req.body
-      const cv = req.file
+      const {email, password, birthYear, tcID, location} = req.body
+      const cv = req.files['cv'][0]
+      const signature = req.files['signature'][0]
       let user, userID;
       user = await User.findOne({ email: email })
       userID = await User.findOne({ tcID: tcID })
@@ -138,11 +139,13 @@ exports.signupUser = async (req, res, next) => {
       user = new User({
         ...req.body, 
         email: email,
+        location: location,
         password: hash,
         birthDate: birthYear,
         username: await generateUniqueUsername(req.body),
         //image: 'https://www.dropbox.com/scl/fi/41yuy1221z1cklqy2y5jn/new-user.jpg?rlkey=wh4l7xh2ueg6nd3ws3rcfa2zt&st=hecgnuvg&dl=1'//DROPBOX images
-        cv : cv.location
+        cv : cv.location,
+        signature : signature.location
       });
       await user.save();
   
@@ -156,7 +159,7 @@ exports.signupUser = async (req, res, next) => {
   
 exports.loginUser = async  (req, res, next) => {
       //console.log("LOGIN")
-      console.log(req.body)
+      //console.log(req.body)
     try
     {
       /*await sendSms("905347480703", "You just go a new applicaiton.")
@@ -173,7 +176,7 @@ exports.loginUser = async  (req, res, next) => {
                     return res.status(401).json({ error: 'auth/user-not-found' });
               }
          
-             /* if(!isBcryptHash(password))
+              if(!isBcryptHash(password))
               {
                 //console.log(user.password)
                 validePassword = await bcrypt.compare(password.toString(), user.password)
@@ -183,9 +186,9 @@ exports.loginUser = async  (req, res, next) => {
               {
                 validePassword = password.toString() === user.password.toString()
                 //console.log(" not validePassword")
-              }*/
+              }
 
-              validePassword = await bcrypt.compare(password.toString(), user.password)
+              //validePassword = await bcrypt.compare(password.toString(), user.password)
 
               if (!validePassword) {
                 console.log('auth/incorrect-password')

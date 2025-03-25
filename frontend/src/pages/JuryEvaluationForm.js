@@ -1,10 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { JuryContext } from '../context/JuryContext';
+import { UserContext } from '../context/UserContext';
+import UserMenu from './UserMenu';
 
 const JuryEvaluationForm = ({ application }) => {
   const [personalReport, setPersonalReport] = useState('');
   const [evaluation, setEvaluation] = useState('');
   const [submitted, setSubmitted] = useState(false);
+    const { user, isAuthenticated } = useContext(UserContext)
+  
 
   const handleReportChange = (e) => {
     setPersonalReport(e.target.value);
@@ -29,7 +33,9 @@ const JuryEvaluationForm = ({ application }) => {
 
   return (
     <div className="jury-evaluation-form">
-      <h3>Evaluation for {application.user.name}</h3>
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
+      <h3>Evaluation for {application?.user?.name}</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="personalReport">Personal Report</label>

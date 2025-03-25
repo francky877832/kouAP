@@ -13,6 +13,7 @@ import { capitalize, formatDate } from '../utils/utilsFunctions';
 import ApplicaitonsView from '../components/ApplicationsView';
 import EvaluationsView from '../components/EvaluationsView';
 import NotificationIcon from '../components/NotificationIcon';
+import UserMenu from './UserMenu';
 
 const AdminPanel = () => {
   const limit1 = 0, limit2=3
@@ -27,7 +28,7 @@ const AdminPanel = () => {
   const {fetchAnnouncementsByUser, announcements, isAnnouncementsLoading, fetchApplications, updateApplicationStatus, assignApplicaitonJurys,
     fetchAdminEvaluations,
   } = useContext(AdminContext)
-  const { user } = useContext(UserContext)
+  const { user, isAuthenticated } = useContext(UserContext)
 
 //
   
@@ -114,6 +115,9 @@ const AdminPanel = () => {
       <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
         <NotificationIcon />
       </div>
+
+      <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
 
       <h2 className="text-center mb-4">Admin Panel</h2>
 

@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { capitalize } from "../utils/utilsFunctions";
+import UserMenu from "./UserMenu";
+import { UserContext } from "../context/UserContext";
 
 const JuryEvaluationDetails = () => {
   const location = useLocation();
   const { evaluation } = location.state || {};
+    const { user, isAuthenticated } = useContext(UserContext)
+  
 //console.log(evaluation)
   if (!evaluation) {
     return <p className="text-center text-danger">No evaluation data available</p>;
@@ -12,6 +16,8 @@ const JuryEvaluationDetails = () => {
 
   return (
     <div className="container mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2 className="mb-3">Evaluation Details</h2>
 
       <div className="card">

@@ -8,11 +8,12 @@ import { formatDate } from '../utils/utilsFunctions';
 import AnnouncementItem from '../components/AnnouncementItem';
 import { titles } from '../datas/schoolDepartments';
 import { UserContext } from '../context/UserContext';
+import UserMenu from './UserMenu';
 
 const AllAnnouncements = () => {
   const location = useLocation();
   const dataReceived = location?.state?.announcements
-  const { user } = useContext(UserContext)
+  const { user, isAuthenticated } = useContext(UserContext)
   const [announcements, setAnnouncements] = useState([]);
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +29,7 @@ const AllAnnouncements = () => {
 
   useEffect(() => {
     const getAnnouncements = async () => {
+      setIsLoading(true)
       const data = await fetchAnnouncements(currentPage, limit);
       setAnnouncements(data.data || []);
       setTotalPages(data.totalPages);
@@ -74,6 +76,8 @@ const AllAnnouncements = () => {
 
   return (
     <div className="container mt-5">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2 className="text-center mb-4">All Announcements</h2>
 
       {/* Buttons for Position */}

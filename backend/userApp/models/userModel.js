@@ -9,7 +9,7 @@ const db = mongoose.connection.useDb("kouap");
 // Définition du schéma utilisateur
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
-  surnname: { type: String, required: false, trim: true },
+  surname: { type: String, required: false, trim: true },
   tcID: { type: String, required: true, trim: true },
   birthDate: { type: Date, required: true, trim: true },
 
@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['user', 'admin', 'jury', 'manager', 'dev'], default: 'user' },
   cv : { type: String, required: function(){ return this.role=='user'} },
 
-  username: { type: String, required: false, trim: true },
+  location: { type: String, required: false, trim: true },
 
 
   //title: { type: String, enum: ["Candidate", "Assistant Professor", "Associate Professor", "Professor"], required: false, },

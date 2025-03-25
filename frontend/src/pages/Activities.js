@@ -5,9 +5,10 @@ import { FaEdit, FaTrashAlt, FaCheck, FaTimes } from "react-icons/fa";  // Impor
 import '../styles/activitiesStyles.css';
 import { ManagerContext } from "../context/ManagerContext";
 import Loading from "../components/Loading";
+import UserMenu from "./UserMenu";
 
 const Activities = () => {
-  const { activities, user, isActivitiesLoading, } = useContext(UserContext);
+  const { activities, user, isActivitiesLoading, isAuthenticated } = useContext(UserContext);
   const { deleteActivity, updateActivity } = useContext(ManagerContext);
 
   const [editIndex, setEditIndex] = useState(null);
@@ -81,8 +82,10 @@ const Activities = () => {
     return <Loading/>
   }
 
+
   return (
     <div className="container-lg mt-4">
+      <UserMenu user={user} isAuthenticated={isAuthenticated} />
       <h2 className="text-center mb-4">Liste des Activités</h2>
       <Table striped bordered hover responsive>
         <thead>

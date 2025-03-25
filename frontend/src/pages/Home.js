@@ -7,6 +7,8 @@ import InlineLoading from "../components/InlineLoading";
 import { AdminContext } from "../context/AdminContext";
 import { formatDate } from "../utils/utilsFunctions";
 import AnnouncementItem from "../components/AnnouncementItem";
+import { UserContext } from "../context/UserContext";
+import UserMenu from "./UserMenu";
 
 
 const fetchAnnouncements = async () => {
@@ -27,6 +29,8 @@ const Home = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const limit = 10
+      const { user, isAuthenticated } = useContext(UserContext)
+    
   
 
   useEffect(() => {
@@ -44,6 +48,8 @@ const Home = () => {
 
   return (
     <div className="container mt-5">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <div className="text-center">
         <h1 className="display-4">Welcome to KOU Akademik Personel</h1>
         <p className="lead">Your portal for academic job opportunities at KOU University</p>

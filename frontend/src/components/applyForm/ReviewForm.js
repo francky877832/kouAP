@@ -4,15 +4,16 @@ import html2pdf from 'html2pdf.js';
 import { UserContext } from '../../context/UserContext';
 import Loading from '../Loading';
 import '../../styles/applyFormStyles.css'
-import { round } from '../../utils/utilsFunctions';
+import { getDate, round } from '../../utils/utilsFunctions';
 import InlineLoading from '../InlineLoading'
-import { casedActivities } from '../../datas/schoolDepartments';
+import { casedActivities, titles, titlesToNote } from '../../datas/schoolDepartments';
 
-const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit }) => {
+const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announcement, selectedOption, setSelectedOption}) => {
   const { userForms, isUserFormsLoading, activities, cases, coefs} = useContext(UserContext);
   const [datas, setDatas] = useState([]);
   const [points, setPoints] = useState({})
   const [isLoading, setIsLoading] = useState(true)
+  const { user } = useContext(UserContext)
 
 //console.log("userForms")
 //console.log(formsDatas)
@@ -337,8 +338,77 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
     e.preventDefault();
     setIsLoading(true)
     const element = document.getElementById("table-to-pdf");
-    handleGeneratePDF(element)
+    handleGeneratePDF(element, selectedOption)
     setIsLoading(false)
+  }
+
+  const header1 = {
+    "Ad Soyad(Ünvan)" : `${user?.name}`,
+    "Tarih" : `${getDate()}`,
+    "Bulunduğu Kurum" : `${user?.location}`,
+    "Başvurduğu Akademik Kadro": titles[announcement?.position-1]?.label,
+  }
+
+
+  const header2 = [
+    "Dr. Öğretim Üyesi (İlk Atama)",
+    "Dr. Öğretim Üyesi (Yeniden Atama: Son atama tarihinden başvuru tarihine kadar olmak üzere dönem faaliyetleri esas\
+      alınacaktır)",
+    "Doçent (Doktora / Sanatta yeterlik/ tıp/diş uzmanlık ünvanını aldıktan sonraki faaliyetleri esas alınacaktır) ",
+    "Profesör (Doçent ünvanını aldıktan sonraki faaliyetleri esas alınacaktır)",
+
+  ]
+
+
+  const printHeader = () => {
+    return (
+      <>
+      {
+        Object.keys(header1).map((h, index) => {
+          return (
+            <tr key={index}>
+              <th colSpan={1}>{h} : </th>
+              <td colSpan={3}>{header1[h]}</td>
+            </tr>
+          )
+        })
+      
+      }
+        <tr>
+          <th colSpan={1}>İmza: </th>
+          <td colSpan={3}> <img src={user.signature} alt="User Signature" style={{ width: "100px", height: "200" }} />  </td>
+        </tr>
+
+        <tr>
+          <th colSpan={5} className='text-center'> Puanlanan Faaliyet Dönemi </th>
+        </tr>
+
+        {header2.map((item, index) => (
+            <tr key={index}>
+              <th colSpan={3} className='text-center'> 
+                <label className="form-check-label" htmlFor={`radio-${index}`}>{item}</label>
+              </th>
+              
+              <td colSpan={0}>
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="academicRole"
+                  id={`radio-${index}`}
+                  value={item}
+                  checked={selectedOption === index}
+                  onChange={() => setSelectedOption(index)}
+                />
+              </td>
+            </tr>
+      ))}
+
+<tr>
+          <th colSpan={5} className='text-center'> ETKINLIK </th>
+        </tr>
+
+     </>
+    )
   }
   
   if (isUserFormsLoading || isLoading) {
@@ -351,8 +421,17 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       <div id="table-to-pdf">
         <h2 className="my-4 text-center">Application Resume</h2>
         <table className="table table-bordered table-striped">
-          
+        <caption>Genel Punalama Bilgileri</caption>
+
+          <thead>
+            <tr>
+              <th colSpan={4} className='text-center'>Genel Punalama Bilgileri</th>
+            </tr>
+            {printHeader()}
+          </thead>
+
           <tbody>
+      
             {[...datas?.slice(0)].map((data, index) => (
             
               <>

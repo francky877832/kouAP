@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Modal, Button, Table, Form } from "react-bootstrap";
 import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
+import UserMenu from "./UserMenu";
 
 const sampleData = [
   { _id: "1", name: "John Doe", email: "john.doe@email.com", phoneNumber: "1234567890", address: "New York", role: "user", cv: "cv-john.pdf" },
@@ -12,7 +13,7 @@ const sampleData = [
 
 const UserList = () => {
 
-  const { fetchUsers, updateUser, updateUserRole, } = useContext(UserContext)
+  const { user, isAuthenticated, fetchUsers, updateUser, updateUserRole, } = useContext(UserContext)
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -104,6 +105,8 @@ const handleNextPage = () => {
 
   return (
     <div className="container mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2 className="mb-3">User List</h2>
 
       <Table striped bordered hover responsive>

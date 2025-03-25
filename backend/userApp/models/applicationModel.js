@@ -15,7 +15,7 @@ const applicationSchema = new Schema({
   categories: { type: Map, of: Schema.Types.Mixed, required: true }, // Utilisation de Map pour des clés dynamiques
   submittedOn: { type: Date, default: Date.now }, // Date de soumission
   announcement :  { type: Schema.Types.ObjectId, ref: Announcement, required: false }, //false for test
-
+  titleToNote  :  { type: String, required: false },
   status: { 
       type: String, 
       enum: ['pending', 'processing', 'approved', 'rejected'], 

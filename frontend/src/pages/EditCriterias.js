@@ -8,12 +8,13 @@ import { positions, titles } from "../datas/schoolDepartments";
 import { ManagerContext } from '../context/ManagerContext';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
+import UserMenu from './UserMenu';
 
 
 const EditCriterias = () => {
 
     const { createActivity, createMinActivity, createMinPoint } = useContext(ManagerContext)
-    const {facultyDepartments, isUserLoading, isFacultyLoading, facultyGroups} = useContext(UserContext)
+    const {user, isAuthenticated, facultyDepartments, isUserLoading, isFacultyLoading, facultyGroups} = useContext(UserContext)
 
   const [selectedFaculties, setSelectedFaculties] = useState([]); // État pour la faculté sélectionnée
     const [selectedFaculty, setSelectedFaculty] = useState(''); // État pour la faculté sélectionnée
@@ -301,6 +302,8 @@ const [activityId, setActivityId] = useState(null)
 
   return (
     <div>
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h1>Activity Form</h1>
       
 

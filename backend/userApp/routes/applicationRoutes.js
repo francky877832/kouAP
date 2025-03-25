@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const applicationController = require("../controllers/applicationController");
 
-const { applicationsDocUpload } = require("../middlewares/multer-config");
+//const { applicationsDocUpload } = require("../middlewares/multer-config");
+const { applicationsDocUpload } = require("../middlewares/awsMiddleware");
+
 
 
 

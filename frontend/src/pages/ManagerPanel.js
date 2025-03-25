@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap'; // Using Bootstrap for the design
 import NotificationIcon from '../components/NotificationIcon';
+import { UserContext } from '../context/UserContext';
+import UserMenu from './UserMenu';
 
 const ManagerPanel = () => {
+    const { user, isAuthenticated } = useContext(UserContext);
+  
   return (
     <Container>
       {/* Notification Icon added at the top-left */}
       <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
         <NotificationIcon />
       </div>
+
+      <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
 
       <h2 className="text-center my-4">Welcome to the Manager Panel</h2>
 

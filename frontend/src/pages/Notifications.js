@@ -6,10 +6,11 @@ import Loading from "../components/Loading";
 import { NotificationsContext } from "../context/NotificationsContext";
 import { formatDate } from "../utils/utilsFunctions";
 import NotificationIcon from "../components/NotificationIcon";
+import UserMenu from "./UserMenu";
 
 const Notifications = () => {
   const { fetchNotifications, updateNotificationsRead, updateNotification, deleteNotification} = useContext(NotificationsContext);
-  const { user } = useContext(UserContext);
+  const { user, isAuthenticated } = useContext(UserContext);
 
   const [notifications, setNotifications] = useState([]);
   const [totalData, setTotalData] = useState(null);
@@ -91,6 +92,8 @@ const deleteUserNotification = async (notif) => {
 
   return (
     <Container className="mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h3>📢 Notifications</h3>
       {(!notifications || notifications?.length === 0) ? (
         <p>No notifications available.</p>

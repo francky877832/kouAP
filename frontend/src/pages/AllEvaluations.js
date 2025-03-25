@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../styles/adminPanelStyles.css';
+import { UserContext } from '../context/UserContext';
 
 const AllEvaluations = () => {
   const { state } = useLocation();
   const evaluations = state?.evaluations || []; 
 
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const {user, isAuthenticated } = useContext(UserContext)
+
 
 
   const handleCandidateClick = (candidateId) => {

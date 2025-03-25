@@ -7,6 +7,7 @@ import { mockCandidates } from '../datas/mockData';
 import { UserContext } from '../context/UserContext';
 import InlineLoading from '../components/InlineLoading';
 import { AdminContext } from '../context/AdminContext';
+import UserMenu from './UserMenu';
 
 const AdminPanel = () => {
   const [applications, setApplications] = useState(mockApplications);
@@ -17,6 +18,8 @@ const AdminPanel = () => {
   
 
   const {fetchAnnouncementsByUser, announcements, isAnnouncementsLoading} = useContext(AdminContext)
+      const {user, isAuthenticated } = useContext(UserContext)
+  
 
   useEffect(() => {
     // Simule le chargement des données ici
@@ -95,6 +98,8 @@ const AdminPanel = () => {
 
   return (
     <div className="container admin-dashboard mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2 className="text-center mb-4">Tableau de bord Admin</h2>
 
       {/* Liste des annonces */}

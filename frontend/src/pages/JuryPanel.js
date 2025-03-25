@@ -5,6 +5,7 @@ import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
 import { capitalize, formatDate } from '../utils/utilsFunctions';
 import NotificationIcon from '../components/NotificationIcon';
+import UserMenu from './UserMenu';
 
 const JuryPanel = () => {
   const [applications, setApplications] = useState([]);
@@ -15,7 +16,7 @@ const JuryPanel = () => {
 
   const navigate = useNavigate();
   const { fetchJuryApplications } = useContext(JuryContext);
-  const { user } = useContext(UserContext);
+  const { user, isAuthenticated } = useContext(UserContext);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -61,6 +62,8 @@ const JuryPanel = () => {
       <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
         <NotificationIcon />
       </div>
+
+      <UserMenu user={user} isAuthenticated={isAuthenticated} />
 
 
       <h2 className="text-center mb-4">Jury Panel</h2>

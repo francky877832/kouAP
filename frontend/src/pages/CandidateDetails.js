@@ -5,6 +5,7 @@ import { JuryContext } from '../context/JuryContext';
 import { UserContext } from '../context/UserContext';
 import InlineLoading from '../components/InlineLoading';
 import Loading from '../components/Loading';
+import UserMenu from './UserMenu';
 
 
 
@@ -21,7 +22,7 @@ const CandidateDetails = () => {
   const [hasSubmittedReport, setHasSubmittedReport] = useState(false);
 
   const { submitEvaluation, fetchJuryEvaluation } = useContext(JuryContext)
-  const { user } = useContext(UserContext)
+  const { user, isAuthenticated } = useContext(UserContext)
 
   
   useEffect(() => {
@@ -94,6 +95,8 @@ const CandidateDetails = () => {
 
   return (
     <div className="container">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h3 className="mb-4 text-center">Review Candidate Information</h3>
 
       <div className="mb-3">

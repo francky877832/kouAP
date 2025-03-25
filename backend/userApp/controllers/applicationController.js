@@ -166,7 +166,7 @@ exports.updateApplicationStatus = async (req, res) => {
 exports.createApplication = async (req, res) => {
   try {
    
-    const { user, categories, submittedOn, status, jurys, announcement, admin } = req.body;
+    const { user, categories, submittedOn, status, jurys, announcement, admin, titleToNote } = req.body;
     const categorys = JSON.parse(categories)
     let newCat = {}
     let applicationDocument = ""
@@ -196,7 +196,7 @@ exports.createApplication = async (req, res) => {
         applicationDocument = f.location
       }
     })
-    //console.log(categorys)
+    //console.log(req.files)
     const newApplication = new Application({
       user,
       categories : categorys ,
@@ -205,9 +205,11 @@ exports.createApplication = async (req, res) => {
       jurys,
       announcement, admin,
       applicationDocument,
+      titleToNote,
     });
 
-    const savedApplication = await newApplication.save();
+   const savedApplication = await newApplication.save();
+    //const savedApplication = {}
     res.status(200).json({message:"success", data:savedApplication});
   } catch (error) {
     console.error(error);

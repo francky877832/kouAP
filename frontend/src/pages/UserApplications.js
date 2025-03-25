@@ -3,6 +3,7 @@ import { Table, Button, Badge } from 'react-bootstrap';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
 import { titles } from '../datas/schoolDepartments'
+import UserMenu from './UserMenu';
 // Function to simulate fetching applications from the server
 const fetchApplications = async () => {
   // Replace with the actual API call
@@ -29,7 +30,7 @@ const fetchApplications = async () => {
 
 const UserApplications = () => {
 
-    const {user, fetchUserApplications } = useContext(UserContext)
+    const {user, isAuthenticated, fetchUserApplications } = useContext(UserContext)
 
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,6 +73,8 @@ const UserApplications = () => {
 
   return (
     <div className="container my-5">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2>User Applications</h2>
       <Table striped bordered hover>
         <thead>

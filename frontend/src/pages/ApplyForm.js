@@ -14,15 +14,18 @@ import { ManagerContext } from '../context/ManagerContext';
 import { useLocation } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import InlineLoading from '../components/InlineLoading';
-import { casedActivities } from '../datas/schoolDepartments';
+import { casedActivities, titlesToNote } from '../datas/schoolDepartments';
+import UserMenu from './UserMenu';
 
 const ApplyForm = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(13);
   const steps = 13 // 0 - 11 + 1 
 
   const [isLoading, setIsLoading] = useState(false)
   const [canSubmit, setCanSubmit] = useState(false)
-  const { user, userForms, isUserFormsLoading, createUserApplication} = useContext(UserContext)
+  const { user, isAuthenticated, userForms, isUserFormsLoading, createUserApplication} = useContext(UserContext)
+  const [selectedOption, setSelectedOption] = useState(null);
+
   //console.log(userForms)
 
   const location = useLocation()
@@ -288,9 +291,10 @@ useEffect(() => {
   };
 
 
-const handleGeneratePDF = async (element) => {
+const handleGeneratePDF = async (element, titleToNote) => {
     setIsLoading(true)
-  if (!element) {
+  if (!element || titleToNote===null) {
+    alert("Fill the header form!")
     console.error("Élément #table-to-pdf introuvable !");
     return;
   }
@@ -323,6 +327,8 @@ const handleGeneratePDF = async (element) => {
     }
 }
 
+
+
   const handleSumbmitApplication = async (e) => 
   {
     e.preventDefault();
@@ -341,6 +347,7 @@ const handleGeneratePDF = async (element) => {
         jury : [],
         admin : "67c4712f12d662f6eeb9d7fd", //announcement.postedBy._id,
         categories : {},
+        titleToNote : (titlesToNote.find(el => el._id==selectedOption)).value,
        }
     
       for(let i=0;i<tmp.length;i++)
@@ -445,6 +452,8 @@ const handleGeneratePDF = async (element) => {
 
   return (
     <div className="container-lg mt-5">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2 className="text-center mb-4">Application Form</h2>
       
       <div className="progress mb-4">
@@ -463,7 +472,7 @@ const handleGeneratePDF = async (element) => {
           })
         }
   
-        {step === steps && <ReviewForm formData={formData} userForms={userForms} formsDatas={handleDataFunctions.map(d=>d.data)} canSubmit={canSubmit} handleGeneratePDF={handleGeneratePDF} />}
+        {step === steps && <ReviewForm formData={formData} announcement={announcement} selectedOption={selectedOption} setSelectedOption={setSelectedOption} userForms={userForms} formsDatas={handleDataFunctions.map(d=>d.data)} canSubmit={canSubmit} handleGeneratePDF={handleGeneratePDF} />}
         
         <div className="mt-4 d-flex justify-content-between">
           {step > 0 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}

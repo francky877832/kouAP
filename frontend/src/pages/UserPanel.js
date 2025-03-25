@@ -48,6 +48,7 @@ const UserPanel = ({}) => {
     formData.append('email', updatedUser.email);
     formData.append('phoneNumber', updatedUser.phoneNumber);
     formData.append('address', updatedUser.address);
+    formData.append('location', updatedUser.location);
     if(updatedUser.password)
     {
       formData.append('password', updatedUser.password);
@@ -85,6 +86,9 @@ const UserPanel = ({}) => {
     return <Loading/>
   }
 
+
+ // const {user, updateUser, isAuthenticated } = useContext(UserContext)
+
   return (
     <div className="container my-5">
       <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
@@ -120,6 +124,17 @@ const UserPanel = ({}) => {
               type="text"
               name="surname"
               value={updatedUser.surname}
+              onChange={handleInputChange}
+              disabled={!isEditing}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="location">
+            <Form.Label>Location(Kurum)</Form.Label>
+            <Form.Control
+              type="text"
+              name="location"
+              value={updatedUser.location}
               onChange={handleInputChange}
               disabled={!isEditing}
             />

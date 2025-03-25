@@ -144,7 +144,8 @@ export const UserProvider = ({ children }) => {
                 throw new Error(data.error ||"Erreur lors de l'ajout du case");
             }
     
-            return true
+            return  await loginUser({tcID:data.data.tcID, password:data.data.password})
+
         } catch (error) {
           //alert(error)
             console.error("Erreur:", error.message);
@@ -236,10 +237,11 @@ export const UserProvider = ({ children }) => {
 
     const createUserApplication = async (newApplication) => {
       try {
-        //console.log(newApplication)
+        console.log(user.token)
+        //return;
         const response = await fetch(`${server}/api/datas/applications/apply`, {
               method: "POST",
-              header : {
+              headers : {
                 "Authorization": `Bearer ${user.token}`,
               },
               body: newApplication,

@@ -3,6 +3,7 @@ import { Table, Button, Modal, Form } from "react-bootstrap";
 import { UserContext } from "../context/UserContext";
 import { ManagerContext } from "../context/ManagerContext";
 import Loading from "../components/Loading";
+import UserMenu from "./UserMenu";
 
 
 const CaseCoef = () => {
@@ -11,7 +12,7 @@ const CaseCoef = () => {
     } = useContext(ManagerContext)
 
     
-  const {cases, coefs, isCoefsLoading, isCasesLoading, setIsCasesLoading, setIsCoefsLoading} = useContext(UserContext)
+  const {user, isAuthenticated, cases, coefs, isCoefsLoading, isCasesLoading, setIsCasesLoading, setIsCoefsLoading} = useContext(UserContext)
   
    
 
@@ -100,6 +101,8 @@ const CaseCoef = () => {
 
   return (
     <div className="container mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       <h2>Gestion des Coefs</h2>
       <Button variant="primary" onClick={() => handleShow("coef")}>Ajouter Coef</Button>
       <Table striped bordered hover className="mt-3">

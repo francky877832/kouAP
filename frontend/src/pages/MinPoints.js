@@ -4,11 +4,12 @@ import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
 import { titles } from "../datas/schoolDepartments";
 import { ManagerContext } from "../context/ManagerContext";
+import UserMenu from "./UserMenu";
 
 
 
 const MinPoints = () => {
-  const { user, minPoints, facultyDepartments, facultyGroups, isFacultyLoading, isMinPointsLoading, setIsMinPointsLoading } = useContext(UserContext);
+  const { user, isAuthenticated , minPoints, facultyDepartments, facultyGroups, isFacultyLoading, isMinPointsLoading, setIsMinPointsLoading } = useContext(UserContext);
   const { updateMinPoint, deleteMinPoint, } = useContext(ManagerContext)
   const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -97,6 +98,8 @@ const MinPoints = () => {
 
   return (
     <div className="container mt-4">
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
+
       {
         minPoints.map((point, index) => (
           <Card key={index} className="mb-3">
