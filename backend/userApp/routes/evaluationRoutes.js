@@ -4,7 +4,7 @@ const { evaluationDocsUpload } = require("../middlewares/awsMiddleware");
 
 const EvaluationController = require("../controllers/evaluationController");
 
-router.post("/add/:applicationId", evaluationDocsUpload.single("reportFile"), EvaluationController.createEvaluation);
+router.post("/add", evaluationDocsUpload.single("report"), EvaluationController.createEvaluation);
 router.get("/get/jury", EvaluationController.getJuryEvaluation);
 router.get("/get/admin/:adminId", EvaluationController.getAdminEvaluations);
 

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Modal, Form } from "react-bootstrap";
 import '../styles/adminPanelStyles.css';
 import InlineLoading from '../components/InlineLoading';
@@ -13,12 +13,15 @@ const ApplicationsView = ({
   limit1, limit2,
 }) => {
 
+  const navigate = useNavigate()
+
     const [show, setShow] = useState(false);
      const [jurorsCount, setJurorsCount] = useState(3);
      const [error, setError] = useState("");
      const { user } = useContext(UserContext)
      const { assignApplicaitonJurys } = useContext(AdminContext)
      const [isLoading, setIsLoading] = useState(false)
+
    
      const handleClose = () => {
        setShow(false);
@@ -38,10 +41,11 @@ const ApplicationsView = ({
             const data = await assignApplicaitonJurys(application, juryCounts, admin)
          //useEffect va rechager automatiquement et refermer le loading
          setIsLoading(false) 
-         setIsApplicationsLoading(true)
+         if(typeof setIsApplicationsLoading == "function") setIsApplicationsLoading(true)
       if(data)
       {
         alert(`${juryCounts} jurys ont été assignés à la candidature de ${application.user.name}`);
+        navigate('/admin/panel')
       }
     };
 

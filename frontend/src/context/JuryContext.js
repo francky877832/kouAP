@@ -15,21 +15,14 @@ export const JuryProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     // Fonction pour gérer la soumission des données
-    const submitEvaluation = async (status, comment, juryReport, application, jury) => {
+    const submitEvaluation = async (formData, application) => {
         //console.log(juryReport)
         try {
             //console.log(application)
             //console.log(jury)
-            const formData = new FormData();
-            formData.append('decision', status);
-            formData.append('summary', comment);
-            formData.append('user', application.user._id);
-            formData.append('jury', jury._id);
-            if (juryReport) {
-                formData.append('reportFile', juryReport); // Le champ du formulaire qui contient le fichier
-            }
+            
 
-            const response = await fetch(`${server}/api/datas/evaluations/add/${application._id}`, {
+            const response = await fetch(`${server}/api/datas/evaluations/add`, {
                 method: 'POST',
                 headers : {
                     "Authorization": `Bearer ${user.token}`,
@@ -37,13 +30,15 @@ export const JuryProvider = ({ children }) => {
                 body: formData, // Envoi des données avec le fichier
             });
 
+            const data = await response.json();
+
+
             if (!response.ok) {
                             redirectNonAuthenticatedUser(data);
                 
                 throw new Error('Erreur lors de la soumission de l\'évaluation');
             }
 
-            const data = await response.json();
             return data.data; // Retourne la réponse du backend
         } catch (error) {
             setError(error.message);
@@ -102,9 +97,9 @@ export const JuryProvider = ({ children }) => {
     
            // console.log(data.data)
             return data.data;
-        } catch (err) {
-            //console.log("Error while", error)
-            return null;
+        } catch (error) {
+            console.log("Error while", error)
+            return false;
         }
     };
     

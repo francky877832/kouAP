@@ -184,6 +184,32 @@ const fetchAdminEvaluations = async (user) => {
    }
 }
 
+  const createAnnouncement = async (newAnnouncement) => {
+    try {
+      const response = await fetch(`${server}/api/datas/announcements/create`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${user.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newAnnouncement),
+        });
+
+        const data = await response.json();
+       
+        if (!response.ok) {
+          throw new Error (data.message || "Something went wrong!");
+
+        }
+        return true
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to create announcement.");
+      return false
+    }
+ 
+  }
+
     
 
   useEffect(() => {
@@ -209,7 +235,7 @@ const fetchAdminEvaluations = async (user) => {
     const stateVars = {user, isAnnouncementsLoading, announcements}
     const stateFunctions = {setIsAnnouncementsLoading, setAnnouncements,}
     const utilFunctions = {fetchAnnouncementsByUser, fetchAnnouncements,  fetchApplications, updateApplicationStatus, assignApplicaitonJurys,
-      fetchAdminEvaluations
+      fetchAdminEvaluations, createAnnouncement
     }
 
 

@@ -14,10 +14,10 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(token&&storedUser?storedUser:{}) //{_id:"67c4712f12d662f6eeb9d7fd", username:"Francky", title:"Profesor", role:"dev"});
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     
-    
+    //console.log("oojojo")
      const [facultyDepartments, setFacultyDepartments] = useState({});
      const [faculties, setFaculties] = useState({});
-     const [facultyGroups, setFacultyGroups] = useState({});
+     const [facultyGroups, setFacultyGroups] = useState([]);
 
      const [activities, setActivities] = useState([])
      const [minActivities, setMinActivities] = useState([])
@@ -116,6 +116,7 @@ export const UserProvider = ({ children }) => {
         localStorage.setItem("user", JSON.stringify(data.data.user)); // Stocke en JSON
 
         setUser(user_)
+        setIsAuthenticated(true)
         //console.log(user_)
         return user_; // Retourne les données
       } catch (error) {

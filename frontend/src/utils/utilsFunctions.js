@@ -31,6 +31,7 @@ export const round = (number) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     //setAuthState({ token: null, user: null });
+    window.location.href = "/login"; 
 };
 
 export const redirectNonAuthenticatedUser = (data) => {

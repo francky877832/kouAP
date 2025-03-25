@@ -7,51 +7,43 @@ exports.createEvaluation = async (req, res, next) => {
   try {
        //console.log(req.body)
 
-       //1- This part is proccessed by an ADMIN  and called from applicaiton controller
-       const { applicationId,} = req.params
-    const newEvaluation = await Evaluation.find({application : applicationId});
- 
+      const report = req.file.location
+      const { user, application, status, decision, summary, jury } = req.body
+      const newEvaluation = await Evaluation.find({application : application});
+
+      const jurys = {decision, summary, report, jury}
+
      if (newEvaluation.length===0) 
      {
-      const { userId, jurys} = req.params
+     // const { userId, jurys} = req.params
          const newEv = new Evaluation({
-             user:userId,
-             application : applicationId,
-             status : 'pending',
-             jurys : [],
+             user,
+             application,
+             status,
+             jurys : [jurys,],
          })
          newEv.save()
          
-      return res.status(201).json({ message: "Jurés assignés avec succès.", data:newEv });
+      return res.status(201).json({ message: "Evaluation has been submitted successfully", data:newEv });
      }
 
 
-     //This part is proccesed by a JURY
-     const { user, application, decision, summary, report, jury } = req.body;
-     const file = req.file; // Multer renvoie les fichiers sous forme d'un objet
-     //console.log(decision)
-
+     if( newEvaluation[0].jurys.includes(jury))
+     {
+        res.status(500).json({ error: "A jury can't submit more than one evaluation" });
+     }
     // Vérifier si l'utilisateur et l'application existent
     const userExists = await User.findById(user);
     const juryExists = await User.findById(jury);
     if (!userExists || !juryExists) {
-      return res.status(404).json({ error: "Utilisateur non trouvé" });
+      return res.status(404).json({ error: "User not found" });
     }
     
 
-    const newJurys = {
-        decision : decision.toLowerCase(),
-        summary: summary || '',
-        report: file.path || '',
-        jury: jury,
-    }
-    //console.log(applicationId)
   
-   
-        //console.log("newEvaluation")
-        newEvaluation[0].jurys.push(newJurys );
-        await newEvaluation[0].save();
-        res.status(201).json({ message: "Évaluation soumise avec succès", newEvaluation });
+      newEvaluation[0].jurys.push(jurys);
+      await newEvaluation[0].save();
+      res.status(201).json({ message: "Evaluation has been submitted successfully", data:newEvaluation });
     
     
   } catch (error) {
@@ -85,6 +77,7 @@ exports.getJuryEvaluation = async (req, res) => {
         .populate("user")
         .populate("jurys.jury")
         .lean()
+    
 
         /*
       .select({ "jurys": { $elemMatch: { jury: juryId } } }) // Utilise $elemMatch pour filtrer
@@ -156,6 +149,7 @@ exports.getAdminEvaluations = async (req, res) => {
     })
       .populate("user")
       .populate("jurys.jury")
+      console.log(evaluations)
       
       const filteredEvaluations = evaluations.filter(evaluation => evaluation.application);
 

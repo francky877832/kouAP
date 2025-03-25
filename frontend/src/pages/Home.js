@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles/homeStyles.css'
 import Loading from "../components/Loading";
@@ -22,7 +22,8 @@ const fetchAnnouncements = async () => {
   ];
 };
 
-const Home = () => {
+const Home = ({setIsAppLoading}) => {
+  const navigate = useNavigate()
     const [announcements, setAnnouncements] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
     const { fetchAnnouncements } = useContext(AdminContext)
@@ -35,16 +36,24 @@ const Home = () => {
 
   useEffect(() => {
     const getAnnouncements = async () => {
+      setIsLoading(true)
       const data = await fetchAnnouncements(page, limit);
       setAnnouncements(data.data);
       setTotalPages(data.totalPages);
       setIsLoading(false)
     };
-    getAnnouncements();
-  }, [page]);
+    if(isLoading)
+    {
+      getAnnouncements();
+    }
+  }, [page, isLoading]);
 
+  /*
+  useEffect(() => {
+    window.location.reload()
 
-  
+  }, [])
+  */
 
   return (
     <div className="container mt-5">

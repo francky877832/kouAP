@@ -49,7 +49,7 @@ const JuryPanel = () => {
   }, [filter, applications]);
 
   const handleSelectApplication = (application) => {
-    navigate('/application-details', { state: { candidate: application } });
+    navigate('/application-details', { state: { candidate: application, a:application } });
   };
 
   if (isLoading) {

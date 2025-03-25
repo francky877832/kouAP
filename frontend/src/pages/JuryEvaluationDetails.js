@@ -22,7 +22,7 @@ const JuryEvaluationDetails = () => {
 
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">{evaluation.jury.name }</h5>
+          <h5 className="card-title">{evaluation?.jury?.jury?.name }</h5>
           <p className="card-text">
             <strong>Candidate:</strong> {evaluation.user.name}
           </p>
@@ -31,7 +31,7 @@ const JuryEvaluationDetails = () => {
             <strong>Status:</strong>{" "}
             <span
               className={`badge ${
-                evaluation.status.toLowerCase() === "approved" ? "bg-success" : "bg-danger"
+                evaluation.application.status.toLowerCase() === "approved" ? "bg-success" : "bg-danger"
               }`}
             >
               {capitalize(evaluation.application.status)}
@@ -41,7 +41,7 @@ const JuryEvaluationDetails = () => {
 
           <div className="mb-3">
             <h6>Evaluation Report</h6>
-            <a href={evaluation.report} download className="btn btn-outline-primary">
+            <a href={evaluation.jury.report} download className="btn btn-outline-primary">
               📄 Download PDF
             </a>
           </div>
@@ -51,7 +51,7 @@ const JuryEvaluationDetails = () => {
             <textarea
               className="form-control"
               rows="4"
-              value={evaluation.summary}
+              value={evaluation.jury.summary}
               readOnly
             ></textarea>
           </div>

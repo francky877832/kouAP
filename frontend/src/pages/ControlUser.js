@@ -34,7 +34,7 @@ const ControlUser = () => {
     const result = await controlUser({name, surname, birthYear, tcID})
     //setUserExists(result)
 
-    if(!result)
+    if(result) //if(result)
       {
         navigate("/register", {
           state: {tcID, name, surname, birthYear},

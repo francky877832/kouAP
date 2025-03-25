@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import RequiredDocumentsCheckbox from "../components/RequiredDocumentsCheckbox";
 import { UserContext } from "../context/UserContext";
 import { facultyDepartments } from "../datas/schoolDepartments";
@@ -8,8 +8,10 @@ import { titles } from "../datas/schoolDepartments";
 import { server } from "../remote/server";
 import Loading from "../components/Loading";
 import UserMenu from "./UserMenu";
+import { AdminContext } from "../context/AdminContext";
 
 const AnnouncementForm = () => {
+  const navigate = useNavigate()
   const location = useLocation();
   const { announcement } = location.state || {}; 
 
@@ -19,7 +21,8 @@ const AnnouncementForm = () => {
  
   const [isLoading, setIsLoading] = useState(false)
 
-  const { user, isAuthenticated } = useContext(UserContext)
+  const { user, isAuthenticated, facultyGroups} = useContext(UserContext)
+  const { createAnnouncement } = useContext(AdminContext)
   
 
   const [formData, setFormData] = useState({
@@ -78,7 +81,7 @@ const AnnouncementForm = () => {
     const newAnnouncement = {
       title: formData.title,
       description: formData.description,
-      position,
+      position : titles.find(el => el.value==position)._id,
       faculty: faculty,
       department: department,
       deadline: formData.deadline,
@@ -86,50 +89,27 @@ const AnnouncementForm = () => {
       postedBy : user._id,
     };
 
-    try {
       setIsLoading(true)
-      const response = await fetch(`${server}/api/datas/announcements/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newAnnouncement),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        alert(result.message);
-        // Optionnel: réinitialiser le formulaire après la soumission
-        setFormData({
-          title: "",
-          description: "",
-         // position: "",
-          //faculty: "",
-          //department: "",
-          deadline: "",
-          startingDate: "",
-        });
-        setFaculty("");
-        setDepartment("");
-        setPosition("");
-      } else {
-        const error = await response.json();
-        alert(error.message || "Something went wrong!");
+      const res = await createAnnouncement(newAnnouncement)
+      if(res)
+      {
+        alert("Announcement has been posted successfully.")
+        navigate('/admin/panel')
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to create announcement.");
-    }
-    finally
-    {
+      else{
+        alert("An error occured while creating the announcement.")
+      }
       setIsLoading(false)
-    }
+
+    
+      
   };
 
   if(isLoading)
   {
     return <Loading/>
   }
+  //console.log(facultyGroups)
 
   return (
     <div className="container mt-5">
@@ -182,9 +162,9 @@ const AnnouncementForm = () => {
             <label className="form-label">Faculty</label>
             <select className="form-select" value={faculty} onChange={handleFacultyChange} required>
               <option value="">Select a faculty</option>
-              {Object.keys(facultyDepartments).map((fac) => (
-                <option key={fac} value={fac}>
-                  {fac}
+              {facultyGroups?.map((fac, index) => (
+                <option key={index} value={fac._id}>
+                  {fac?.faculties?.map(el => el.name+", ")}
                 </option>
               ))}
             </select>

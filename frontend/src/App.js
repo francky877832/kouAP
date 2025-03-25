@@ -67,7 +67,7 @@ const App = () => {
         load()
       }
 
-  }, [isLoading]);
+  }, [isLoading, user, isAuthenticated]);
   if(isLoading)
   {
     return <Loading/>
@@ -79,8 +79,8 @@ const App = () => {
         
         
     {/* Routes accessible by all user roles */}
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home setIsAppLoading={setIsLoading} />} />
+        <Route path="/home" element={<Home setIsAppLoading={setIsLoading} />} />
         <Route path="/all-announcements" element={<AllAnnouncements />} />
         <Route path="/view-announcement" element={<ViewAnnouncement />} />
         <Route path="/system/notifications" element={<Notifications />} />
@@ -96,8 +96,8 @@ const App = () => {
       <Route path="/admin/add-announcement" element={ <ProtectedRoute element={AnnounceForm} isAuthenticated={isAuthenticated} user={user} roles={["admin", "dev"]} />} />
       <Route path="/admin/panel" element={ <ProtectedRoute element={AdminPanel } roles={["admim", "dev"]} />} />
       <Route path="/admin-panel" element={ <ProtectedRoute element={AdminPanel} roles={["admin", "dev"]} />} />
-      <Route path="admin-panel/view-applications" element={ <ProtectedRoute element={ApplicationsView} roles={["admin", "dev"]} /> } />
-      <Route path="admin-panel/view-evaluations" element={ <ProtectedRoute element={EvaluationsView} roles={["admin", "dev"]} /> } />
+      <Route path="admin/panel/view-applications" element={ <ProtectedRoute element={ApplicationsView} roles={["admin", "dev"]} /> } />
+      <Route path="admin/panel/view-evaluations" element={ <ProtectedRoute element={EvaluationsView} roles={["admin", "dev"]} /> } />
         
 
 {/*Jury protected */}

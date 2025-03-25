@@ -28,7 +28,7 @@ evaluationSchema.path('jurys').validate(function(value) {
   const juryIds = value.map(j => j.jury.toString()); // Récupère tous les IDs de jury
   const uniqueJuryIds = new Set(juryIds); // Crée un Set avec les IDs (les valeurs dupliquées seront supprimées)
   return juryIds.length === uniqueJuryIds.size; // Si la taille est égale, il n'y a pas de duplicata
-}, 'Chaque jury ne peut être évalué qu’une seule fois.');
+}, 'Chaque jury ne peut évaluer qu’une seule fois.');
 
 const Evaluation = db.model('Evaluation', evaluationSchema);
 module.exports = Evaluation;

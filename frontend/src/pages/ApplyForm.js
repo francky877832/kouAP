@@ -342,10 +342,10 @@ const handleGeneratePDF = async (element, titleToNote) => {
 
       const data = {
         user : user._id,
-        announcement : "67c4627d414b10c75dfd82d0", //announcement._id,
+        announcement : /*"67c4627d414b10c75dfd82d0", */announcement._id,
         status : 'pending',
         jury : [],
-        admin : "67c4712f12d662f6eeb9d7fd", //announcement.postedBy._id,
+        admin : /*"67c4712f12d662f6eeb9d7fd", */announcement.postedBy._id,
         categories : {},
         titleToNote : (titlesToNote.find(el => el._id==selectedOption)).value,
        }

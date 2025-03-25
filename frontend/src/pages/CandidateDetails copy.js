@@ -6,7 +6,6 @@ import { UserContext } from '../context/UserContext';
 import InlineLoading from '../components/InlineLoading';
 import Loading from '../components/Loading';
 import UserMenu from './UserMenu';
-import { Button, Table } from 'react-bootstrap';
 
 
 
@@ -25,9 +24,9 @@ const CandidateDetails = () => {
   const { submitEvaluation, fetchJuryEvaluation } = useContext(JuryContext)
   const { user, isAuthenticated } = useContext(UserContext)
 
-  //console.log(candidate)
+  
   useEffect(() => {
-    //console.log(candidate)
+    console.log(candidate)
     const getEvaluation = async () => {
         //if (!applicationId || !juryId) return; // Vérifie que les IDs sont valides
         setIsLoading(true);
@@ -35,13 +34,14 @@ const CandidateDetails = () => {
         const data = await fetchJuryEvaluation(candidate._id, user._id);
         console.log(data)
         
-        
-          if(data && data?.length > 0 || ['accepted', 'rejected'].includes(candidate.status)) //candidate==application
+        if(['accepted', 'rejected'].includes(candidate.status))
+        {
+          setHasSubmittedReport(true)
+          if(data && data?.length > 0)
           {
-              setHasSubmittedReport(true)
               setJuryEvaluation(data[0]);
           }
-        
+        }
         //console.log(data)
         setIsLoading(false);
     };
@@ -52,12 +52,29 @@ const CandidateDetails = () => {
 }, [candidate, user, isLoading]); 
 
 
-const handleFileChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    setReportFile(file);
-  }
-};
+  const handleValidationSubmit = async (e) => {
+    e.preventDefault();
+
+    setIsLoading(true)
+    const result = await submitEvaluation(validationStatus, comment, reportFile, candidate, user);
+        
+        if (result) {
+            alert('Evaluation submitted with success:');
+            setShowForm(false)
+        }else
+        {
+          alert('Error while submittion evaluatio:');
+        }
+    setIsLoading(false)
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setReportFile(file);
+    }
+  };
+
 
 
 
@@ -67,46 +84,9 @@ const handleFileChange = (e) => {
         }
   }
 
-
-  
-  const handleValidationSubmit = async (e) => {
-    e.preventDefault();
-    const application = candidate
-    setIsLoading(true)
-    const formData = new FormData();
-      formData.append('user', application.user._id);
-      formData.append('application', application._id);
-      formData.append('status', application.status);
-      formData.append('decision', validationStatus);
-      formData.append('summary', comment);
-      formData.append('jury', user._id);
-
-      if (reportFile) {
-        formData.append('report', reportFile); // Le champ du formulaire qui contient le fichier
-      }
-    const result = await submitEvaluation(formData, application);
-        
-        if (result) {
-            alert('Evaluation submitted with success:');
-            setShowForm(false)
-            navigate('/jury/panel');
-
-        }else
-        {
-          alert('Error while submittion evaluatio:');
-        }
-    setIsLoading(false)
-  };
-
-
-
-
   const handleViewReport = () => {
     navigate('/jury/evaluation-details', { state: { evaluation : juryEvaluation } });
   }
-
-
-
 
  if(isLoading)
  {
@@ -115,81 +95,59 @@ const handleFileChange = (e) => {
 
   return (
     <div className="container">
-      <UserMenu user={user} isAuthenticated={isAuthenticated} />
+            <UserMenu user={user} isAuthenticated={isAuthenticated} />
 
       <h3 className="mb-4 text-center">Review Candidate Information</h3>
 
       <div className="mb-3">
         <h5 className="step-title">Personal Information</h5>
-        <Table striped bordered hover>
-          <tbody>
-            <tr>
-              <td><strong>Full Name:</strong></td>
-              <td>{candidate.user.name}</td>
-            </tr>
-            <tr>
-              <td><strong>Identification Number:</strong></td>
-              <td>{candidate.user.tcID}</td>
-            </tr>
-            <tr>
-              <td><strong>Email:</strong></td>
-              <td>{candidate.user.email}</td>
-            </tr>
-            <tr>
-              <td><strong>Phone Number:</strong></td>
-              <td>{candidate.user.phoneNumber}</td>
-            </tr>
-            <tr>
-              <td><strong>Postal Address:</strong></td>
-              <td>{candidate.user.address}</td>
-            </tr>
-          </tbody>
-        </Table>
+        <p><strong>Full Name:</strong> {candidate.user.name}</p>
+        <p><strong>Identification Number:</strong> {candidate.user.tcID}</p>
+        <p><strong>Email:</strong> {candidate.user.email}</p>
+        <p><strong>Phone Number:</strong> {candidate.user.phoneNumber}</p>
+        <p><strong>Postal Address:</strong> {candidate.user.address}</p>
       </div>
 
       <div className="mb-3">
-        <h5 className="step-title">Candidate Documents</h5>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Document</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.keys(candidate.categories).map((letter, i1) => {
-              const forms = candidate.categories[letter];
-              
-              return (
-                <>
-                <tr><th colSpan={2} className='text-center'>{letter}</th></tr>
-              
-                { forms.map((f, i2) => (
-                  <tr key={`${i1}-${i2}`}>
-                    <td><strong>{letter}{f.number}</strong></td>
-                    <td>
-                      <Button variant="link" href={f.proof} title={letter + "" + f.number} target="_blank">
-                        Download PDF
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </>
-            )})
-          }
-
-            <tr>
-              <td><strong>Application Form</strong></td>
-              <td>
-                <Button variant="link" href={candidate.applicationDocument} title="Application form" target="_blank">
-                  Download PDF
-                </Button>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+        <h5 className="step-title">Academic Information</h5>
+        <p><strong>Degree:</strong> {candidate.degree}</p>
+        <p><strong>Work and Academic Experience:</strong> {candidate.experience}</p>
+        <p><strong>Courses Taught:</strong> {candidate.courses}</p>
+        <p><strong>Thesis Supervision Experience:</strong> {candidate.thesisSupervision}</p>
       </div>
-    
+
+      <div className="mb-3">
+        <h5 className="step-title">Documents</h5>
+        <p><strong>CV Uploaded:</strong> {candidate.cv ? 'Yes' : 'No'}</p>
+        <p><strong>Publications:</strong> {candidate.publications}</p>
+        <p><strong>Language Certificates:</strong> {candidate.languageCertificates}</p>
+        <p><strong>Conferences and Scientific Events:</strong> {candidate.conferences}</p>
+      </div>
+
+      <div className="mb-3">
+        <h5 className="step-title">Additional Information</h5>
+        <p><strong>Position Type:</strong> {candidate.positionType}</p>
+        <p><strong>Proof of Citations and Indexing:</strong> {candidate.citationsProof}</p>
+        <p><strong>Research Project Participation:</strong> {candidate.researchProjectCertificates}</p>
+      </div>
+
+      <div className="mb-3">
+        <h5 className="step-title">Uploaded Files</h5>
+        <p><strong>Recommendation Letters:</strong> {candidate.recommendationLetters ? 'Uploaded' : 'Not Uploaded'}</p>
+        <p><strong>Administrative Experience Proof:</strong> {candidate.administrativeExperienceProof ? 'Uploaded' : 'Not Uploaded'}</p>
+      </div>
+
+      <div className="form-group mb-3">
+        <h5>Publications and Citations</h5>
+        <p><strong>Indexed Publications:</strong> {candidate.indexedPublications ? 'Yes' : 'No'}</p>
+        <p><strong>DOI or URL of Publications:</strong> {candidate.indexedPublicationsDOI}</p>
+        <p><strong>Proof of Citations:</strong> {candidate.citationsProof ? 'Uploaded' : 'Not Uploaded'}</p>
+      </div>
+
+      <div className="form-group mb-3">
+        <h5>Conference Publications</h5>
+        <p><strong>Proof of Conference Participation:</strong> {candidate.conferencePublicationProof ? 'Uploaded' : 'Not Uploaded'}</p>
+      </div>
 
       
 

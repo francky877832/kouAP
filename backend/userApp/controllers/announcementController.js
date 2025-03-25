@@ -33,7 +33,7 @@ exports.createAnnouncement = async (req, res, next) => {
     const { title, description, position, faculty, department, deadline, startingDate, postedBy } = req.body;
 
     // Vérifier que tous les champs sont remplis
-    if (!title || !description || !position || !faculty || !department || !deadline || !startingDate || !postedBy) {
+    if (!title || !description || !position || !faculty || !deadline || !startingDate || !postedBy) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
