@@ -4,6 +4,8 @@ const mongoose = require('../../shared/db').mongoose;
 const User = require('../models/userModel');
 const Announcement = require("../models/announcementModel");
 const Application = require("../models/applicationModel");
+const { sendSms, sendBrevoEmail } = require('../utils/twilo');
+
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -78,6 +80,7 @@ exports.getAllAnnouncements = async (req, res) => {
 
 exports.getAnnouncementsByPage = async (req, res) => {
   try {
+
     //console.log(req.query)
       const { page = 1, limit = 10 } = req.query;
 

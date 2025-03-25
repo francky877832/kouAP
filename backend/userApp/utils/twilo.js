@@ -25,6 +25,81 @@ exports.sendSms = async (to, message) => {
 
 
 
+
+exports.sendBrevoEmail = async (senderEmail, senderName, receivers, subject, htmlMessage) => {
+  const apiKey = process.env.BREVO_API_KEY;
+  const apiUrl = process.env.BREVO_API_URL;
+
+  const emailData = {
+    sender: { email: senderEmail, name: senderName },
+    to: receivers, // Assurez-vous que receivers est un tableau [{ email: "user@example.com", name: "User Name" }]
+    subject: subject,
+    htmlContent: htmlMessage,
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': apiKey,
+      },
+      body: JSON.stringify(emailData),
+    });
+
+    const responseData = await response.json();
+
+    if (response.ok) {
+      console.log('Email envoyé avec succès:', responseData);
+      return responseData;
+    } else {
+      console.error('Erreur lors de l\'envoi de l\'email:', responseData);
+      throw new Error(responseData.message || 'Erreur inconnue');
+    }
+  } catch (error) {
+    console.error('Erreur de la requête:', error);
+    throw error;
+  }
+};
+
+
+
+/*
+exports.sendEmail = async (email, senderEmail, senderName, receivers, subject, htmlMessage) => {
+  const apiKey =  process.env.BREVO_API_KEY
+  const apiUrl =  process.env.BREVO_API_URL
+
+  const emailData = {
+    sender: { email: sender, name: senderName },
+    //to: [{ email: reveiverEmail, name: receiverName }],
+    to: receivers,
+    subject: subject,
+    htmlContent: htmlMessage,
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': apiKey,
+      },
+      body: JSON.stringify(emailData),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('Email envoyé avec succès:', responseData);
+    } else {
+      const errorData = await response.json();
+      console.error('Erreur lors de l\'envoi de l\'email:', errorData);
+    }
+  } catch (error) {
+    console.error('Erreur de la requête:', error);
+  }
+}
+*/
+
 exports.createNotification = async ({ user, source, title, message, action, read = 0 }) => {
   try {
     // Vérifier si l'utilisateur existe
@@ -72,5 +147,7 @@ exports.createNotification = async ({ user, source, title, message, action, read
     throw new Error('Erreur lors de la création de la notification: ' + error.message);
   }
 };
+
+
 
 

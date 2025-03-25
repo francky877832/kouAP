@@ -10,7 +10,7 @@ const cors = require('cors');
 const cron = require('node-cron');
 const Announcement = require("./models/announcementModel")
 const Application = require("./models/applicationModel")
-const { sendSms, createNotification } = require('./utils/twilo')
+const { sendSms, createNotification, sendBrevoEmail } = require('./utils/twilo')
 
 
 const app = express();
@@ -45,6 +45,8 @@ app.use((req, res, next) => {
               const message =  `An announcement you posted expired. You've got ${applicationsCount} announcement(s).`
   
               await sendSms(announcement?.postedBy?.phoneNumber, message);
+              await sendBrevoEmail(process.env.BREVO_EMAIL_SENDER, process.env.APP_NAME, [{email:announcement?.postedBy?.email, name:announcement?.postedBy?.name}], "Announcement Expired", message)
+
               announcement.status = 'done';
               await announcement.save();
 

@@ -1,7 +1,9 @@
 const mongoose = require('../../shared/db').mongoose;
 const Application = require('../models/applicationModel');
 const User = require('../models/userModel');
-const evaluationController = require('../controllers/evaluationController')
+const evaluationController = require('../controllers/evaluationController');
+const { sendSms, sendBrevoEmail } = require('../utils/twilo');
+require('dotenv').config({ path: '../../shared/.env' });
 
 exports.getApplications = async (req, res, next) => {
 
@@ -146,13 +148,25 @@ exports.updateApplicationStatus = async (req, res) => {
       applicationId,
       { status, updatedAt: Date.now() },
       { new: true }
-    );
+    ).populate("user");
 
     if (!application) {
       return res.status(404).json({ message: "Application non trouvée." });
     }
 
-    return res.status(200).json({ message: `Statut mis à jour avec succès : ${status}`, application });
+    const message = "Your application have been updated with the status : " + application.status
+    //Send a notification to the user
+      //await sendSms(application?.user?.phoneNumber, message);
+      const title = "Application Status Updated"
+    await sendBrevoEmail(process.env.BREVO_EMAIL_SENDER, process.env.APP_NAME, [{email:application?.user?.email, name:application?.user?.name}], title, message)
+    const data = { user:application?.user?.email, source:'app', title:title, message, action:'/admin/panel', read:0}
+                    //console.log(req)
+        await createNotification({...data});
+      
+
+    
+
+    return res.status(200).json({ message: `Statut mis à jour avec succès : ${status}`, data : application });
   } catch (error) {
     console.error("Erreur lors de la mise à jour du statut:", error);
     return res.status(500).json({ message: "Erreur interne du serveur." });
