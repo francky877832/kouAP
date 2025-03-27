@@ -21,16 +21,16 @@ const EvaluationDetails = () => {
 
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">{evaluation.jurys[0].jury.name}</h5>
+          <h5 className="card-title">{evaluation?.jurys[0]?.jury?.name}</h5>
           <p className="card-text">
-            <strong>Candidate:</strong> {evaluation.user.name}
+            <strong>Candidate:</strong> {evaluation?.user?.name}
           </p>
 
           <p className="card-text">
             <strong>Status:</strong>{" "}
             <span
               className={`badge ${
-                evaluation.status === "Accepted" ? "bg-success" : "bg-danger"
+                evaluation?.status.toLowerCase() === "approved" ? "bg-success" : "bg-danger"
               }`}
             >
               {evaluation.status}
@@ -40,7 +40,7 @@ const EvaluationDetails = () => {
 
           <div className="mb-3">
             <h6>Evaluation Report</h6>
-            <a href={evaluation.jurys[0].report} download className="btn btn-outline-primary">
+            <a href={evaluation?.jurys[0]?.report} download className="btn btn-outline-primary">
               📄 Download PDF
             </a>
           </div>
@@ -50,7 +50,7 @@ const EvaluationDetails = () => {
             <textarea
               className="form-control"
               rows="4"
-              value={evaluation.jurys[0].summary}
+              value={evaluation?.jurys[0]?.summary}
               readOnly
             ></textarea>
           </div>

@@ -1,29 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config({ path: '../../shared/.env' });
 
 
-exports.deleteFile = (filePath) => {
-  return new Promise((resolve, reject) => {
-    const absolutePath = path.resolve(filePath);
-
-    fs.unlink(absolutePath, (err) => {
-      if (err) {
-        console.error(`Erreur lors de la suppression du fichier : ${err.message}`);
-        reject(err);
-      } else {
-        console.log(`Fichier supprimé avec succès : ${absolutePath}`);
-        resolve();
-      }
-    });
-  });
-};
-
-
-exports.generateUUIDUsername = () => {
-  const shortUUID = uuidv4().split('-')[0];  // Prend la première partie de l'UUID
-  return `winkel${shortUUID}`;
-}
-
+const { sendSms, createNotification, sendBrevoEmail} = require('./twilo')
 
 
 
@@ -61,3 +41,17 @@ exports.sendEmail = async (email, senderEmail, senderName, receivers, subject, h
     console.error('Erreur de la requête:', error);
   }
 }
+
+
+
+exports.notifyThroughAllCanals = async (title, message, emailList, user, action, source) => {
+
+  //selectedJurors.map(async(j) => await sendSms(user?.phoneNumber, message));
+
+    await sendBrevoEmail(process.env.BREVO_EMAIL_SENDER, process.env.APP_NAME, emailList, title, message)
+
+    const data = { user:user?._id, source:source||'app', title:title, message, action, read:0}
+    await createNotification({...data});
+
+}
+

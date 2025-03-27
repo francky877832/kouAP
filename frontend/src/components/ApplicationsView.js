@@ -73,7 +73,7 @@ const ApplicationsView = ({
         {applications.slice(startIndex, endIndex).map((application) => (
           <li key={application._id} className="list-group-item ">
             <div>
-              <strong>{application.user.name}</strong>
+              <strong>{application?.user?.name}</strong>
               <br />
               <i>submitted on : {formatDate(application.submittedOn)}</i>
             </div>

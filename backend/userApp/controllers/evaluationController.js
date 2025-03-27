@@ -1,49 +1,65 @@
 const Evaluation = require("../models/evaluationModel");
 const Application = require("../models/applicationModel");
 const User = require("../models/userModel");
+const { sendSms, createNotification, sendBrevoEmail} = require('../utils/twilo')
+const { notifyThroughAllCanals } = require('../utils/utilsFonctions')
 
 // Créer une nouvelle évaluation avec des jurys et des documents
 exports.createEvaluation = async (req, res, next) => {
   try {
        //console.log(req.body)
 
-      const report = req.file.location
+      const report = req?.file?.location
       const { user, application, status, decision, summary, jury } = req.body
       const newEvaluation = await Evaluation.find({application : application});
+      let newEv = null
 
       const jurys = {decision, summary, report, jury}
 
      if (newEvaluation.length===0) 
      {
      // const { userId, jurys} = req.params
-         const newEv = new Evaluation({
+         newEv = new Evaluation({
              user,
              application,
              status,
              jurys : [jurys,],
          })
          newEv.save()
-         
-      return res.status(201).json({ message: "Evaluation has been submitted successfully", data:newEv });
+
+        
      }
-
-
-     if( newEvaluation[0].jurys.includes(jury))
+     else
      {
-        res.status(500).json({ error: "A jury can't submit more than one evaluation" });
-     }
-    // Vérifier si l'utilisateur et l'application existent
-    const userExists = await User.findById(user);
-    const juryExists = await User.findById(jury);
-    if (!userExists || !juryExists) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    
 
-  
-      newEvaluation[0].jurys.push(jurys);
-      await newEvaluation[0].save();
-      res.status(201).json({ message: "Evaluation has been submitted successfully", data:newEvaluation });
+
+      if( newEvaluation[0].jurys.includes(jury))
+      {
+          res.status(500).json({ error: "A jury can't submit more than one evaluation" });
+      }
+      // Vérifier si l'utilisateur et l'application existent
+      const userExists = await User.findById(user);
+      const juryExists = await User.findById(jury);
+      if (!userExists || !juryExists) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+
+    
+        newEvaluation[0].jurys.push(jurys);
+        await newEvaluation[0].save();
+    }
+
+    const finalNewEv = !!newEv ? newEv : newEvaluation
+
+    const app = await Application.findOne({_id:application}).populate('admin').lean()
+    const admin = app.admin
+    //console.log(admin)
+
+    const message =  `A jury of ${process.env.APP_NAME} has just submitted a new evaluation.`
+    await notifyThroughAllCanals("New Evaluation", message, [{email:admin.email, name:admin.name}], admin, '/admin/panel', 'app')
+
+    res.status(201).json({ message: "Evaluation has been submitted successfully", data:finalNewEv });
     
     
   } catch (error) {

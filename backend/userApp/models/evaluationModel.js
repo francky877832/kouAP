@@ -10,7 +10,7 @@ const db = mongoose.connection.useDb("kouap");
 const evaluationSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: User, required: true }, // Évaluateur principal
   application: { type: Schema.Types.ObjectId, ref: Application, required: true }, // Application évaluée
-  status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending', required:true },
+  status: { type: String, enum: ['pending', 'processing', 'approved', 'rejected'], default: 'pending', required:true },
   jurys: [
     {
         decision: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },

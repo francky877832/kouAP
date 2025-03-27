@@ -13,7 +13,7 @@ export const formatDate = (dateString) => {
 
 export const capitalize = (text) => {
     // Met la première lettre en majuscule et le reste en minuscules
-    return text.charAt(0).toUpperCase() + text.slice(1);
+    return text?.charAt(0)?.toUpperCase() + text?.slice(1);
 };
 
 

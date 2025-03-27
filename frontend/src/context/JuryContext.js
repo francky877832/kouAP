@@ -39,10 +39,11 @@ export const JuryProvider = ({ children }) => {
                 throw new Error('Erreur lors de la soumission de l\'évaluation');
             }
 
-            return data.data; // Retourne la réponse du backend
+            return true
         } catch (error) {
             setError(error.message);
             console.error('Erreur:', error);
+            return false
         }
     };
 

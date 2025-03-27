@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Button, Modal, Form } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button, Modal, Form, Container } from "react-bootstrap";
 import '../styles/adminPanelStyles.css';
 import InlineLoading from '../components/InlineLoading';
 import { capitalize, formatDate } from '../utils/utilsFunctions';
@@ -13,12 +13,13 @@ const EvaluationsView = ({
   limit1, limit2,
 }) => {
 
+    const navigate = useNavigate()
     const { state } = useLocation();
     const evaluations = state?.evaluations || evaluation_;
 
      const [error, setError] = useState("");
      const { user } = useContext(UserContext)
-     const { assignApplicaitonJurys } = useContext(AdminContext)
+     const { assignApplicaitonJurys, updateApplicationStatus } = useContext(AdminContext)
      const [isLoading, setIsLoading] = useState(false)
     
     
@@ -28,7 +29,13 @@ const EvaluationsView = ({
      const startIndex = limit1 || 0
      const endIndex = limit2 || evaluations.length
    
-    
+     
+     const [showModal, setShowModal] = useState(false);
+     const [adminMessage, setAdminMessage] = useState("");
+     const [status, setStatus] = useState(null);
+     const [newEvaluation, setNewEvaluation] = useState(null);
+   
+  
 
 
 
@@ -40,15 +47,35 @@ const EvaluationsView = ({
   const toggleJuryList = (candidateId) => {
     setSelectedCandidate(selectedCandidate === candidateId ? null : candidateId);
   };
-  const handleDecision = (e, evaluation, decision) => {
-    if(evaluation.jurys?.length!=evaluation.application.jurys?.length)
+
+  const handleAdminMessage = (e, evaluation) => {
+    setNewEvaluation(evaluation)
+    setShowModal(true);
+  };
+
+
+  const handleDecision = async (e, evaluation) => {
+   /* if(evaluation.jurys?.length!=evaluation.application.jurys?.length)
     {
         e.preventDefault();
         alert('All juries appreciations must be submitted first before you can make a decision.')
         return;
+    }*/
+
+    setIsLoading(true) 
+
+    const res = await updateApplicationStatus({_id : evaluation.application._id, status, comment:adminMessage})
+    if(res)
+    {
+      alert("You've succesfully updated the application status. The Applicant will be notified.");
+      navigate('/admin/panel')
     }
-    //alert("f")
-    //setStatus({ ...status, [candidateId]: decision });
+    else
+    {
+      alert('An erro occuor during the application status update. Try again later.')
+    }
+    setShowModal(false);
+    setIsLoading(false)
   };
 
 //console.log(evaluations)//
@@ -89,12 +116,12 @@ const EvaluationsView = ({
                   key={jury.jury.id}
                   to={`/jury-evaluation-details`}
                   className={`list-group-item list-group-item-action ms-3 jury-item ${
-                    jury?.decision?.toLocaleLowerCase() === "accepted" ? "jury-accepted" : 
+                    jury?.decision?.toLocaleLowerCase() === "approved" ? "jury-accepted" : 
                     jury?.decision?.toLocaleLowerCase()=== "rejected" ? "jury-rejected" : 
                     jury?.decision?.toLocaleLowerCase() === "pending" ? "jury-pending" : ""
                     
                   }`}
-                  state={{ evaluation:jury }} 
+                  state={{ evaluation:{...evaluation, jury: evaluation.jurys.find(j => j?.jury?._id==jury?.jury?._id) }}} 
                 >
                   {jury?.jury?.name}
                 </Link>
@@ -103,26 +130,57 @@ const EvaluationsView = ({
 
               {/* Boutons Accepter / Refuser */}
         {
-            !['accepted', 'rejected'].includes(evaluation.application.status?.toLocaleLowerCase()) &&
+            !['accepted', 'approved', 'rejected'].includes(evaluation.application.status?.toLocaleLowerCase()) &&
               <div className="mt-3 d-flex gap-2">
                 <button
-                  className="btn btn-success"
-                  onClick={(e) => handleDecision(e, evaluation, "accepted")}
+                  className="btn btn-primary"
+                  onClick={(e) => handleAdminMessage(e, evaluation)}
                 >
-                  Accepter
-                </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={(e) => handleDecision(e, evaluation, "rejected")}
-                >
-                  Refuser
+                  Take A Final Decision
                 </button>
               </div>
+               
         }
-            </div>
+          </div>
+
           )}
         </div>
       ))}
+
+    
+<Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Admin Message</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter your message:</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={5}
+                value={adminMessage}
+                onChange={(e) => setAdminMessage(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <Form.Label>Status:</Form.Label>
+              <Form.Select value={status} onChange={(e) => setStatus(e.target.value)}>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </Form.Select>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={(e) => handleDecision(e, newEvaluation)}>
+            Send
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
             {evaluations.length ===0 && <div>There's not evaluations yet to display.</div>}
     </div>

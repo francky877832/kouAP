@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useLocation, Link } from "react-router-dom";  // Import de useLocation pour récupérer l'état
+import { useLocation, Link, useNavigate } from "react-router-dom";  // Import de useLocation pour récupérer l'état
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/viewAnnouncement.css"; 
@@ -10,10 +10,17 @@ import { UserContext } from "../context/UserContext";
 
 const ViewAnnouncement = ({ match }) => {
 
+  const navigate = useNavigate()
   const location = useLocation();
   const { announcement, } = location.state || {}; 
   const [isLoading, setIsLoading] = useState(false)
   const { user } = useContext(UserContext)
+  //console.log(announcement)
+
+  const handleApplyButton = () => {
+    navigate('/user/apply', {state:{announcement}})
+
+  }
 
   if (!announcement) {
     return <NotFound/>;
@@ -53,7 +60,7 @@ const ViewAnnouncement = ({ match }) => {
 }
               <div className="col-lg-4">
                 <div className="d-flex flex-column align-items-start">
-                  <button className="btn btn-success btn-lg w-100" onClick={() => window.location.href = '/user/apply'}>
+                  <button className="btn btn-success btn-lg w-100" onClick={() => handleApplyButton()}>
                     Apply Now
                   </button>
                 </div>

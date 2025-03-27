@@ -104,7 +104,7 @@ const fetchApplications = async () => {
 const updateApplicationStatus = async (updatedApp) => {
   try {
 
-    const response = await fetch(`${server}/api/datas/applications/update/decision${updatedApp._id}`, {
+    const response = await fetch(`${server}/api/datas/applications/update/decision/${updatedApp._id}`, {
       method: 'PUT',
       headers: {
         "Authorization": `Bearer ${user.token}`,
@@ -119,12 +119,12 @@ const data = await response.json();
 
       throw new Error(data.error || 'Failed to update application');
     }
-    return data.data
+    return true
     //setIsActivitiesLoading(true)
   } catch (error) {
     alert(error)
     console.error('Error updating application:', error);
-    return null
+    return false
   }
 };
 

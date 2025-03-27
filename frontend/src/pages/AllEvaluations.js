@@ -23,7 +23,7 @@ const handleDecision = (candidateId, decision) => {
 
   return (
     <div className="evaluations-section container mt-4">
-      <h3 className="text-center mb-4">Toutes les évaluations</h3>
+      <h3 className="text-center mb-4">All Sumitted Evaluations</h3>
 
       <div className="list-group">
         {evaluations.length > 0 ? (

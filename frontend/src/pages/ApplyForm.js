@@ -11,14 +11,14 @@ import  Loading  from '../components/Loading'
 
 import { UserContext } from '../context/UserContext';
 import { ManagerContext } from '../context/ManagerContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import InlineLoading from '../components/InlineLoading';
 import { casedActivities, titlesToNote } from '../datas/schoolDepartments';
 import UserMenu from './UserMenu';
 
 const ApplyForm = () => {
-  const [step, setStep] = useState(13);
+  const [step, setStep] = useState(1);
   const steps = 13 // 0 - 11 + 1 
 
   const [isLoading, setIsLoading] = useState(false)
@@ -28,8 +28,13 @@ const ApplyForm = () => {
 
   //console.log(userForms)
 
+  const navigate = useNavigate()
   const location = useLocation()
   const { announcement } = location.state || {};
+  if(!announcement) {
+    alert('No anouncement match with the application.');
+    navigate('/home')
+  }
 
    const {addCase, fetchCoefs, updateCoef, updateCase, deleteCase, deleteCoef,  } = useContext(ManagerContext)
     const {cases, coefs, isCoefsLoading, isCasesLoading, setIsCasesLoading, setIsCoefsLoading} = useContext(UserContext)
@@ -434,6 +439,7 @@ const handleGeneratePDF = async (element, titleToNote) => {
       if(res)
       {
         alert("Applciaiton was created successfully")
+        //navigate('/user/applications')
       }
       else
       {

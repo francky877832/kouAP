@@ -105,6 +105,7 @@ const App = () => {
       <Route path="/jury-panel" element={<ProtectedRoute element={JuryPanel} roles={["jury", "dev"]} />}  />
       <Route  path="/application-details" element={<ProtectedRoute element={CandidateDetails} roles={["jury", "dev"]} />} />
       <Route path="/jury/evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} roles={["jury", "dev"]} />}  />
+      <Route path="/jury-evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} roles={["jury", "dev"]} />}  />
    
 
     

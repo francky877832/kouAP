@@ -70,7 +70,8 @@ exports.createAnnouncement = async (req, res, next) => {
 // Récupérer toutes les annonces
 exports.getAllAnnouncements = async (req, res) => {
   try {
-    const announcements = await Announcement.find().sort({ createdAt: -1 });
+    const announcements = await Announcement.find().sort({ createdAt: -1 })
+    .populate('postedBy');
     res.status(200).json(announcements);
   } catch (error) {
     res.status(500).json({ message: "Server error.", error: error.message });
@@ -123,6 +124,20 @@ exports.getAnnouncementsByPage = async (req, res) => {
             {
               $unwind: {
                 path: '$department.faculty',
+                preserveNullAndEmptyArrays: true
+              }
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'postedBy',
+                foreignField: '_id',
+                as: 'postedBy'
+              }
+            },
+            {
+              $unwind: {
+                path: '$postedBy',
                 preserveNullAndEmptyArrays: true
               }
             },

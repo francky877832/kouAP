@@ -2,8 +2,12 @@ const mongoose = require('../../shared/db').mongoose;
 const Application = require('../models/applicationModel');
 const User = require('../models/userModel');
 const evaluationController = require('../controllers/evaluationController');
-const { sendSms, sendBrevoEmail } = require('../utils/twilo');
+const { sendSms, createNotification, sendBrevoEmail } = require('../utils/twilo')
+const { notifyThroughAllCanals } = require('../utils/utilsFonctions')
+
 require('dotenv').config({ path: '../../shared/.env' });
+
+
 
 exports.getApplications = async (req, res, next) => {
 
@@ -82,7 +86,9 @@ exports.assignJuriesToApplication = async (req, res) => {
     });
 
     // Récupérer tous les utilisateurs ayant le rôle "jury"
-    const allJurors = await User.find({ role: "jury" });
+    //const allJurors = await User.find({ role: "jury" });
+    const allJurors = await User.find({ role: { $in: ["jury", "dev"] } });
+
 
     //  Séparer les jurys en deux groupes :
     let unassignedJurors = []; // Ceux qui ne sont assignés à aucune application
@@ -121,8 +127,22 @@ exports.assignJuriesToApplication = async (req, res) => {
     application.admin = adminId;
     const newApplication = await application.save();
 
-    await evaluationController.createEvaluation({...req, params:{applicationId, userId, jurys:selectedJurorsId}}, res)
-    //return res.status(200).json({ message: "success", data:newApplication });
+    //selectedJurors
+    const message =  `An admin of ${process.env.APP_NAME} just assigned an application to you.`
+    const jurorsEmails = selectedJurors.map(j => ({email:j.email, name:j.name}))
+      
+    
+      //selectedJurors.map(async(j) => await sendSms(j?.phoneNumber, message));
+      await sendBrevoEmail(process.env.BREVO_EMAIL_SENDER, process.env.APP_NAME, jurorsEmails, "New Application", message)
+                    //console.log(req)
+      selectedJurors.map(async (j) => {
+        const data = { user:j?._id, source:'app', title:'New Application', message, action:'/jury/panel', read:0}
+        return  await createNotification({...data});
+      })
+    
+
+    //await evaluationController.createEvaluation({...req, params:{applicationId, userId, jurys:selectedJurorsId}}, res)
+    return res.status(200).json({ message: "success", data:newApplication });
 
 
   } catch (error) {
@@ -136,37 +156,36 @@ exports.assignJuriesToApplication = async (req, res) => {
 exports.updateApplicationStatus = async (req, res) => {
   try {
     const { applicationId } = req.params; // ID de l'application
-    const { status } = req.body; // "approved" ou "rejected"
+    const { status, comment } = req.body; // "approved" ou "rejected"
+    let newStatus = "accepted" ? "approved" : status
 
+//console.log(req.body)
     // Vérification des valeurs autorisées
-    if (!["approved", "rejected"].includes(status)) {
+    if (!["approved", "accepted", "rejected"].includes(newStatus)) {
       return res.status(400).json({ message: "Statut invalide. Utilisez 'approved' ou 'rejected'." });
     }
-
     // Trouver et mettre à jour l'application
     const application = await Application.findByIdAndUpdate(
       applicationId,
-      { status, updatedAt: Date.now() },
+      { status : newStatus, comment, updatedAt: Date.now() },
       { new: true }
     ).populate("user");
+    //const application = {}
 
     if (!application) {
       return res.status(404).json({ message: "Application non trouvée." });
     }
+    const user = application.user
 
-    const message = "Your application have been updated with the status : " + application.status
-    //Send a notification to the user
-      //await sendSms(application?.user?.phoneNumber, message);
-      const title = "Application Status Updated"
-    await sendBrevoEmail(process.env.BREVO_EMAIL_SENDER, process.env.APP_NAME, [{email:application?.user?.email, name:application?.user?.name}], title, message)
-    const data = { user:application?.user?.email, source:'app', title:title, message, action:'/admin/panel', read:0}
-                    //console.log(req)
-        await createNotification({...data});
+    const message = `Your application from ${process.env.APP_NAME} have been updated with the status : ${application.status} and the comment : ${comment}`
+    const title = "Application Status Updated"
+
+    await notifyThroughAllCanals(title, message, [{email:user.email, name:user.name}], user, '/user/panel', 'app')
       
 
     
 
-    return res.status(200).json({ message: `Statut mis à jour avec succès : ${status}`, data : application });
+    return res.status(200).json({ message: `Statut mis à jour avec succès : ${application.status}`, data : application });
   } catch (error) {
     console.error("Erreur lors de la mise à jour du statut:", error);
     return res.status(500).json({ message: "Erreur interne du serveur." });

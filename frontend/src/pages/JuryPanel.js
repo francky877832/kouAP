@@ -6,6 +6,7 @@ import Loading from '../components/Loading';
 import { capitalize, formatDate } from '../utils/utilsFunctions';
 import NotificationIcon from '../components/NotificationIcon';
 import UserMenu from './UserMenu';
+import EmptyPage from '../components/EmptyPage';
 
 const JuryPanel = () => {
   const [applications, setApplications] = useState([]);
@@ -55,6 +56,10 @@ const JuryPanel = () => {
   if (isLoading) {
     return <Loading />;
   }
+  if(!isLoading && filteredApplications?.length===0)
+  {
+    return <EmptyPage/>
+  }
 
   return (
     <div className="container mt-5">
@@ -98,10 +103,10 @@ const JuryPanel = () => {
           <tbody>
             {filteredApplications.map((application) => (
               <tr key={application._id}>
-                <td>{application.user.name}</td>
-                <td>{application.user.email}</td>
-                <td>{application.user.phoneNumber}</td>
-                <td>{application.user.tcID}</td>
+                <td>{application?.user?.name}</td>
+                <td>{application?.user?.email}</td>
+                <td>{application?.user?.phoneNumber}</td>
+                <td>{application?.user?.tcID}</td>
                 <td>{formatDate(application.submittedOn)}</td>
                 <td>
                   <button

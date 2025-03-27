@@ -19,6 +19,7 @@ const CandidateDetails = () => {
   const [comment, setComment] = useState('');
   const [reportFile, setReportFile] = useState(null); // Pour gérer le fichier du rapport
   const [isLoading, setIsLoading] = useState(true)
+  const [isReportSending, setIsReportSending] = useState(false)
   const [showForm, setShowForm] = useState(false);
   const [hasSubmittedReport, setHasSubmittedReport] = useState(false);
 
@@ -33,7 +34,7 @@ const CandidateDetails = () => {
         setIsLoading(true);
         //console.log(candidate)
         const data = await fetchJuryEvaluation(candidate._id, user._id);
-        console.log(data)
+        //console.log(data)
         
         
           if(data && data?.length > 0 || ['accepted', 'rejected'].includes(candidate.status)) //candidate==application
@@ -72,14 +73,14 @@ const handleFileChange = (e) => {
   const handleValidationSubmit = async (e) => {
     e.preventDefault();
     const application = candidate
-    setIsLoading(true)
+    setIsReportSending(true)
     const formData = new FormData();
-      formData.append('user', application.user._id);
-      formData.append('application', application._id);
-      formData.append('status', application.status);
+      formData.append('user', application?.user?._id);
+      formData.append('application', application?._id);
+      formData.append('status', application?.status);
       formData.append('decision', validationStatus);
       formData.append('summary', comment);
-      formData.append('jury', user._id);
+      formData.append('jury', user?._id);
 
       if (reportFile) {
         formData.append('report', reportFile); // Le champ du formulaire qui contient le fichier
@@ -89,13 +90,14 @@ const handleFileChange = (e) => {
         if (result) {
             alert('Evaluation submitted with success:');
             setShowForm(false)
+            setIsReportSending(false)
             navigate('/jury/panel');
 
         }else
         {
           alert('Error while submittion evaluatio:');
         }
-    setIsLoading(false)
+        setIsReportSending(false)
   };
 
 
@@ -108,7 +110,7 @@ const handleFileChange = (e) => {
 
 
 
- if(isLoading)
+ if(isReportSending)
  {
   return <Loading/>
  }

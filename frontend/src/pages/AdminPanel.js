@@ -232,11 +232,11 @@ const AdminPanel = () => {
         </div>
 
         </div>
-     
+     <br/>
       {/* Evaluations des Jurys */}
       <EvaluationsView isEvaluationsLoading={isEvaluationsLoading}
       setIsEvaluationsLoading={setIsEvaluationsLoading}
-      evaluation_={evaluations}
+      evaluation_={evaluations.filter(ev => !['accepted', 'approved', 'rejected'].includes(ev.application.status)) }
       liit1={limit1} limit2={limit2}
       />
 
@@ -246,10 +246,10 @@ const AdminPanel = () => {
             <Link
               to={`view-evaluations`}
               className="list-group-item list-group-item-action"
-              state={{ evaluations : evaluations.filter(ev => !['accepted', 'rejected'].includes(ev.application.status)) }}
+              state={{ evaluations : evaluations.filter(ev => !['accepted', 'approved', 'rejected'].includes(ev.application.status)) }}
             >
               <button className="btn btn-primary">
-                More Ongoing Evaluationss
+                More Ongoing Evaluations
               </button>
             </Link>
 
@@ -257,7 +257,7 @@ const AdminPanel = () => {
             <Link
               to={`view-evaluations`}
               className="list-group-item list-group-item-action"
-              state={{ evaluations : evaluations.filter(ev => ['accepted', 'rejected'].includes(ev.application.status)) }}
+              state={{ evaluations : evaluations.filter(ev => ['accepted', 'approved', 'rejected'].includes(ev.application.status)) }}
             >
               <button className="btn btn-primary">
                 Passed Evaluationss

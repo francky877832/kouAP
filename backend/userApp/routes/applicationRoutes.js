@@ -20,7 +20,7 @@ router.post("/apply", applicationsDocUpload.array("files[]"), applicationControl
 
 
 router.put("/jury/assign", applicationController.assignJuriesToApplication);
-router.put("/update/decision", applicationController.updateApplicationStatus);
+router.put("/update/decision/:applicationId", applicationController.updateApplicationStatus);
 
 
 module.exports = router;

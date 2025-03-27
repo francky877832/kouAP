@@ -229,7 +229,7 @@ const A = ({ formData, userForms, handleChange, handleAddData, data, dataSetters
               className="list-group-item d-flex justify-content-between align-items-center"
             >
               <div onClick={() => handleShowDetails(article)} style={{ cursor: "hand", color: "#007bff" }}>
-                <strong>{index}:</strong> {article[infos[0]]} - {article[infos[1]]}
+                <strong>{index+1}:</strong> {article[infos[0]]} - {article[infos[1]]}
               </div>
               <div className="btn btn-danger ms-3 btn-sm" onClick={handleRemoveButtonClick}>
                 Remove

@@ -16,6 +16,7 @@ const applicationSchema = new Schema({
   submittedOn: { type: Date, default: Date.now }, // Date de soumission
   announcement :  { type: Schema.Types.ObjectId, ref: Announcement, required: false }, //false for test
   titleToNote  :  { type: String, required: false },
+  comment  :  { type: String, required: false },
   status: { 
       type: String, 
       enum: ['pending', 'processing', 'approved', 'rejected'], 
