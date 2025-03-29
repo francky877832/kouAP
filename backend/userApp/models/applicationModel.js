@@ -32,7 +32,7 @@ const applicationSchema = new Schema({
 
 
 
-const fieldsToConvert = ["cases"]; // Ajoute les champs à convertir
+const fieldsToConvert = ["cases"]; // Champs à convertir
 
 applicationSchema.pre("save", function (next) {
   for (const key of this.categories.keys()) {
@@ -41,7 +41,11 @@ applicationSchema.pre("save", function (next) {
       this.categories.get(key).map((obj) => {
         let newObj = { ...obj };
         for (const field of fieldsToConvert) {
-          if (newObj[field] && typeof newObj[field] === "string") {
+          if (
+            newObj[field] &&
+            typeof newObj[field] === "string" &&
+            mongoose.Types.ObjectId.isValid(newObj[field]) // Vérifie si c'est un ObjectId valide
+          ) {
             newObj[field] = new mongoose.Types.ObjectId(newObj[field]);
           }
         }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
@@ -49,21 +49,18 @@ const Register = () => {
         if (!formData.password) newErrors.password = "Password is required.";
         if (formData.password !== formData.confirmPassword)
             newErrors.confirmPassword = "Passwords do not match.";
+
         if (formData.role === "user" && !formData.cv) {
             newErrors.cv = "CV is required for users.";
         }
         if (formData.role === "user" && !formData.signature) {
-            newErrors.cv = "Signature is required for users.";
+            newErrors.signature = "Signature is required for users.";
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateForm() || !formData.cv) return;
-
-        const data = new FormData();
+    useEffect(() => {
         if(!tcID || !name || !surname || !birthYear)
         {
             const isConfirmed = window.confirm("You must first verified you identity to register");
@@ -71,8 +68,15 @@ const Register = () => {
             {
                 navigate("/control-user")
             }
-            return;
         }
+    }, [isLoading])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validateForm() || !formData.cv || !formData.signature) return;
+        const data = new FormData();
+       
 
         setIsLoading(true);
 
@@ -82,6 +86,7 @@ const Register = () => {
         data.append("birthYear", birthYear);
 
         data.append("email", formData.email);
+        data.append("password", formData.password);
         data.append("phoneNumber", formData.phoneNumber);
         data.append("address", formData.address);
         data.append("location", formData.location);
@@ -89,6 +94,9 @@ const Register = () => {
         data.append("cv", formData.cv);
         data.append("signature", formData.signature);
        // console.log(formData.email)
+
+       //console.log(data)
+       //return;
 
         const res = await signUpUser(data);
 

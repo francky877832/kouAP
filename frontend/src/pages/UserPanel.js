@@ -4,11 +4,12 @@ import NotificationIcon from '../components/NotificationIcon';
 import { UserContext } from '../context/UserContext';
 import Loading from '../components/Loading';
 import UserMenu from './UserMenu';
+import { formatDateForInput } from '../utils/utilsFunctions';
 
 const UserPanel = ({}) => {
-  //console.log(user)
     const {user, updateUser, isAuthenticated } = useContext(UserContext)
   const [updatedUser, setUpdatedUser] = useState({...user, password:""});
+  //console.log(formatDateForInput(user.birthDate))
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,7 @@ const UserPanel = ({}) => {
   // Function to handle form changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    //console.log(value)
     setUpdatedUser({ ...updatedUser, [name]: value });
   };
 
@@ -156,7 +158,7 @@ const UserPanel = ({}) => {
             <Form.Control
               type="date"
               name="birthDate"
-              value={updatedUser.birthDate}
+              value={formatDateForInput(updatedUser.birthDate)}
               onChange={handleInputChange}
               disabled={!isEditing}
             />

@@ -31,7 +31,7 @@ const ApplyForm = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { announcement } = location.state || {};
-  if(!announcement) {
+  if(!announcement || !announcement?.postedBy) {
     alert('No anouncement match with the application.');
     navigate('/home')
   }
@@ -83,6 +83,7 @@ const addSubmittedData = (data, dataFunction, submittedDatas) => {
   
   const hasEmptyField = Object.keys(newData).some((el) => {
     const value = newData[el];
+    //console.log(newData) //cases : {no_case:true} {i_id:true}
     if(!["cases", "participants"].includes(el) )
     {
       if ((typeof value === "string" && !value.trim()) || 
@@ -94,7 +95,7 @@ const addSubmittedData = (data, dataFunction, submittedDatas) => {
       }
     }else
     { //console.log("oo")
-      if(casedActivities.includes(newData.letter) && Object.keys(value).length === 0){
+      if(casedActivities.includes(newData.letter) && (!newData["cases"]?.no_case && Object.keys(value).length === 0)){
         alert("Le champ " + el + " est obligatoire.");
         return true;
       }
@@ -312,25 +313,27 @@ const handleGeneratePDF = async (element, titleToNote) => {
       html2canvas: { 
         scale: 2,
         useCORS: true,
-        allowTaint: true
+        allowTaint: false
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     })
-    .outputPdf("blob") //.save()
+    .save() //.outputPdf("blob") //.save()
 
     if(pdfBlob)
     {
-      formDataImageToSend.append("appPdf", pdfBlob, `${user._id}.pdf`);
+      formDataImageToSend.append("appPdf", pdfBlob, `${user?._id}.pdf`);
         setFormDataImageToSend(formDataImageToSend); 
-        setIsLoading(false)
-        setCanSubmit(true)
+        
     }
     else
     {
       alert('An error occured while generating the PDF Form.')
-      return;
     }
+
+    setIsLoading(false)
+    setCanSubmit(true)
 }
+//console.log(announcement)
 
 
 
@@ -344,6 +347,11 @@ const handleGeneratePDF = async (element, titleToNote) => {
  
     let shapedData = {};
    // console.log(tmp)
+   if(!announcement && !announcement?.postedBy)
+   {
+      alert("No Annoucement Selected For This Task. Sorry, but you should start the application over.")
+      return;
+   }
 
       const data = {
         user : user._id,
@@ -439,7 +447,7 @@ const handleGeneratePDF = async (element, titleToNote) => {
       if(res)
       {
         alert("Applciaiton was created successfully")
-        //navigate('/user/applications')
+        navigate('/user/applications')
       }
       else
       {
@@ -451,10 +459,6 @@ const handleGeneratePDF = async (element, titleToNote) => {
 
   }
 
-  if(isLoading)
-  {
-    //return <Loading/>
-  }
 
   return (
     <div className="container-lg mt-5">

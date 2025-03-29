@@ -85,15 +85,16 @@ exports.getAnnouncementsByPage = async (req, res) => {
     //console.log(req.query)
       const { page = 1, limit = 10 } = req.query;
 
-      /*
-      const announcements = await Announcement.find()
+      
+      const announcements = await Announcement.find({deadline: { $gt: new Date() }})
+          .populate('faculty')
           .populate('postedBy')
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
           .limit(parseInt(limit));
-      */
+      
 
-      const announcements = await Announcement.aggregate([
+     /* const announcements = await Announcement.aggregate([
         {
           $match: {
             deadline: { $gt: new Date() } 
@@ -152,7 +153,7 @@ exports.getAnnouncementsByPage = async (req, res) => {
             {
               $limit: parseInt(limit)
             }
-          ]);
+          ]);*/
         //console.log(announcements)
 
       const total = await Announcement.countDocuments();

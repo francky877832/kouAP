@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import '../styles/loginStyles.css';
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 
 const ControlUser = () => {
@@ -47,7 +48,10 @@ const ControlUser = () => {
   };
 
 
-
+  if(isLoading)
+  {
+    return <Loading/>
+  }
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="card p-4 shadow-lg" style={{ maxWidth: "400px", width: "100%" }}>

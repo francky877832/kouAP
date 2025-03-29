@@ -124,6 +124,7 @@ exports.signupUser = async (req, res, next) => {
     //console.log(req.body)
     try {
       const {email, password, birthYear, tcID, location} = req.body
+      console.log(req.body)
       const cv = req.files['cv'][0]
       const signature = req.files['signature'][0]
       let user, userID;
@@ -213,7 +214,7 @@ exports.loginUser = async  (req, res, next) => {
 exports.updateUser = async (req, res) => {
     try {
       //const { name, surname, tcID, birthDate, username, email, phoneNumber, address, password } = req.body;
-      const updatedUser = req.body
+      const updatedUser = {...req.body}
       const cv = req.file
   
       //console.log(req.file)
@@ -225,13 +226,14 @@ exports.updateUser = async (req, res) => {
       if(updatedUser.password)
       {
         password = await bcrypt.hash(updatedUser.password, 10);
+        updatedUser.password = password
+
       }
       if(cv)
       {
         updatedUser.cv = cv.location
       }
 
-      updatedUser.password = password
   
       const user = await User.findOneAndUpdate({tcID:updatedUser.tcID}, {...updatedUser}, { new: true, runValidators: true }); 
   

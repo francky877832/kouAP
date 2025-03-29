@@ -15,6 +15,8 @@ const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announ
   const [isLoading, setIsLoading] = useState(true)
   const { user } = useContext(UserContext)
 
+  const [signatureUrl,setSignatureUrl] = useState(null)
+
 //console.log("userForms")
 //console.log(formsDatas)
 
@@ -30,6 +32,16 @@ const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announ
       return {...prev, [letter]:{...prev[letter], [number] : points} }
     })
   }
+
+  useEffect(() => {
+    fetch(user.signature, { mode: "cors" })
+  .then(response => response.blob())
+  .then(imageBlob => {
+      const imageObjectURL = URL.createObjectURL(imageBlob);
+      setSignatureUrl(imageObjectURL)
+  })
+  .catch(error => console.error("CORS Error:", error));
+  })
   const computesPoints = async () => {
     //console.log(formsDatas)
     let letter="", number=0, normalPoint=0, activityPoints=0;
@@ -58,7 +70,7 @@ const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announ
           activityPoints = normalPoint*coef*coef2
           //alert(activityPoints)
         }
-        else if(casedActivities.includes(letter))
+        else if(casedActivities.includes(letter)) //no_cases
         {
           const numWriter = parseInt(act[j].numWriter)
           const {coef, factor} = coefs.find(c => c.number==numWriter)
@@ -376,7 +388,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       }
         <tr>
           <th colSpan={1}>İmza: </th>
-          <td colSpan={3}> <img src={user.signature} alt="User Signature" style={{ width: "100px", height: "200" }} />  </td>
+          <td colSpan={3}> <img src={signatureUrl} crossorigin="anonymous" alt="User Signature"  style={{ width: "100px", height: "200" }} />  </td>
         </tr>
 
         <tr>

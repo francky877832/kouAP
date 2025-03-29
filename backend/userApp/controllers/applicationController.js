@@ -244,6 +244,14 @@ exports.createApplication = async (req, res) => {
 
    const savedApplication = await newApplication.save();
     //const savedApplication = {}
+
+    const admins = await User.find({ role: { $in: ["admin", "dev"] } });
+    const adminsEmail = admins.map(a => ({email:a.email, name:a.name}))
+    const message = `An announcement from ${process.env.APP_NAME} just got a new Application.`
+    const title = "New Application Submitted"
+
+    await notifyThroughAllCanals(title, message, adminsEmail, admins, '/admin/panel', 'app')
+      
     res.status(200).json({message:"success", data:savedApplication});
   } catch (error) {
     console.error(error);

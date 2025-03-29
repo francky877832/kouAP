@@ -50,8 +50,16 @@ exports.notifyThroughAllCanals = async (title, message, emailList, user, action,
 
     await sendBrevoEmail(process.env.BREVO_EMAIL_SENDER, process.env.APP_NAME, emailList, title, message)
 
+
     const data = { user:user?._id, source:source||'app', title:title, message, action, read:0}
-    await createNotification({...data});
+    if(Array.isArray(user))
+    {
+      user.forEach(async(u) =>     await createNotification({...data, user:u._id})   )
+    }
+    else
+    {
+      await createNotification({...data});
+    }
 
 }
 

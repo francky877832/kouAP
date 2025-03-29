@@ -106,6 +106,9 @@ const UserApplications = () => {
               </td>
             </tr>
           ))}
+
+            {applications.length===0 && <tr><th colSpan={5} className='text-center'>No Application Submitted Yet.</th></tr>}
+
         </tbody>
       </Table>
     </div>

@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['user', 'admin', 'jury', 'manager', 'dev'], default: 'user' },
   cv : { type: String, required: function(){ return this.role=='user'} },
+  signature : { type: String, required: function(){ return this.role=='user'} },
 
   location: { type: String, required: false, trim: true },
 

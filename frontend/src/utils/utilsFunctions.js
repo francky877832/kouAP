@@ -10,6 +10,15 @@ export const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString()
 };
 
+export const formatDateForInput = (isoDate) => {
+  if (!isoDate) return ""; 
+
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) return ""; 
+
+  return date.toISOString().split("T")[0]; // Extraction de "YYYY-MM-DD"
+};
+
 
 export const capitalize = (text) => {
     // Met la première lettre en majuscule et le reste en minuscules
@@ -19,7 +28,6 @@ export const capitalize = (text) => {
 
 export const round = (number) => {
     const decimalPart = number % 1;
-  
     if (decimalPart < 0.5) {
       return Math.floor(number); 
     } else {
