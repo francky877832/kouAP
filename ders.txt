@@ -1,36 +1,3 @@
-<div className="container mt-5">
-      <div className="text-center">
-        <h1 className="display-4">Welcome to KOU Akademik Personel</h1>
-        <p className="lead">Your portal for academic job opportunities at KOU University</p>
-        <hr />
-        <p className="text-muted">
-          Here you can find the latest academic position announcements for faculty members. Stay updated on open roles in various
-          disciplines and apply to be a part of our esteemed faculty.
-        </p>
-      </div>
-
-      <div className="mt-5">
-        <h2 className="text-center mb-4">Latest Announcements</h2>
-
-        { isLoading ? <InlineLoading/> : 
-            <div className="list-group">
-            {announcements.slice(0, 5).map((announcement) => (
-                <Link
-                key={announcement.id}
-                to={`/view-announcement`} // Utilisation de `Link` au lieu de `a` avec `href`
-                className="list-group-item list-group-item-action"
-                state={{ announcement }} // Passage de l'annonce via `state`
-                >
-                <h5 className="mb-1">{announcement.title}</h5>
-                <p className="mb-1 text-muted">Posted on: {announcement.date}</p>
-                </Link>
-            ))}
-            </div>
-        }
-        <div className="text-center mt-4">
-          <a href="/all-announcements" className="btn btn-primary btn-lg">
-            More Announcements
-          </a>
-        </div>
-      </div>
-    </div>
+now for the manager panel. tHE MANGER C-ACT LİKE THE BACKGROUND OF THE SYSTEM. He doesn't interven duri,ng the applciant process like admin and jurors but bth admin, applicant and jurors uses the crietrias previously enters by the manager. He can be considered as the core part of the system.
+At the level of manager Paenl, there's 4 part group under links
+1- Edit Crietrias - This page presents 

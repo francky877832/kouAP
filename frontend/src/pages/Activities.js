@@ -93,7 +93,7 @@ const Activities = () => {
             <th style={{ width: '10%' }}>Number</th>
             <th style={{ width: '70%' }}>Activity</th>
             <th style={{ width: '10%' }}>Points</th>
-            {user.role=="manager" &&
+            {["manager", "dev"].includes(user.role) &&
               <th style={{ width: '10%' }}>Actions</th> /* Petite largeur pour la colonne d'actions */
             }
           </tr>
@@ -129,7 +129,7 @@ const Activities = () => {
                       <>{activity.letter} - {activity.label}</>
                     )}
                   </td>
-                  {user.role=="manager" &&
+                  {["manager", "dev"].includes(user.role) &&
                   <td className="text-center actions d-flex justify-content-center">
                     {editIndex === index ? (
                       <>
@@ -193,7 +193,7 @@ const Activities = () => {
                       )}
                     </td>
 
-                    {user.role=="manager" &&
+                    {["manager", "dev"].includes(user.role) &&
                       <td></td>
                     }
                   </tr>

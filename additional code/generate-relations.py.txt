@@ -1,0 +1,56 @@
+from graphviz import Digraph
+
+# Création du graphique dirigé
+dot = Digraph(comment='Database Schema')
+
+# Définir les modèles et leurs champs (ajustez selon vos modèles)
+models = {
+    'User': ['email', 'name', 'role'],  # Exemple de champs pour le modèle User
+    'Faculty': ['name'],
+    'Activity': ['letter', 'label', 'activities'],
+    'Announcement': ['title', 'description', 'faculty', 'postedBy'],
+    'Application': ['user', 'categories', 'status', 'jurys'],
+    'Case': ['number', 'message'],
+    'Coef': ['number', 'coef', 'factor'],
+    'Department': ['name', 'faculty'],
+    'Evaluation': ['user', 'application', 'status', 'jurys'],
+    'FacultyGroup': ['name', 'faculties'],
+    'Form': ['activity', 'letter', 'case', 'coef'],
+    'MinActivity': ['activity', 'letter', 'range', 'groups'],
+    'MinPoint': ['activity', 'range', 'letter', 'groups'],
+    'Notification': ['user', 'notifications'],
+}
+
+# Définir les relations entre les modèles
+relationships = {
+    'User': ['Application', 'Announcement', 'Evaluation', 'Notification'],
+    'Faculty': ['Department', 'Announcement', 'FacultyGroup'],
+    'Activity': ['Form', 'MinActivity', 'MinPoint'],
+    'Announcement': ['Application'],
+    'Application': ['Evaluation'],
+    'Case': ['Form'],
+    'Coef': ['Form'],
+    'Department': ['Faculty'],
+    'Evaluation': ['User'],
+    'FacultyGroup': ['Faculty'],
+    'Form': ['Activity', 'Case', 'Coef'],
+    'MinActivity': ['FacultyGroup'],
+    'MinPoint': ['FacultyGroup'],
+    'Notification': ['User'],
+}
+
+# Ajouter des noeuds pour chaque modèle
+for model, fields in models.items():
+    # Ajouter un noeud pour chaque modèle, incluant les champs
+    fields_label = "\n".join(fields)
+    dot.node(model, f'{model}\n({fields_label})')
+
+# Ajouter les relations (arêtes) entre les modèles
+for model, related_models in relationships.items():
+    for related_model in related_models:
+        dot.edge(model, related_model)
+
+# Générer et rendre le graphique
+dot.render('database_schema', format='png', cleanup=True)  # Le graphique sera enregistré sous 'database_schema.png'
+
+print("Graphique généré sous 'database_schema.png'")

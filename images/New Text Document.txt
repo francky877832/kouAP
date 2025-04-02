@@ -1,0 +1,4 @@
+4- evaluation process : Jurors
+After the jurors have been assign to an applicaitons, eeach jury can then access to the applciaiton of the aaplicant, download and anlazied all the documentsand then take a decison.
+The fisr page ıf the jury Panel list all the applicaiton he has been assigned to, with the status (approved or rejeted for past applicaitonsand processing for applicaiton stiil not done). He clicks on the applciaiton he want to analyze, then is directed to the applicaitonDetails page where he sees the  personnal infrmation of the user, and below that the docuement submitted by the later dur,nh the applciaion and the applciaiton form.
+After that there 2 buttons : "View Report" button to see the Details about anevaulaiton he vas previously made, and "Add Report" to add a evaluation if he nerver did  on the current application.

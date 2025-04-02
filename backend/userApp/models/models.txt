@@ -1,0 +1,447 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const User = require('../models/userModel')
+const Faculty = require('../models/facultyModel')
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const ActivitySchema = new mongoose.Schema({
+    letter: { type: String, enum: "A B C D E F G H I J K L".split(" "), required: true },
+    label: { type: String, required: true },
+    activities: [{
+      number: { type: Number, required: true },
+      name: { type: String, required: true },
+      points: { type: Number, required: true },
+    }],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now },
+});
+
+
+module.exports = db.model("Activity", ActivitySchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const User = require('./userModel');
+const Faculty = require('./facultyModel');
+
+//
+const db = mongoose.connection.useDb("kouap");
+
+
+const announcementSchema = new Schema({
+  title: { type: String, required: true, trim: true},
+  description: {type: String, required: true},
+  position: { type: String, enum: [1,2,3], required: true},
+  faculty: { type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true },
+  department: { type: String, required: false },
+  deadline: { type: Date, required: true },
+  status : { type : String, enum:['pending', 'done'], default:'pending'},
+  startingDate: { type: Date, required: true },
+  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: User, required: true },
+  createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+}, { timestamps: true });
+
+module.exports = db.model("Announcement", announcementSchema);
+
+
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const User = require('./userModel');
+const Announcement = require("./announcementModel");
+
+//modele pour les notificaitons
+//
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const applicationSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: User, required: true }, // Candidat qui soumet l'application
+  categories: { type: Map, of: Schema.Types.Mixed, required: true }, // Utilisation de Map pour des clés dynamiques
+  submittedOn: { type: Date, default: Date.now }, // Date de soumission
+  announcement :  { type: Schema.Types.ObjectId, ref: Announcement, required: false }, //false for test
+  titleToNote  :  { type: String, required: false },
+  comment  :  { type: String, required: false },
+  status: { 
+      type: String, 
+      enum: ['pending', 'processing', 'approved', 'rejected'], 
+      default: 'pending' 
+  }, // Statut de l'application
+  jurys: [{ type: Schema.Types.ObjectId, ref: User }], // Liste des jurés associés
+  admin: { type: Schema.Types.ObjectId, ref: User, required: function(){return this.status!='pending' } },
+  applicationDocument: {type:String, require:false}, 
+
+  createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+
+
+const fieldsToConvert = ["cases"]; // Champs à convertir
+
+applicationSchema.pre("save", function (next) {
+  for (const key of this.categories.keys()) {
+    this.categories.set(
+      key,
+      this.categories.get(key).map((obj) => {
+        let newObj = { ...obj };
+        for (const field of fieldsToConvert) {
+          if (
+            newObj[field] &&
+            typeof newObj[field] === "string" &&
+            mongoose.Types.ObjectId.isValid(newObj[field]) // Vérifie si c'est un ObjectId valide
+          ) {
+            newObj[field] = new mongoose.Types.ObjectId(newObj[field]);
+          }
+        }
+        return newObj;
+      })
+    );
+  }
+  next();
+});
+
+
+module.exports = db.model('Application', applicationSchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+
+
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const CaseSchema = new mongoose.Schema({
+
+    number: { type: Number, required: true, unique: true }, //numero
+    message: { type: String, required: true, unique: true },
+    participants : [
+        {
+            title: { type: String, enum:["AD", "LO1", "LO2", "ED", "KYD", "BY1", "BY2", "BY3", "IY", "SY1", "SY2", "EY", "FIVE_PLUS", "NONE_OF_THEM"], required: true },
+            coef: { type: Number, required: true },
+            coef2: { type: Number, required: true, default:1 },
+        }
+    ],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+module.exports = db.model("Case", CaseSchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+
+
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const CoefSchema = new mongoose.Schema({
+
+    number: { type: Number, required: true, unique: true }, //number of a person
+    coef:  { type: Number, required: true },
+    factor:  { type: Number, required: true },
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+module.exports = db.model("Coef", CoefSchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+const User = require('../models/userModel')
+const Faculty = require('../models/facultyModel')
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const DepartmentSchema = new mongoose.Schema({
+    faculty: { type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true },
+    name: { type: String, required: true },
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+  });
+
+module.exports = db.model("Department", DepartmentSchema)
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+const User = require('../models/userModel')
+const Application = require('../models/applicationModel')
+const db = mongoose.connection.useDb("kouap");
+
+
+const evaluationSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: User, required: true }, // Évaluateur principal
+  application: { type: Schema.Types.ObjectId, ref: Application, required: true }, // Application évaluée
+  status: { type: String, enum: ['pending', 'processing', 'approved', 'rejected'], default: 'pending', required:true },
+  jurys: [
+    {
+        decision: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+        summary: { type: String },
+        report: { type: String },
+        jury: { type: Schema.Types.ObjectId, ref: User, required: false } // Membre du jury
+    }
+  ],
+  createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+// Ajoute un validateur personnalisé sur le tableau jurys pour garantir l'unicité de `jury`
+evaluationSchema.path('jurys').validate(function(value) {
+  const juryIds = value.map(j => j.jury.toString()); // Récupère tous les IDs de jury
+  const uniqueJuryIds = new Set(juryIds); // Crée un Set avec les IDs (les valeurs dupliquées seront supprimées)
+  return juryIds.length === uniqueJuryIds.size; // Si la taille est égale, il n'y a pas de duplicata
+}, 'Chaque jury ne peut évaluer qu’une seule fois.');
+
+const Evaluation = db.model('Evaluation', evaluationSchema);
+module.exports = Evaluation;
+
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+const User = require('../models/userModel')
+const Faculty = require('../models/facultyModel')
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const FacultyGroupSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    faculties : [{ type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true }],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+module.exports = db.model("FacultyGroup", FacultyGroupSchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+const User = require('../models/userModel')
+const Faculty = require('../models/facultyModel')
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const FacultyGroupSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    faculties : [{ type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true }],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+module.exports = db.model("FacultyGroup", FacultyGroupSchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+//const User = require('../models/userModel')
+//const Application = require('../models/applicationModel')
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const FacultySchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+module.exports = db.model("Faculty", FacultySchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+const User = require('../models/userModel')
+const Activity = require('../models/activityModel')
+const Case = require('../models/caseModel')
+const Coef = require('./coefModel')
+
+
+
+const db = mongoose.connection.useDb("kouap");
+
+
+
+const FormSchema = new mongoose.Schema({
+    activity: { type: mongoose.Schema.Types.ObjectId, ref: Activity, default: null },
+    letter: { type: String, required: true, unique: true },
+    case :{ type: mongoose.Schema.Types.ObjectId, ref: Case, default: null },
+    coef :{ type: mongoose.Schema.Types.ObjectId, ref: Coef, default: null },
+    fields : [
+        {
+            name: { type: String, required: true },
+            label: { type: String, required: true },
+            type: { type: String, required: true },
+            options: { type: [String], required: false },
+        }
+    ],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+module.exports = db.model("Form", FormSchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const User = require('../models/userModel')
+const FacultyGroup = require('../models/facultyGroupModel')
+const Activity = require('../models/activityModel')
+const db = mongoose.connection.useDb("kouap");
+
+const MinActivitySchema = new mongoose.Schema({
+    activity: { type: mongoose.Schema.Types.ObjectId, ref: Activity, default: null },
+    letter: { type: String, enum: "A B C D E F G H I J K L".split(" "), required: function () { return this.range; } },
+    range: { type: Boolean, required: true },
+    from: { type: Number, required: function () { return this.range; } },
+    to: { type: Number, required: function () { return this.range; } },
+    criteria: { type: String, required: function () { return !this.range; } },
+    groups : [{
+      faculty: { type: mongoose.Schema.Types.ObjectId, ref: FacultyGroup, required: true }, //modified
+      positions: [{
+        position: { type: Number, enum: [1, 2, 3], required: true },
+        quantity: { type: Number, required: true },
+      }],
+    }],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+
+module.exports = db.model("MinActivity", MinActivitySchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+
+const User = require('../models/userModel')
+const Faculty = require('../models/facultyModel')
+const Activity = require('../models/activityModel')
+
+const FacultyGroup = require('../models/facultyGroupModel')
+
+
+const db = mongoose.connection.useDb("kouap");
+
+
+const MinPointSchema = new mongoose.Schema({
+   activity: { type: mongoose.Schema.Types.ObjectId, ref: Activity, default: null },
+    range: { type: Boolean, required: true },
+    letter: { type: String, enum: "A B C D E F G H I J K L".split(" "), required: function () { return this.range; } },
+    from: { type: Number, required: function () { return this.range; } },
+    to: { type: Number, required: function () { return this.range; } },
+    criteria: { type: String, required: function () { return !this.range; } },
+     groups : [{
+          faculty: { type: mongoose.Schema.Types.ObjectId, ref: FacultyGroup, required: true }, //modified
+          positions: [{
+            position: { type: Number, enum: [1, 2, 3], required: true },
+            minPoint: { type: Number, required: true },
+            maxPoint: { type: Number, required: true },
+        }],
+      }],
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+  });
+
+module.exports = db.model("MinPoint", MinPointSchema);
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const uniqueValidator = require('mongoose-unique-validator');
+const User = require('./userModel')
+//modele pour les notificaitons
+//
+
+const db = mongoose.connection.useDb("kouap");
+
+const notificationSchema = new Schema({
+    user: { type: Schema.Types.ObjectId, ref: User, required: true },
+    //user: { type : String, required : true, unique : true },
+    notifications : [{
+            _id: { type: Schema.Types.ObjectId, required: true},
+            source : { type : String, enum: ['app', 'admin', 'jury', 'manager', 'user'], defualt : "app", required : false },
+            //model : { type : String, enum: ['normal', 'campagne', 'suggestion', 'modal', 'user', 'products', 'offers', 'orders', 'comments', 'admin'], default : "products", required : false },
+            
+            title : { type : String, required : true, },
+            message : { type : String, required : true },
+            //type : { type : String, required : true, default:'on_new_like' },
+            action : { type : String, required : true },
+            read : { type : Number, enum: [0, 1], default : 0, required : true },
+            createdAt : { type : Date, default : Date.now },
+            updatedAt : { type : Date, default : Date.now },
+    }],
+    
+    createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now },
+},  { versionKey: false });
+
+
+notificationSchema.plugin(uniqueValidator);
+
+const Notification = mongoose.models.Notification || db.model('Notification', notificationSchema);
+
+module.exports = Notification;
+
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const uniqueValidator = require('mongoose-unique-validator');
+
+
+const db = mongoose.connection.useDb("kouap");
+
+// Définition du schéma utilisateur
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  surname: { type: String, required: false, trim: true },
+  tcID: { type: String, required: true, trim: true },
+  birthDate: { type: Date, required: true, trim: true },
+
+  username: { type: String, required: false, trim: true },
+
+
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  phoneNumber: { type: String, required: true, trim: true },
+  address: { type: String, required: true, },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['user', 'admin', 'jury', 'manager', 'dev'], default: 'user' },
+  cv : { type: String, required: function(){ return this.role=='user'} },
+  signature : { type: String, required: function(){ return this.role=='user'} },
+
+  location: { type: String, required: false, trim: true },
+
+
+  //title: { type: String, enum: ["Candidate", "Assistant Professor", "Associate Professor", "Professor"], required: false, },
+  createdAt : { type : Date, default : Date.now },
+    updatedAt : { type : Date, default : Date.now }
+});
+
+
+
+userSchema.plugin(uniqueValidator);
+
+module.exports = db.model("User", userSchema);

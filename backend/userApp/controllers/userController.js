@@ -48,6 +48,7 @@ async function generateUniqueUsername(user) {
   }
   
 
+  
 
 
 const generateSoapRequest = (tcID, name, surname, birthYear) => {
