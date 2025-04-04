@@ -1,3 +1,14 @@
-now for the manager panel. tHE MANGER C-ACT LİKE THE BACKGROUND OF THE SYSTEM. He doesn't interven duri,ng the applciant process like admin and jurors but bth admin, applicant and jurors uses the crietrias previously enters by the manager. He can be considered as the core part of the system.
+now for the manager panel. tHE MANGER C-ACT LİKE THE BACKGROUND OF THE SYSTEM. He doesn't interven duri,ng the applciant process like admin and jurors but bth admin, applicant and jurors uses the crietrias previously enters by the manager. He can be considered as the core part of the system. 
 At the level of manager Paenl, there's 4 part group under links
-1- Edit Crietrias - This page presents 
+1- Edit Crietrias - This page presents a 3-in-1 form. a- The first from represent the Create(from CRUD) of the tablo 3 of KOÜ Atama Yo netmelig i. It  is used add a new category and its activities to the system; the benefit is that in just one for, you can enter a whole category and its subsequents activities no matters how many they are. Note : It's good to note that we use this form to enter all the activities to the sysem. For example for the categroy L (L. GÜZEL SANATLAR FAALİYETLERİ (Konservatuvar dahil) ) there'is 105 activities : we used this form to enter all those activities with a click (by calling the backend only one time, not 105 backend calls) 
+b- the second and the third form represent respectively the tabl 1 and tablo 2 of KOÜ Atama Yo netmelig i. So they are used to add the minimum activities, minimum and maximum point the applicant mus fulliled according to the faculty and the positon he is applying to
+
+2- Activities - The page presents all the activities present in the system and the points associated with each. ıT'S GOOD TO remind that all this activities have been enter through the previous form. This page is accessible in read-only mode to every body but for the manager, theres the possibility to delete or modidy a category or an activity with a category.
+
+3- Min Activites - This page rpesent te tablo 1, the minmum activities (entrered through the previous form in form of range - A1-A4 or criteria "Main author") require for each categrory accordging to faculty and positon. Accessible in read-only by everey body but manager have the possiblity to delte or modify them.
+
+4- Min Poinnt, similar to minActibities but represent the table 2, the min point and max point require for each category according to the faculty and the position
+
+5- Case Coef - According to KOÜ Atama Yo netmelig i, some categories (A, B, C, G) can required (if the user haeve) a case "DURUM", or a coef (if ther's not case). This page actually represent the tablo 4 for the coef and the "Ozel Durumlar" section below the table 4 of the page 22 of KOÜ Atama Yo netmelig i. This pages is used for point caculateion. Refer to the next section to learn more about the point calculation. Only the manager can access this part of the system and add, deletei modiy them if needed
+
+6- Mnager Form - One of the most important part of the system, representing dynamically the form the applicant fills for the applicaiton

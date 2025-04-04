@@ -9,7 +9,7 @@ import InlineLoading from '../InlineLoading'
 import { casedActivities, titles, titlesToNote } from '../../datas/schoolDepartments';
 
 const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announcement, selectedOption, setSelectedOption}) => {
-  const { userForms, isUserFormsLoading, activities, cases, coefs} = useContext(UserContext);
+  const { userForms, isUserFormsLoading, activities, cases, coefs, minActivities, minPoints} = useContext(UserContext);
   const [datas, setDatas] = useState([]);
   const [points, setPoints] = useState({})
   const [isLoading, setIsLoading] = useState(true)
@@ -388,7 +388,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       }
         <tr>
           <th colSpan={1}>İmza: </th>
-          <td colSpan={3}> <img src={signatureUrl} crossorigin="anonymous" alt="User Signature"  style={{ width: "100px", height: "200" }} />  </td>
+          <td colSpan={3}> <img src={signatureUrl} crossOrigin="anonymous" alt="User Signature"  style={{ width: "100px", height: "200" }} />  </td>
         </tr>
 
         <tr>
@@ -421,6 +421,18 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
 
      </>
     )
+  }
+
+
+
+
+console.log(minActivities)
+  const printBottom = () => {
+   const minActivitiesLabel = minActivities.reduce((acc, key, index) => {
+      
+      Object.keys(acc).includes()
+   })
+    //minPoints
   }
   
   if (isUserFormsLoading || isLoading) {
