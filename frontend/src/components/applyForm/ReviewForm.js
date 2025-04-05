@@ -6,7 +6,7 @@ import Loading from '../Loading';
 import '../../styles/applyFormStyles.css'
 import { getDate, round } from '../../utils/utilsFunctions';
 import InlineLoading from '../InlineLoading'
-import { casedActivities, titles, titlesToNote } from '../../datas/schoolDepartments';
+import { casedActivities, minActivitiesRnage, titles, titlesToNote } from '../../datas/schoolDepartments';
 
 const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announcement, selectedOption, setSelectedOption}) => {
   const { userForms, isUserFormsLoading, activities, cases, coefs, minActivities, minPoints} = useContext(UserContext);
@@ -426,12 +426,57 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
 
 
 
-console.log(minActivities)
-  const printBottom = () => {
-   const minActivitiesLabel = minActivities.reduce((acc, key, index) => {
+//console.log(minActivities)
+//console.log(formsDatas)
+  const printFooter = () => {
+   /*const minActivitiesLabel = minActivities.reduce((acc, key, index) => {
       
       Object.keys(acc).includes()
-   })
+    })
+    */
+    const minActivitiesLabels = {}
+    //1- Range
+    const rangedActivities = minActivities.filter(a => a?.range && minActivitiesRnage?.includes(a?.letter))
+    rangedActivities.forEach(el => {
+      const activitiesLetter =  formsDatas.filter(f => f.letter==el.letter)
+       minActivitiesLabels[el.letter+el.from+"-"+el.letter+el.to] = (activitiesLetter.filter(el2 => el2.number>=el.from && el2.number<=el.to)).length
+    })
+
+    const criteriaActivities = minActivities.filter(a => !a?.range)
+    criteriaActivities.forEach(el => {
+      const label = el.criteria.split(" - ")[0]
+      //if(label.length != 2 ) return;
+       const parts = label.split("veya"); const from = parts[0]?.trim(); const to = parts[1]?.trim()
+       
+       minActivitiesLabels[label] = (formsDatas.filter(f => f.letter+f.number==from ||  f.letter+f.number==to))?.length
+
+       minActivitiesLabels["Başlıca Yazar"] = (formsDatas.filter(f => f?.mainAuthor?.toLowerCase()=="yes"))?.length
+       minActivitiesLabels["Toplam Makale"] = formsDatas[0]?.length
+       minActivitiesLabels["Kişisel ve Karma Etkinlik"] = formsDatas.at(-1)?.length
+       console.log(minActivitiesLabels)
+
+    })
+    return (
+      <>
+      <tr>
+        <td></td>
+        <td colSpan={4}>{"Adayın Asgari Yayın/Etkinlik Sayısı (Tablo 1 göz önüne alınarak faaliyet sayılarıyazılır. Var ise özel durumlar açıklanır)"}</td>
+      </tr>
+    
+        {Object.keys(minActivitiesLabels).map(el => {
+        return (
+            <tr>
+              <th>{el}</th>
+              <td colSpan={4}>{minActivitiesLabels[el]}</td>
+            </tr>
+        )})
+      }
+    </>
+    )
+    
+
+
+
     //minPoints
   }
   
@@ -498,6 +543,14 @@ console.log(minActivities)
               </>
             ))}
           </tbody>
+
+          <tfoot>
+            <tr>
+              <th colSpan={4} className='text-center'>Genel Punalama Bilgileri</th>
+            </tr>
+            {printFooter()}
+          </tfoot>
+
         </table>
       </div>
 

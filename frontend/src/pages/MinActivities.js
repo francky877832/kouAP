@@ -114,7 +114,7 @@ const MinActivities = () => {
                   <strong>Letter:</strong> {activity.letter || activity.criteria} <br />
                 </div>
                 <div>
-                  <strong>Range:</strong> {activity.range ? `${activity.letter} ${activity.from} - ${activity.letter}${activity.to}` : "No"} <br/>
+                  <strong>Range:</strong> {activity.range ? `${activity.letter}${activity.from} - ${activity.letter}${activity.to}` : "No"} <br/>
                 </div>
                 <div>
                   <strong>Criteria:</strong> {activity?.range ? "N/A" : selectedActivity?.criteria}

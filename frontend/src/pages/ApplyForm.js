@@ -19,7 +19,7 @@ import UserMenu from './UserMenu';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
-  const steps = 13 // 0 - 11 + 1 
+  const steps = 1// 13 // 0 - 11 + 1 
 
   const [isLoading, setIsLoading] = useState(false)
   const [canSubmit, setCanSubmit] = useState(false)

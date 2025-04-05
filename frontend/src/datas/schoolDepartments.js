@@ -23,3 +23,5 @@ export const titles = [
 
 
   export const casedActivities = ['A', 'B', 'C', 'G']
+
+  export const minActivitiesRnage = ['A']
