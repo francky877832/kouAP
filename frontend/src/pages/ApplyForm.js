@@ -16,6 +16,7 @@ import html2pdf from 'html2pdf.js';
 import InlineLoading from '../components/InlineLoading';
 import { casedActivities, titlesToNote } from '../datas/schoolDepartments';
 import UserMenu from './UserMenu';
+import ScrollComponent from '../components/ScrollComponent';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
@@ -461,6 +462,8 @@ const handleGeneratePDF = async (element, titleToNote) => {
 
 
   return (
+    <ScrollComponent>
+
     <div className="container-lg mt-5">
             <UserMenu user={user} isAuthenticated={isAuthenticated} />
 
@@ -496,6 +499,8 @@ const handleGeneratePDF = async (element, titleToNote) => {
         </div>
       </form>
     </div>
+    </ScrollComponent>
+
   );
 };
 
