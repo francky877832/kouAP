@@ -24,4 +24,6 @@ export const titles = [
 
   export const casedActivities = ['A', 'B', 'C', 'G']
 
+  export const activitiesLetters = 'A B C D E F G H I J K L'.split(' ')
   export const minActivitiesRnage = ['A']
+  export const minPointsRange = ['A', 'F', 'H']

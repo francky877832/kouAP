@@ -98,6 +98,9 @@ exports.getAllMinPoints = async (req, res) => {
                   }
                 }
               }
+            },
+            {
+              $sort: { letter: 1 },
             }
           ]);
           

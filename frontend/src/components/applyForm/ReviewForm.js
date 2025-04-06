@@ -6,7 +6,7 @@ import Loading from '../Loading';
 import '../../styles/applyFormStyles.css'
 import { getDate, round } from '../../utils/utilsFunctions';
 import InlineLoading from '../InlineLoading'
-import { casedActivities, minActivitiesRnage, titles, titlesToNote } from '../../datas/schoolDepartments';
+import { activitiesLetters, casedActivities, minActivitiesRnage, minPointsRange, titles, titlesToNote } from '../../datas/schoolDepartments';
 
 const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announcement, selectedOption, setSelectedOption}) => {
   const { userForms, isUserFormsLoading, activities, cases, coefs, minActivities, minPoints} = useContext(UserContext);
@@ -438,24 +438,86 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
     //1- Range
     const rangedActivities = minActivities.filter(a => a?.range && minActivitiesRnage?.includes(a?.letter))
     rangedActivities.forEach(el => {
-      const activitiesLetter =  formsDatas.filter(f => f.letter==el.letter)
-       minActivitiesLabels[el.letter+el.from+"-"+el.letter+el.to] = (activitiesLetter.filter(el2 => el2.number>=el.from && el2.number<=el.to)).length
+      const activitiesLetter =  formsDatas[el.letter.charCodeAt(0)-65] //.filter(f => f.letter==el.letter)
+      //console.log(minActivities.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to).groups)//?.find(g => g.faculty._id==announcement?.faculty?._id)
+
+       minActivitiesLabels[el.letter+el.from+"-"+el.letter+el.to] = {
+        min : minActivities.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups?.find(g => g.faculty._id==announcement?.faculty?._id)?.positions[parseInt(announcement.position-1)],
+      real : (activitiesLetter.filter(el2 => el2.number>=el.from && el2.number<=el.to)).length}
     })
 
     const criteriaActivities = minActivities.filter(a => !a?.range)
     criteriaActivities.forEach(el => {
       const label = el.criteria.split(" - ")[0]
       //if(label.length != 2 ) return;
-       const parts = label.split("veya"); const from = parts[0]?.trim(); const to = parts[1]?.trim()
-       
-       minActivitiesLabels[label] = (formsDatas.filter(f => f.letter+f.number==from ||  f.letter+f.number==to))?.length
+       const parts = label.split("/"); //veya
+       const from = parts[0]?.trim(); const to = parts[1]?.trim()
+       //console.log(from)
+       if(from.length==2 && activitiesLetters.includes(from[0])) {
+          minActivitiesLabels[label] = {
+            min : 0,
+            real:(formsDatas[from.charCodeAt(0)-65]?.filter(f => f.letter+f.number==from ||  f.letter+f.number==to))?.length}
+       }
 
-       minActivitiesLabels["Başlıca Yazar"] = (formsDatas.filter(f => f?.mainAuthor?.toLowerCase()=="yes"))?.length
-       minActivitiesLabels["Toplam Makale"] = formsDatas[0]?.length
-       minActivitiesLabels["Kişisel ve Karma Etkinlik"] = formsDatas.at(-1)?.length
-       console.log(minActivitiesLabels)
+       minActivitiesLabels["Başlıca Yazar"] = {
+        min:0,
+        real : (formsDatas[0].filter(f => f?.mainAuthor?.toLowerCase()=="yes"))?.length}
+       minActivitiesLabels["Toplam Makale"] = {
+        min : 0,
+        real : formsDatas[0]?.length}
+       minActivitiesLabels["Kişisel ve Karma Etkinlik"] = {
+        min : 0,
+        real : formsDatas.at(-1)?.length}
+       //console.log(announcement)
+       //minActivities.find()
+
 
     })
+
+
+    const minPointsLabels = {}
+    //1- Range
+    const rangedPoints = minPoints.filter(p => p?.range && minPointsRange?.includes(p?.letter))
+    let currentLetter = null;
+    activitiesLetters.forEach((al, index) => {
+      if(!minPointsRange.includes(al))
+      {
+        const currentActivities = activities?.find(act => act.letter==al)?.activities
+        minPointsLabels["Bolum "+al+" Total Puanı"] = 
+        {
+          min : 0,
+         real : formsDatas[al?.charCodeAt(0)-65]?.reduce((acc, val) => acc+currentActivities?.find(x=>x.number==val.number).points, 0)
+        }
+        return;
+      }
+
+      //!rangedPoints.includes(el)
+      const rangedPointsForThisLetter = rangedPoints.filter(f => f.letter==al)
+      rangedPointsForThisLetter.forEach((el, index) => {
+        const currentActivities = activities?.find(act => act.letter==el.letter)?.activities
+        //console.log(formsDatas)
+        const pointsLetter =  formsDatas[el.letter.charCodeAt(0)-65] //.filter(f => f.letter==el.letter)
+        minPointsLabels[el.letter+el.from+"-"+el.letter+el.to] = 
+        {
+          min : 0,
+          real : (pointsLetter?.filter(el2 => el2.number>=el.from && el2.number<=el.to))?.reduce((acc, val) => acc+currentActivities?.find(x=>x.number==val.number).points, 0)
+        }
+          if(index==rangedPointsForThisLetter.length-1)
+        {
+          minPointsLabels["Bolum "+al+" Total Puanı"] = 
+          {
+            min : 0,
+            real : formsDatas[al?.charCodeAt(0)-65]?.reduce((acc, val) => acc+currentActivities?.find(x=>x.number==val.number).points, 0)
+          }
+        }
+      })
+    })
+
+    //const letter = 65+s
+
+
+
+
     return (
       <>
       <tr>
@@ -467,10 +529,29 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
         return (
             <tr>
               <th>{el}</th>
-              <td colSpan={4}>{minActivitiesLabels[el]}</td>
+              <td colSpan={4}>{minActivitiesLabels[el].min+" / "+minActivitiesLabels[el].real}</td>
             </tr>
         )})
       }
+
+
+<tr>
+        <td></td>
+        <td colSpan={4}>{"Adayın Asgari/Toplam Puanları (Tablo 2 göz önüne alınarak toplam ve asgari\
+puanları yazılır. Var ise özel durumlar açıklanır)"}</td>
+      </tr>
+    
+
+      
+      {Object.keys(minPointsLabels).map(el => {
+        return (
+            <tr>
+              <th>{el}</th>
+              <td colSpan={4}>{minPointsLabels[el].min+" / "+minPointsLabels[el].real}</td>
+            </tr>
+        )})
+      }
+
     </>
     )
     

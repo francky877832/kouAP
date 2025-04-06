@@ -20,7 +20,7 @@ import ScrollComponent from '../components/ScrollComponent';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
-  const steps = 1// 13 // 0 - 11 + 1 
+  const steps = 3// 13 // 0 - 11 + 1 
 
   const [isLoading, setIsLoading] = useState(false)
   const [canSubmit, setCanSubmit] = useState(false)
@@ -474,7 +474,7 @@ const handleGeneratePDF = async (element, titleToNote) => {
       </div>
 
       <form onSubmit={handleSumbmitApplication} encType="multipart/form-data">
-        {step === 0 && <Step1 formData={formData.step1} handleChange={handleChange} />}
+        {step === 0 && <Step1 formData={formData?.step1} handleChange={handleChange} />}
 
         {
           [...userForms?.slice(0)].map((form, index) => {
