@@ -21,7 +21,7 @@ const ViewAnnouncement = ({ match }) => {
     navigate('/user/apply', {state:{announcement}})
 
   }
-
+//console.log(announcement)
   if (!announcement) {
     return <NotFound/>;
   }
@@ -35,7 +35,7 @@ const ViewAnnouncement = ({ match }) => {
           <p className="text-center text-muted">Posted on <b>{formatDate(announcement.createdAt)}</b></p>
           <p className="text-center text-muted">Available From <b>{formatDate(announcement.startingDate)}</b> to <b>{formatDate(announcement.deadline)}</b></p>
           <p className="text-center text-muted">
-                    Faculty : <b>{announcement.faculty.name}</b> - 
+                    Faculty : <b>{announcement.faculty.faculties.map(f => f.name).join(', ')}</b> - 
           </p>
           <hr />
 

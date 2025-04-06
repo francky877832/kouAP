@@ -1,8 +1,12 @@
-const mongoose = require('../../shared/db').mongoose;
+const mongoose = require('mongoose');
 
 
 const User = require('../models/userModel');
+const Faculty = require("../models/facultyModel");
+const FacultyGroup = require("../models/facultyGroupModel");
+
 const Announcement = require("../models/announcementModel");
+
 const Application = require("../models/applicationModel");
 const { sendSms, sendBrevoEmail } = require('../utils/twilo');
 
@@ -71,6 +75,13 @@ exports.createAnnouncement = async (req, res, next) => {
 exports.getAllAnnouncements = async (req, res) => {
   try {
     const announcements = await Announcement.find().sort({ createdAt: -1 })
+    .populate({
+      path: 'faculty',
+      populate: {
+        path: 'faculty',
+        model: Faculty
+      }
+    })
     .populate('postedBy');
     res.status(200).json(announcements);
   } catch (error) {
@@ -81,13 +92,20 @@ exports.getAllAnnouncements = async (req, res) => {
 
 exports.getAnnouncementsByPage = async (req, res) => {
   try {
+    //console.log("Models enregistrés :", mongoose.connection.useDb("kouap").models);
 
     //console.log(req.query)
       const { page = 1, limit = 10 } = req.query;
 
       
       const announcements = await Announcement.find({deadline: { $gt: new Date() }})
-          .populate('faculty')
+      .populate({
+        path: 'faculty',
+        populate: {
+          path: 'faculties',
+          model: Faculty
+        }
+      })
           .populate('postedBy')
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)

@@ -434,17 +434,38 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       Object.keys(acc).includes()
     })
     */
+    const getMinActivities = (el, range=true) => {
+    //if(!range) console.log(el)
+      return  range ?
+          minActivities.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups?.find(g => g.faculty._id==announcement?.faculty?._id)?.positions[parseInt(announcement.position)-1].quantity
+        :
+        minActivities.find(m => m?.criteria==el.criteria)?.groups?.find(g => g.faculty._id==announcement?.faculty?._id)?.positions[parseInt(announcement.position)-1].quantity
+
+      }
+
+      const getMinPoints = (el, range=true) => {
+        console.log(minPoints.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups)
+          return  range ?
+              minPoints.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups?.find(g => g.faculty._id==announcement?.faculty?._id)?.positions[parseInt(announcement.position)-1].minPoint
+            :
+            minPoints.find(m => m?.criteria==el.criteria)?.groups?.find(g => g.faculty._id==announcement?.faculty?._id)?.positions[parseInt(announcement.position)-1].minPoint
+    
+          }
+
     const minActivitiesLabels = {}
     //1- Range
     const rangedActivities = minActivities.filter(a => a?.range && minActivitiesRnage?.includes(a?.letter))
     rangedActivities.forEach(el => {
       const activitiesLetter =  formsDatas[el.letter.charCodeAt(0)-65] //.filter(f => f.letter==el.letter)
-      //console.log(minActivities.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to).groups)//?.find(g => g.faculty._id==announcement?.faculty?._id)
-
+      //console.log(minActivities.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to).groups) //?.find(g => g.faculty._id==announcement?.faculty?._id)) //?.positions)
+//console.log(announcement)
+    
        minActivitiesLabels[el.letter+el.from+"-"+el.letter+el.to] = {
-        min : minActivities.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups?.find(g => g.faculty._id==announcement?.faculty?._id)?.positions[parseInt(announcement.position-1)],
+        min : getMinActivities(el),
       real : (activitiesLetter.filter(el2 => el2.number>=el.from && el2.number<=el.to)).length}
     })
+
+    
 
     const criteriaActivities = minActivities.filter(a => !a?.range)
     criteriaActivities.forEach(el => {
@@ -453,20 +474,20 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
        const parts = label.split("/"); //veya
        const from = parts[0]?.trim(); const to = parts[1]?.trim()
        //console.log(from)
-       if(from.length==2 && activitiesLetters.includes(from[0])) {
+       if([2,5].includes(from.length) && activitiesLetters.includes(from[0])) {
           minActivitiesLabels[label] = {
-            min : 0,
+            min : getMinActivities(el, false),
             real:(formsDatas[from.charCodeAt(0)-65]?.filter(f => f.letter+f.number==from ||  f.letter+f.number==to))?.length}
        }
 
        minActivitiesLabels["Başlıca Yazar"] = {
-        min:0,
+        min : getMinActivities(el, false),
         real : (formsDatas[0].filter(f => f?.mainAuthor?.toLowerCase()=="yes"))?.length}
        minActivitiesLabels["Toplam Makale"] = {
-        min : 0,
+        min : getMinActivities(el, false),
         real : formsDatas[0]?.length}
        minActivitiesLabels["Kişisel ve Karma Etkinlik"] = {
-        min : 0,
+        min : getMinActivities(el, false),
         real : formsDatas.at(-1)?.length}
        //console.log(announcement)
        //minActivities.find()
@@ -479,9 +500,11 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
     //1- Range
     const rangedPoints = minPoints.filter(p => p?.range && minPointsRange?.includes(p?.letter))
     let currentLetter = null;
+    //RANGES
     activitiesLetters.forEach((al, index) => {
       if(!minPointsRange.includes(al))
       {
+        //ALL POINTS
         const currentActivities = activities?.find(act => act.letter==al)?.activities
         minPointsLabels["Bolum "+al+" Total Puanı"] = 
         {
@@ -499,7 +522,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
         const pointsLetter =  formsDatas[el.letter.charCodeAt(0)-65] //.filter(f => f.letter==el.letter)
         minPointsLabels[el.letter+el.from+"-"+el.letter+el.to] = 
         {
-          min : 0,
+          min : getMinPoints(el),
           real : (pointsLetter?.filter(el2 => el2.number>=el.from && el2.number<=el.to))?.reduce((acc, val) => acc+currentActivities?.find(x=>x.number==val.number).points, 0)
         }
           if(index==rangedPointsForThisLetter.length-1)

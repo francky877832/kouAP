@@ -13,6 +13,6 @@ const FacultyGroupSchema = new mongoose.Schema({
     faculties : [{ type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true }],
     createdAt : { type : Date, default : Date.now },
     updatedAt : { type : Date, default : Date.now }
-});
+}, { timestamps: true });
 
 module.exports = db.model("FacultyGroup", FacultyGroupSchema);

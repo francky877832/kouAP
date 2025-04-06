@@ -3,16 +3,17 @@ const Schema = mongoose.Schema;
 
 const User = require('./userModel');
 const Faculty = require('./facultyModel');
+const facultyGroupModel = require('./facultyGroupModel');
 
 //
 const db = mongoose.connection.useDb("kouap");
 
 
-const announcementSchema = new Schema({
+const announcementSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true},
   description: {type: String, required: true},
   position: { type: String, enum: [1,2,3], required: true},
-  faculty: { type: mongoose.Schema.Types.ObjectId, ref: Faculty, required: true },
+  faculty: { type: mongoose.Schema.Types.ObjectId, ref: facultyGroupModel, required: true },
   department: { type: String, required: false },
   deadline: { type: Date, required: true },
   status : { type : String, enum:['pending', 'done'], default:'pending'},
