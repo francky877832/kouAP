@@ -42,6 +42,7 @@ const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announ
   })
   .catch(error => console.error("CORS Error:", error));
   })
+  
   const computesPoints = async () => {
     //console.log(formsDatas)
     let letter="", number=0, normalPoint=0, activityPoints=0;

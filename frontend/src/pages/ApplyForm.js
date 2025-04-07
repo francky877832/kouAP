@@ -318,7 +318,7 @@ const handleGeneratePDF = async (element, titleToNote) => {
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     })
-    .save() //.outputPdf("blob") //.save()
+    .outputPdf("blob") //.save()
 
     if(pdfBlob)
     {
