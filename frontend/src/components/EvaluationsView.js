@@ -55,12 +55,12 @@ const EvaluationsView = ({
 
 
   const handleDecision = async (e, evaluation) => {
-   /* if(evaluation.jurys?.length!=evaluation.application.jurys?.length)
+   if(evaluation.jurys?.length!=evaluation.application.jurys?.length)
     {
         e.preventDefault();
         alert('All juries appreciations must be submitted first before you can make a decision.')
         return;
-    }*/
+    }
 
     setIsLoading(true) 
 

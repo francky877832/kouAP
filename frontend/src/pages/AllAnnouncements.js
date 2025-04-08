@@ -9,6 +9,7 @@ import AnnouncementItem from '../components/AnnouncementItem';
 import { titles } from '../datas/schoolDepartments';
 import { UserContext } from '../context/UserContext';
 import UserMenu from './UserMenu';
+import EmptyPage from '../components/EmptyPage';
 
 const AllAnnouncements = () => {
   const location = useLocation();
@@ -71,7 +72,7 @@ const AllAnnouncements = () => {
     return <Loading />;
   }
   if (!isLoading && announcements?.length === 0) {
-    return <NotFound />;
+    return <EmptyPage />;
   }
 
   return (

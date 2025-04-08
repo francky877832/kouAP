@@ -20,7 +20,7 @@ import ScrollComponent from '../components/ScrollComponent';
 
 const ApplyForm = () => {
   const [step, setStep] = useState(1);
-  const steps = 3// 13 // 0 - 11 + 1 
+  const steps = 13// 13 // 0 - 11 + 1 
 
   const [isLoading, setIsLoading] = useState(false)
   const [canSubmit, setCanSubmit] = useState(false)
@@ -488,7 +488,7 @@ const handleGeneratePDF = async (element, titleToNote) => {
         {step === steps && <ReviewForm formData={formData} announcement={announcement} selectedOption={selectedOption} setSelectedOption={setSelectedOption} userForms={userForms} formsDatas={handleDataFunctions.map(d=>d.data)} canSubmit={canSubmit} handleGeneratePDF={handleGeneratePDF} />}
         
         <div className="mt-4 d-flex justify-content-between">
-          {step > 0 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}
+          {step > 1 && <button type="button" className="btn btn-secondary" onClick={prevStep}>Previous</button>}
           {step < steps && <button type="button" className="btn btn-primary" onClick={nextStep}>Next</button>}
           {isLoading &&  <InlineLoading/> }
           {canSubmit && !isLoading ?

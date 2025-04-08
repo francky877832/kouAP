@@ -46,7 +46,7 @@ const ViewAnnouncement = ({ match }) => {
 
             <div className="d-flex justify-content-between align-items-center">
 
-{user.role=="admin" &&
+{user?._id===announcement?.postedBy?._id &&
               <div className="col-lg-4">
                 <Link
                   key={announcement._id}

@@ -44,7 +44,7 @@ const ApplicationsView = ({
          if(typeof setIsApplicationsLoading == "function") setIsApplicationsLoading(true)
       if(data)
       {
-        alert(`${juryCounts} jurys ont été assignés à la candidature de ${application.user.name}`);
+        alert(`${juryCounts} juries were assigned to the candidacy of ${application.user.name}`);
         navigate('/admin/panel')
       }
     };

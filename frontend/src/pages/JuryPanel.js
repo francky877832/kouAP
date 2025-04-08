@@ -56,10 +56,11 @@ const JuryPanel = () => {
   if (isLoading) {
     return <Loading />;
   }
+  /*
   if(!isLoading && filteredApplications?.length===0)
   {
     return <EmptyPage/>
-  }
+  }*/
 
   return (
     <div className="container mt-5">
@@ -127,7 +128,8 @@ const JuryPanel = () => {
           </tbody>
         </table>
       ) : (
-        <p className="text-center mt-3">No applications yet to display for this category.</p>
+        /*<p className="text-center mt-3">No applications yet to display for this category.</p> */
+       <EmptyPage/>
       )}
     </div>
   );

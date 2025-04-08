@@ -19,6 +19,16 @@ export const formatDateForInput = (isoDate) => {
   return date.toISOString().split("T")[0]; // Extraction de "YYYY-MM-DD"
 };
 
+export const formatDateForInput2 = (isoDate) => {
+  if (!isoDate) return ""; 
+
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) return ""; 
+
+  const date_ = date.toISOString().split("T")[0].split('-'); // Extraction de "YYYY-MM-DD"
+  return date_[1]+"-"+date_[2]+"-"+date_[0]
+};
+
 
 export const capitalize = (text) => {
     // Met la première lettre en majuscule et le reste en minuscules

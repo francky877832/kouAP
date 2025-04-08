@@ -165,7 +165,7 @@ exports.getAdminEvaluations = async (req, res) => {
     })
       .populate("user")
       .populate("jurys.jury")
-      console.log(evaluations)
+      //console.log(evaluations)
       
       const filteredEvaluations = evaluations.filter(evaluation => evaluation.application);
 

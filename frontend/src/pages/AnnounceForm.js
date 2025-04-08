@@ -9,6 +9,7 @@ import { server } from "../remote/server";
 import Loading from "../components/Loading";
 import UserMenu from "./UserMenu";
 import { AdminContext } from "../context/AdminContext";
+import { formatDateForInput, formatDateForInput2 } from "../utils/utilsFunctions";
 
 const AnnouncementForm = () => {
   const navigate = useNavigate()
@@ -28,7 +29,7 @@ const AnnouncementForm = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    deadline: "",
+    deadline: formatDateForInput2(announcement.deadline),
     startingDate: "",
     cv : true,
     indexedPublications: false,
@@ -94,7 +95,7 @@ const AnnouncementForm = () => {
       if(res)
       {
         alert("Announcement has been posted successfully.")
-        navigate('/admin/panel')
+        navigate('/home')
       }
       else{
         alert("An error occured while creating the announcement.")

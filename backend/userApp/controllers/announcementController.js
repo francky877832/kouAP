@@ -241,7 +241,17 @@ exports.getAnnouncementsPostedBy = async (req, res) => {
       },
     ]);
 */
-    const announcements = await Announcement.find().populate('faculty')
+    const announcements = await Announcement.find({postedBy: new mongoose.Types.ObjectId(userId)})
+    .populate({
+      path: 'faculty',
+      populate: {
+        path: 'faculties',
+        model: Faculty
+      }
+    })
+      .populate('postedBy')
+      .sort({ createdAt: -1 })
+        
     //console.log(announcements)
 
     if (!announcements || announcements.length === 0) {

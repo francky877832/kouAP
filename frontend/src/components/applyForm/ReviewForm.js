@@ -349,6 +349,10 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
 
   const generatePDF = (e) => {
     e.preventDefault();
+    if(formsDatas.every(e => e?.length===0)){
+      alert('No data submitted.');
+      return;
+    } 
     setIsLoading(true)
     const element = document.getElementById("table-to-pdf");
     handleGeneratePDF(element, selectedOption)
@@ -595,8 +599,6 @@ puanları yazılır. Var ise özel durumlar açıklanır)"}</td>
       <div id="table-to-pdf">
         <h2 className="my-4 text-center">Application Resume</h2>
         <table className="table table-bordered table-striped">
-        <caption>Genel Punalama Bilgileri</caption>
-
           <thead>
             <tr>
               <th colSpan={4} className='text-center'>Genel Punalama Bilgileri</th>
