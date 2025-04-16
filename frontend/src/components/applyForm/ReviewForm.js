@@ -23,6 +23,7 @@ const ReviewForm = ({ formData, formsDatas, handleGeneratePDF, canSubmit, announ
   useEffect(() => {
     //console.log(userForms)
     //console.log(formsDatas)
+    setIsLoading(false)
     const tmp = Object.keys(formData).map((f) => ({ ...formData[f], letter: f }));
     setDatas(tmp);
   }, [formData]);
@@ -449,7 +450,7 @@ verilir. Etkinliklerin uluslararası gerçekleştirilmesi durumunda puanlar 2 il
       }
 
       const getMinPoints = (el, range=true) => {
-        console.log(minPoints.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups)
+        //console.log(minPoints.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups)
           return  range ?
               minPoints.find(m => m?.letter==el.letter && m?.from==el.from && m?.to==el.to)?.groups?.find(g => g.faculty._id==announcement?.faculty?._id)?.positions[parseInt(announcement.position)-1].minPoint
             :
@@ -664,7 +665,7 @@ puanları yazılır. Var ise özel durumlar açıklanır)"}</td>
       {/* Bouton pour générer le PDF */}
       <div className="text-center mt-4">
         {isLoading && <InlineLoading/>}
-        {!isLoading && !canSubmit ? 
+        {!isLoading || !canSubmit ? 
         <button onClick={generatePDF} className="btn btn-primary">
           Generate PDF
         </button>

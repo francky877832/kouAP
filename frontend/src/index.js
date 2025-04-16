@@ -8,11 +8,43 @@ import { AdminProvider } from './context/AdminContext';
 import { JuryProvider } from './context/JuryContext';
 import { ManagerProvider } from './context/ManagerContext';
 import { NotificationsProvider } from './context/NotificationsContext';
+import NotFound from './components/NotFound';
+import GlobalError from './components/GlobalError';
+
+
+
+class GlobalErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("Une erreur a été capturée :", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <GlobalError/>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+export default GlobalErrorBoundary;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
   <React.StrictMode>
+    <GlobalErrorBoundary>
       <UserProvider>
       <NotificationsProvider>
 
@@ -26,6 +58,7 @@ root.render(
         </NotificationsProvider>
 
       </UserProvider>
+    </GlobalErrorBoundary>
   </React.StrictMode>
 );
 

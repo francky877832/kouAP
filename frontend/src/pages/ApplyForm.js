@@ -353,6 +353,7 @@ const handleGeneratePDF = async (element, titleToNote) => {
       alert("No Annoucement Selected For This Task. Sorry, but you should start the application over.")
       return;
    }
+   console.log(selectedOption)
 
       const data = {
         user : user._id,
@@ -361,10 +362,10 @@ const handleGeneratePDF = async (element, titleToNote) => {
         jury : [],
         admin : /*"67c4712f12d662f6eeb9d7fd", */announcement.postedBy._id,
         categories : {},
-        titleToNote : (titlesToNote.find(el => el._id==selectedOption)).value,
+        titleToNote : (titlesToNote.find(el => el?._id==selectedOption+1)).value,
        }
-    
-      for(let i=0;i<tmp.length;i++)
+    console.log(selectedOption)
+      for(let i=0;i<tmp?.length;i++)
       {
         const form = tmp[i]
         let letter = String.fromCharCode(65+i)
@@ -373,11 +374,11 @@ const handleGeneratePDF = async (element, titleToNote) => {
         
        
 
-        for(let j=0;j<form.length;j++)
+        for(let j=0;j<form?.length;j++)
         {
           
           const fields = Object.keys(form[j])
-          for(let k=0;k<fields.length;k++)
+          for(let k=0;k<fields?.length;k++)
           {
             const file = form[j][fields[k]]
             //console.log(file)
