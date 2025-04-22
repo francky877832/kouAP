@@ -9,8 +9,8 @@ const { sendSms, createNotification, sendBrevoEmail} = require('./twilo')
 
 
 exports.sendEmail = async (email, senderEmail, senderName, receivers, subject, htmlMessage) => {
-  const apiKey = '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';
-  const apiUrl = 'https://api.brevo.com/v3/smtp/email';
+  const apiKey = process.env.BREVO_API_KEY 
+  const apiUrl = process.env.BREVO_API_URL
 
   const emailData = {
     sender: { email: sender, name: senderName },
