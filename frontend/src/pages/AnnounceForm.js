@@ -29,7 +29,7 @@ const AnnouncementForm = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    deadline: formatDateForInput2(announcement.deadline),
+    deadline: formatDateForInput2(announcement?.deadline),
     startingDate: "",
     cv : true,
     indexedPublications: false,
@@ -41,7 +41,7 @@ const AnnouncementForm = () => {
 
   useEffect(() => {
     if (announcement) {
-      setFaculty(announcement.faculty || "Faculty of Technology");
+      setFaculty(announcement?.faculty || "Faculty of Technology");
       setDepartment(announcement.department || "Information Systems and Engineering");
       setPosition(announcement.position || "");
       setFormData({

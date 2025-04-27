@@ -13,6 +13,7 @@ import GlobalError from './components/GlobalError';
 
 
 
+
 class GlobalErrorBoundary extends React.Component {
   constructor(props) {
     super(props);

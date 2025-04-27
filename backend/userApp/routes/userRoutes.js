@@ -8,6 +8,15 @@ const auth = require("../middlewares/auth");
 const userCtrl = require('../controllers/userController');
 
 
+
+const verifyToken = require('../middlewares/auth');
+
+router.get('/verify-token', verifyToken, (req, res) => {
+    res.status(200).json({ message: 'Token is valid', userId: req.auth.userId });
+});
+
+
+
 //User Route
 router.get("/get/all", auth,  userCtrl.getUsers);
 

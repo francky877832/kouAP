@@ -81,7 +81,7 @@ exports.getUserNotifications = async (req, res) => {
       return res.status(200).json({
         message: "Success",
         data: {
-          notifications: paginatedNotifications[0].notifications,
+          notifications: paginatedNotifications[0]?.notifications,
           totalNotifications,
           totalPages,
           currentPage: page,

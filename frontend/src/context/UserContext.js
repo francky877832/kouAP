@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { server } from "../remote/server";
 
-import { redirectNonAuthenticatedUser } from "../utils/utilsFunctions";
+import { logout, redirectNonAuthenticatedUser } from "../utils/utilsFunctions";
 
 
 export const UserContext = createContext();
@@ -63,6 +63,41 @@ export const UserProvider = ({ children }) => {
       }
     }
 
+
+    const verifyToken = async () => {
+      try {
+        const token = localStorage.getItem('token'); 
+    
+        if (!token) {
+          throw new Error('No token found');
+        }
+    
+        const response = await fetch(`${server}/api/users/verify-token`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+    
+        const data = await response.json();
+    
+        if (!response.ok) {
+          console.log('Error verifying token:', data);
+          throw new Error('Token problem');
+
+        }
+    
+        console.log('Token valid', data);
+        return data; // { message: 'Token is valid', userId: decodedToken.userId }
+        
+      } catch (error) {
+        console.error('Fetch error:', error.message);
+        return null
+        throw error;
+      }
+    };
+    
 
     
     const signUpUser = async (newUser) => {
@@ -641,7 +676,7 @@ const fetchUserForms= async () => {
         const stateFunctions = {setUser, setIsUserLoading, setFacultyDepartments, setIsActivitiesLoading, setIsCasesLoading, setIsCoefsLoading, setActivities,
           setIsUserFormsLoading, setIsFacultyLoading, setIsMinActivitiesLoading, setIsMinPointsLoading, setIsAuthenticated
         }
-        const utilFunctions = {fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
+        const utilFunctions = {verifyToken, fetchFaculties, fetchActivities, fetchMinActivities, fetchMinPoints, fetchUserForms, 
           fetchCases, fetchCoefs, fetchFacultyGroups, 
 
           controlUser, signUpUser, loginUser, updateUser, fetchUserApplications, fetchUsers, createUserApplication, updateUserRole,

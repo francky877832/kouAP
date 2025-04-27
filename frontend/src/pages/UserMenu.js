@@ -89,11 +89,9 @@ const UserMenu = ({ user, isAuthenticated }) => {
                   <Nav.Item>
                     <Nav.Link as={Link} to="/login">Login</Nav.Link>
                   </Nav.Item>
+      
                   <Nav.Item>
-                    <Nav.Link as={Link} to="/register">Register</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link as={Link} to="/control-user">Control User</Nav.Link>
+                    <Nav.Link as={Link} to="/control-user">Registerr</Nav.Link>
                   </Nav.Item>
                 </>
               )}

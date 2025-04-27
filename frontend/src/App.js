@@ -35,17 +35,18 @@ import UserPanel from "./pages/UserPanel";
 import UserApplications from "./pages/UserApplications";
 import { UserContext } from "./context/UserContext";
 import Loading from "./components/Loading";
+import { logout } from "./utils/utilsFunctions";
 
 
 const App = () => {
 
-    const {user, setUser,  isAuthenticated, setIsAuthenticated  } = useContext(UserContext); //user, setUser,
+    const {user, setUser,  isAuthenticated, setIsAuthenticated, verifyToken} = useContext(UserContext); //user, setUser,
 
     //const [user, setUser] = useState({})
     const [isLoading, setIsLoading] = useState(true)
   
     useEffect(() => {
-      const load = () => {
+      const load = async () => {
         setIsLoading(true)
           
           const token = localStorage.getItem('token');
@@ -54,8 +55,17 @@ const App = () => {
 
           if (token && storedUser) {
             //alert(token)
-            setIsAuthenticated(true); 
-            setUser({...JSON.parse(storedUser), token:token})
+            const res = await verifyToken()
+            if(res)
+            {
+              setIsAuthenticated(true); 
+              setUser({...JSON.parse(storedUser), token:token})
+            }
+            else
+            {
+              logout()
+            }
+           
           } else {
             setIsAuthenticated(false); 
           }
