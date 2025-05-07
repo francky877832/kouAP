@@ -12,7 +12,7 @@ const Case = require("../models/caseModel");
 exports.getAllCases = async (req, res) => {
     //console.log("cases")
     try {
-        const cases = await Case.find();
+        const cases = await Case.find().sort({number:1});
         
         res.status(200).json({message:'success', data:cases});
     } catch (error) {

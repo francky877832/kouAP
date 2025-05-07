@@ -68,6 +68,7 @@ const UserMenu = ({ user, isAuthenticated }) => {
                     <NavDropdown title="Manager" id="manager-dropdown">
                       <NavDropdown.Item as={Link} to="/manager/panel">Manager Panel</NavDropdown.Item>
                       <NavDropdown.Item as={Link} to="/system/notifications">Notifications</NavDropdown.Item>
+                      <NavDropdown.Item as={Link} to="/user/list">Users</NavDropdown.Item>
                     </NavDropdown>
                   )}
 

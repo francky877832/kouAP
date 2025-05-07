@@ -190,16 +190,16 @@ export const UserProvider = ({ children }) => {
     };
 
     
-    const updateUserRole = async (user) => {
+    const updateUserRole = async (selectedUser, user) => {
       try {
    
-        const response = await fetch(`${server}/api/users/role/update/${user._id}`, {
+        const response = await fetch(`${server}/api/users/role/update/${selectedUser._id}`, {
           method: 'PUT',
           headers: {
             "Authorization": `Bearer ${user.token}`,
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({role:user.role}),
+          body: JSON.stringify({role:selectedUser.role}),
         });
         
         const data = await response.json();

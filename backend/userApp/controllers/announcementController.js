@@ -94,11 +94,11 @@ exports.getAnnouncementsByPage = async (req, res) => {
   try {
     //console.log("Models enregistrés :", mongoose.connection.useDb("kouap").models);
 
-    //console.log(req.query)
+    console.log(req.query)
       const { page = 1, limit = 10 } = req.query;
 
       
-      const announcements = await Announcement.find({deadline: { $gt: new Date() }})
+      const announcements = await Announcement.find({deadline: { $gt: new Date()}, startingDate: { $lt: new Date() }, })
       .populate({
         path: 'faculty',
         populate: {
@@ -174,7 +174,7 @@ exports.getAnnouncementsByPage = async (req, res) => {
           ]);*/
         //console.log(announcements)
 
-      const total = await Announcement.countDocuments();
+      const total = await Announcement.countDocuments({deadline: { $gt: new Date()}, startingDate: { $lt: new Date() }, });
       //console.log(total)
       res.status(200).json({
           total : total,

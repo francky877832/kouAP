@@ -71,7 +71,7 @@ const UserList = () => {
     selectedUser.role = editRole;
     //console.log(selectedUser)
 
-    const res = await updateUserRole(selectedUser)
+    const res = await updateUserRole(selectedUser, user)
     if(res)
     {
         alert("User updated with success.")
@@ -113,8 +113,8 @@ const handleNextPage = () => {
         <thead className="table-dark">
           <tr>
             <th>Name</th>
+            <th>TCID</th>
             <th>Email</th>
-            <th>Phone</th>
             <th>Role</th>
             <th>Action</th>
           </tr>
@@ -123,8 +123,8 @@ const handleNextPage = () => {
           {users?.map((user) => (
             <tr key={user._id}>
               <td>{user.name}</td>
+              <td>{user.tcID}</td>
               <td>{user.email}</td>
-              <td>{user.phoneNumber}</td>
               <td>{user.role}</td>
               <td>
                 <Button variant="info" size="sm" onClick={() => handleShowModal(user)}>

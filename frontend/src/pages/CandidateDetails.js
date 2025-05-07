@@ -180,6 +180,17 @@ const handleFileChange = (e) => {
             )})
           }
 
+
+            <tr>
+              <td><strong>CV</strong></td>
+              <td>
+                <Button variant="link" href={candidate?.user?.cv} title="CV" target="_blank">
+                  Download PDF
+                </Button>
+              </td>
+            </tr>
+
+
             <tr>
               <td><strong>Application Form</strong></td>
               <td>

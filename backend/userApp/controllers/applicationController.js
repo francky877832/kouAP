@@ -220,7 +220,10 @@ exports.createApplication = async (req, res) => {
           {
             return {...a, proof:f.location,}
           }
-          if (!!a.cases) return { ...a, cases: new mongoose.Types.ObjectId(a.cases) };
+          if (!!a.cases) {
+            const  cases = mongoose.Types.ObjectId.isValid(a.cases) ? new mongoose.Types.ObjectId(a.cases) : a.cases
+            return { ...a, cases: cases };
+          }
           return {...a}
         })
         categorys[letter] = newCat

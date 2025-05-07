@@ -104,18 +104,18 @@ const App = () => {
 
   {/* Route protégée pour l'admin */}
       <Route path="/admin/add-announcement" element={ <ProtectedRoute element={AnnounceForm} isAuthenticated={isAuthenticated} user={user} roles={["admin", "dev"]} />} />
-      <Route path="/admin/panel" element={ <ProtectedRoute element={AdminPanel } roles={["admim", "dev"]} />} />
+      <Route path="/admin/panel" element={ <ProtectedRoute element={AdminPanel } roles={["admin", "dev"]} />} />
       <Route path="/admin-panel" element={ <ProtectedRoute element={AdminPanel} roles={["admin", "dev"]} />} />
-      <Route path="admin/panel/view-applications" element={ <ProtectedRoute element={ApplicationsView} roles={["admin", "dev"]} /> } />
-      <Route path="admin/panel/view-evaluations" element={ <ProtectedRoute element={EvaluationsView} roles={["admin", "dev"]} /> } />
+      <Route path="/admin/panel/view-applications" element={ <ProtectedRoute element={ApplicationsView} roles={["admin", "dev"]} /> } />
+      <Route path="/admin/panel/view-evaluations" element={ <ProtectedRoute element={EvaluationsView} roles={["admin", "dev"]} /> } />
         
 
 {/*Jury protected */}
       <Route path="/jury/panel" element={<ProtectedRoute element={JuryPanel} roles={["jury", "dev"]} />}  />
       <Route path="/jury-panel" element={<ProtectedRoute element={JuryPanel} roles={["jury", "dev"]} />}  />
       <Route  path="/application-details" element={<ProtectedRoute element={CandidateDetails} roles={["jury", "dev"]} />} />
-      <Route path="/jury/evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} roles={["jury", "dev"]} />}  />
-      <Route path="/jury-evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} roles={["jury", "dev"]} />}  />
+      <Route path="/jury/evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} roles={["jury", "admin", "dev"]} />}  />
+      <Route path="/jury-evaluation-details" element={<ProtectedRoute element={JuryEvaluationDetails} roles={["jury", "admin", "dev"]} />}  />
    
 
     

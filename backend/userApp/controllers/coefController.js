@@ -10,7 +10,7 @@ const Coef = require("../models/coefModel");
 // 🔹 Récupérer tous les coefs
 exports.getAllCoefs = async (req, res) => {
     try {
-        const coefs = await Coef.find();
+        const coefs = await Coef.find().sort({number:1});
         res.status(200).json({message:'success', data:coefs});
     } catch (error) {
         console.log(error)

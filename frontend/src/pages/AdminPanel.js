@@ -109,7 +109,7 @@ const AdminPanel = () => {
     }
     navigate('/all-announcements', {state:{announcements:data}})
   }
-
+//console.log(evaluations)
   return (
     <div className="container admin-dashboard mt-4">
       <div style={{ position: 'absolute', top: '20px', left: '10px' }}>
@@ -246,7 +246,7 @@ const AdminPanel = () => {
             <Link
               to={`view-evaluations`}
               className="list-group-item list-group-item-action"
-              state={{ evaluations : evaluations.filter(ev => !['accepted', 'approved', 'rejected'].includes(ev.application.status)) }}
+              state={{ evaluations : evaluations.filter(ev => !['accepted', 'approved', 'rejected'].includes(ev?.application?.status)) }}
             >
               <button className="btn btn-primary">
                 More Ongoing Evaluations
@@ -257,7 +257,7 @@ const AdminPanel = () => {
             <Link
               to={`view-evaluations`}
               className="list-group-item list-group-item-action"
-              state={{ evaluations : evaluations.filter(ev => ['accepted', 'approved', 'rejected'].includes(ev.application.status)) }}
+              state={{ evaluations : evaluations.filter(ev => ['accepted', 'approved', 'rejected'].includes(ev?.application?.status)) }}
             >
               <button className="btn btn-primary">
                 Passed Evaluationss

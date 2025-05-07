@@ -27,14 +27,15 @@ export const AdminProvider = ({ children }) => {
           },
         });
     
+       
+    
+        // Récupérer les données au format JSON
+        const data = await response.json();
         if (!response.ok) {
           redirectNonAuthenticatedUser(data);
 
           throw new Error(`Erreur de récupération des annonces: ${response.statusText}`);
         }
-    
-        // Récupérer les données au format JSON
-        const data = await response.json();
         return data.data; // Retourner les annonces récupérées
       } catch (error) {
         console.error("Erreur:", error.message);

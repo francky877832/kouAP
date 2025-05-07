@@ -45,7 +45,7 @@ const JuryPanel = () => {
     } else if (filter === "processing") {
       setFilteredApplications(applications.filter(app => app.status === "processing"));
     } else {
-      setFilteredApplications(applications.filter(app => app.status === "accepted" || app.status === "rejected"));
+      setFilteredApplications(applications.filter(app => ["accepted", "approved", "rejected"].includes(app.status.toLowerCase())));
     }
   }, [filter, applications]);
 
